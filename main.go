@@ -1,23 +1,12 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/mkxzy/sparta/parser"
 	"os"
+	"fmt"
 )
-
-type TreeShapeListener struct {
-	*parser.BaseSpartaListener
-}
-
-func NewTreeShapeListener() *TreeShapeListener {
-	return new(TreeShapeListener)
-}
-
-func (this *TreeShapeListener) EnterEveryRule(ctx antlr.ParserRuleContext) {
-	fmt.Println(ctx.GetText())
-}
 
 func main() {
 	input, _ := antlr.NewFileStream(os.Args[1])
@@ -27,6 +16,10 @@ func main() {
 	p := parser.NewSpartaParser(stream)
 	p.BuildParseTrees = true
 	tree := p.Chunk()
-	antlr.ParseTreeWalkerDefault.Walk(NewTreeShapeListener(), tree)
+	fmt.Println(tree.ToStringTree(nil,p))
+	visitor := &DemoVisitor{}
+	//visitor.Visit(tree)
+	tree.Accept(visitor)
+	//antlr.ParseTreeWalkerDefault.Walk(NewTreeShapeListener(), tree)
 	//fmt.Println(tree)
 }
