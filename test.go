@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/mkxzy/sparta/src/parser"
+	"github.com/mkxzy/sparta/parser"
 	"os"
 )
 
