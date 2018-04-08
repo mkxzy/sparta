@@ -4,7 +4,7 @@
 # 2018-4-8
 # #####################
 
-.PHONY: clean sync
+.PHONY: clean sync gen
 
 outdir=bin
 name=sparta

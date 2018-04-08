@@ -99,11 +99,11 @@ func (s *BaseSpartaListener) EnterVarOrExp(ctx *VarOrExpContext) {}
 // ExitVarOrExp is called when production varOrExp is exited.
 func (s *BaseSpartaListener) ExitVarOrExp(ctx *VarOrExpContext) {}
 
-// EnterVar1 is called when production var1 is entered.
-func (s *BaseSpartaListener) EnterVar1(ctx *Var1Context) {}
+// EnterVariable is called when production variable is entered.
+func (s *BaseSpartaListener) EnterVariable(ctx *VariableContext) {}
 
-// ExitVar1 is called when production var1 is exited.
-func (s *BaseSpartaListener) ExitVar1(ctx *Var1Context) {}
+// ExitVariable is called when production variable is exited.
+func (s *BaseSpartaListener) ExitVariable(ctx *VariableContext) {}
 
 // EnterVarSuffix is called when production varSuffix is entered.
 func (s *BaseSpartaListener) EnterVarSuffix(ctx *VarSuffixContext) {}
@@ -225,8 +225,8 @@ func (s *BaseSpartaListener) EnterNumber(ctx *NumberContext) {}
 // ExitNumber is called when production number is exited.
 func (s *BaseSpartaListener) ExitNumber(ctx *NumberContext) {}
 
-// EnterString1 is called when production string1 is entered.
-func (s *BaseSpartaListener) EnterString1(ctx *String1Context) {}
+// EnterStr is called when production str is entered.
+func (s *BaseSpartaListener) EnterStr(ctx *StrContext) {}
 
-// ExitString1 is called when production string1 is exited.
-func (s *BaseSpartaListener) ExitString1(ctx *String1Context) {}
+// ExitStr is called when production str is exited.
+func (s *BaseSpartaListener) ExitStr(ctx *StrContext) {}

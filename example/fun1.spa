@@ -1,0 +1,12 @@
+var a = 100
+
+fun foo(n) {
+    bar()
+    a = 1
+    return v
+}
+
+fun bar(){
+    var b = "abc"
+    return b
+}

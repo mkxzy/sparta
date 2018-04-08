@@ -47,8 +47,8 @@ type SpartaListener interface {
 	// EnterVarOrExp is called when entering the varOrExp production.
 	EnterVarOrExp(c *VarOrExpContext)
 
-	// EnterVar1 is called when entering the var1 production.
-	EnterVar1(c *Var1Context)
+	// EnterVariable is called when entering the variable production.
+	EnterVariable(c *VariableContext)
 
 	// EnterVarSuffix is called when entering the varSuffix production.
 	EnterVarSuffix(c *VarSuffixContext)
@@ -110,8 +110,8 @@ type SpartaListener interface {
 	// EnterNumber is called when entering the number production.
 	EnterNumber(c *NumberContext)
 
-	// EnterString1 is called when entering the string1 production.
-	EnterString1(c *String1Context)
+	// EnterStr is called when entering the str production.
+	EnterStr(c *StrContext)
 
 	// ExitChunk is called when exiting the chunk production.
 	ExitChunk(c *ChunkContext)
@@ -152,8 +152,8 @@ type SpartaListener interface {
 	// ExitVarOrExp is called when exiting the varOrExp production.
 	ExitVarOrExp(c *VarOrExpContext)
 
-	// ExitVar1 is called when exiting the var1 production.
-	ExitVar1(c *Var1Context)
+	// ExitVariable is called when exiting the variable production.
+	ExitVariable(c *VariableContext)
 
 	// ExitVarSuffix is called when exiting the varSuffix production.
 	ExitVarSuffix(c *VarSuffixContext)
@@ -215,6 +215,6 @@ type SpartaListener interface {
 	// ExitNumber is called when exiting the number production.
 	ExitNumber(c *NumberContext)
 
-	// ExitString1 is called when exiting the string1 production.
-	ExitString1(c *String1Context)
+	// ExitStr is called when exiting the str production.
+	ExitStr(c *StrContext)
 }

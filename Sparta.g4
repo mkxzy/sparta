@@ -46,16 +46,13 @@ stat
     | functioncall
     | label
     | 'break'
-    | 'goto' NAME
-    | 'do' block 'end'
-    | 'while' exp 'do' block 'end'
+    | 'while' exp '{' block '}'
     | 'repeat' block 'until' exp
-    | 'if' exp 'then' block ('elseif' exp 'then' block)* ('else' block)? 'end'
+    | 'if' exp '{' block '}' ('elseif' exp '{' block '}')* ('else' '{' block '}')?
     | 'for' NAME '=' exp ',' exp (',' exp)? 'do' block 'end'
     | 'for' namelist 'in' explist 'do' block 'end'
-    | 'function' funcname funcbody
-    | 'local' 'function' NAME funcbody
-    | 'local' namelist ('=' explist)?
+    | 'fun' funcname funcbody
+    | 'var' namelist ('=' explist)?
     ;
 
 retstat
@@ -71,7 +68,7 @@ funcname
     ;
 
 varlist
-    : var1 (',' var1)*
+    : variable (',' variable)*
     ;
 
 namelist
@@ -85,7 +82,7 @@ explist
 exp
     : 'nil' | 'false' | 'true'
     | number
-    | string1
+    | str
     | '...'
     | functiondef
     | prefixexp
@@ -110,10 +107,10 @@ functioncall
     ;
 
 varOrExp
-    : var1 | '(' exp ')'
+    : variable | '(' exp ')'
     ;
 
-var1
+variable
     : (NAME | '(' exp ')' varSuffix) varSuffix*
     ;
 
@@ -125,30 +122,16 @@ nameAndArgs
     : (':' NAME)? args
     ;
 
-/*
-var
-    : NAME | prefixexp '[' exp ']' | prefixexp '.' NAME
-    ;
-
-prefixexp
-    : var | functioncall | '(' exp ')'
-    ;
-
-functioncall
-    : prefixexp args | prefixexp ':' NAME args 
-    ;
-*/
-
 args
-    : '(' explist? ')' | tableconstructor | string1
+    : '(' explist? ')' | tableconstructor | str
     ;
 
 functiondef
-    : 'function' funcbody
+    : 'fun' funcbody
     ;
 
 funcbody
-    : '(' parlist? ')' block 'end'
+    : '(' parlist? ')' '{' block '}'
     ;
 
 parlist
@@ -202,7 +185,7 @@ number
     : INT | HEX | FLOAT | HEX_FLOAT
     ;
 
-string1
+str
     : NORMALSTRING | CHARSTRING | LONGSTRING
     ;
 
