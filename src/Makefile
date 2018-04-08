@@ -4,13 +4,16 @@
 # 2018-4-8
 # #####################
 
-.PHONY: clean
+.PHONY: clean sync
 
 outdir=bin
 name=sparta
 
-build:
+build: sync
 	go build -o $(outdir)/$(name)
+
+sync:
+	govendor sync
 
 clean:
 	rm -rf $(outdir)
