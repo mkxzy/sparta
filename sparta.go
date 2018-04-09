@@ -4,6 +4,8 @@ import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/mkxzy/sparta/parser"
 	"os"
+	//"fmt"
+	//"github.com/mkxzy/sparta/interpreter"
 	"fmt"
 )
 
@@ -16,9 +18,9 @@ func main() {
 	p.BuildParseTrees = true
 	tree := p.Chunk()
 	fmt.Println(tree.ToStringTree(nil,p))
-	visitor := &DemoVisitor{}
+	//visitor := &DemoVisitor{}
 	//visitor.Visit(tree)
-	tree.Accept(visitor)
+	//tree.Accept(visitor)
 
 	listener := &DemoListener{}
 	antlr.ParseTreeWalkerDefault.Walk(listener, tree)
