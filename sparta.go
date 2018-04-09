@@ -22,5 +22,5 @@ func main() {
 
 	listener := &DemoListener{}
 	antlr.ParseTreeWalkerDefault.Walk(listener, tree)
-	fmt.Println(tree)
+	//fmt.Println(tree)
 }

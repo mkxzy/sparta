@@ -12,5 +12,5 @@ go get -u github.com/kardianos/govendor
 
 ## 编译代码：
 ```
-cd src && make
+make
 ```

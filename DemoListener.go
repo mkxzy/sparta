@@ -11,5 +11,9 @@ type DemoListener struct {
 }
 
 func (v *DemoListener) EnterEveryRule(ctx antlr.ParserRuleContext)  {
+	//fmt.Println(ctx.GetText())
+}
+
+func (v *DemoListener) EnterStr(ctx *parser.StrContext) {
 	fmt.Println(ctx.GetText())
 }
