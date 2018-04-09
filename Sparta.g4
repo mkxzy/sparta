@@ -279,6 +279,7 @@ HexDigit
     : [0-9a-fA-F]
     ;
 
+/**
 COMMENT
     : '--[' NESTED_STR ']' -> channel(HIDDEN)
     ;
@@ -292,6 +293,17 @@ LINE_COMMENT
     ) ('\r\n'|'\r'|'\n'|EOF)
     -> channel(HIDDEN)
     ;
+*/
+
+COMMENT
+:
+	'/*' .*? '*/' -> skip
+;
+
+LINE_COMMENT
+:
+	'//' ~[\r\n]* -> skip
+;
     
 WS  
     : [ \t\u000C\r\n]+ -> skip

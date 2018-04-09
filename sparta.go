@@ -1,7 +1,6 @@
 package main
 
 import (
-	//"fmt"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/mkxzy/sparta/parser"
 	"os"
@@ -20,6 +19,8 @@ func main() {
 	visitor := &DemoVisitor{}
 	//visitor.Visit(tree)
 	tree.Accept(visitor)
-	//antlr.ParseTreeWalkerDefault.Walk(NewTreeShapeListener(), tree)
-	//fmt.Println(tree)
+
+	listener := &DemoListener{}
+	antlr.ParseTreeWalkerDefault.Walk(listener, tree)
+	fmt.Println(tree)
 }

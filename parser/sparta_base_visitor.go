@@ -3,9 +3,6 @@
 package parser // Sparta
 
 import "github.com/antlr/antlr4/runtime/Go/antlr"
-import (
-	"fmt"
-)
 
 type BaseSpartaVisitor struct {
 	*antlr.BaseParseTreeVisitor
@@ -20,7 +17,6 @@ func (v *BaseSpartaVisitor) VisitBlock(ctx *BlockContext) interface{} {
 }
 
 func (v *BaseSpartaVisitor) VisitStat(ctx *StatContext) interface{} {
-	fmt.Println(ctx.GetText())
 	return v.VisitChildren(ctx)
 }
 
