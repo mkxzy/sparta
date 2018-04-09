@@ -21,9 +21,9 @@ func (v *DemoListener) EnterStr(ctx *parser.StrContext) {
 }
 
 func (s *DemoListener) EnterFuncname(ctx *parser.FuncnameContext){
-	symbol := interpreter.Symbol{
+	symbol := interpreter.FunctionSymbol{
 		Name: ctx.GetText(),
-		Type: nil,
+		//Type: nil,
 	}
 	s.symbols.Define(symbol)
 	fmt.Println(ctx.GetText())
