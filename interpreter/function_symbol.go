@@ -5,11 +5,11 @@
 package interpreter
 
 type FunctionSymbol struct {
-	Name string
-	Args []*VariableSymbol
+	Name   string
+	Args   []*VariableSymbol
 	Locals []*VariableSymbol
-	Addr int
-	Parent *FunctionSymbol
+	Addr   int
+	Outer  *FunctionSymbol
 }
 
 // Symbol接口实现
@@ -25,14 +25,14 @@ func (table *FunctionSymbol) GetScopeName() string  {
 
 func (table *FunctionSymbol) GetEnclosingScope() Scope {
 
-	return table.Parent
+	return table.Outer
 }
 
 func (table *FunctionSymbol) Define(symbol Symbol) {
 	switch symbol.(type) {
 	case *FunctionSymbol:
 		var realSymbol = symbol.(*FunctionSymbol)
-		realSymbol.Parent = table
+		realSymbol.Outer = table
 	case *VariableSymbol:
 		var realSymbol = symbol.(*VariableSymbol)
 		table.Locals = append(table.Locals, realSymbol)
@@ -61,3 +61,10 @@ func (table *FunctionSymbol) Resolve(name string) Symbol {
 	return nil
 }
 // Scope接口实现
+
+func NewFuncionSymbol(name string) *FunctionSymbol{
+	f := &FunctionSymbol{
+		Name: name,
+	}
+	return f
+}

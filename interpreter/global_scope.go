@@ -10,30 +10,30 @@ import (
 /**
 符号表
  */
-type SymbolTable struct {
+type GlobalScope struct {
 	Symbols map[string]Symbol
 }
 
 // begein Scope接口实现
-func (table *SymbolTable) GetScopeName() string  {
+func (table *GlobalScope) GetScopeName() string  {
 	return "global"
 }
 
-func (table *SymbolTable) GetEnclosingScope() *Scope {
+func (table *GlobalScope) GetEnclosingScope() Scope {
 	return nil
 }
 
-func (table *SymbolTable) Define(symbol Symbol) {
+func (table *GlobalScope) Define(symbol Symbol) {
 	table.Symbols[symbol.GetName()] = symbol
 }
 
-func (table *SymbolTable) Resolve(name string) Symbol {
+func (table *GlobalScope) Resolve(name string) Symbol {
 	return table.Symbols[name]
 }
 // end Scope接口实现
 
 // Stringer接口实现
-func (table *SymbolTable) String() string {
+func (table *GlobalScope) String() string {
 	var buffer bytes.Buffer
 	for k, v := range table.Symbols {
 		entryString := fmt.Sprintf("%s: %v\n", k, v)
@@ -42,8 +42,8 @@ func (table *SymbolTable) String() string {
 	return buffer.String()
 }
 
-func NewSymbolTable() *SymbolTable {
-	table := &SymbolTable{
+func NewGlobalScope() *GlobalScope {
+	table := &GlobalScope{
 		Symbols: make(map[string]Symbol),
 	}
 	return table

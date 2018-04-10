@@ -1,4 +1,4 @@
-package interpreter
+package vm
 
 type Instruction int
 type ConstantPool []interface{}

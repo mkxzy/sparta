@@ -7,6 +7,7 @@ import (
 	//"fmt"
 	//"github.com/mkxzy/sparta/interpreter"
 	"fmt"
+	"github.com/mkxzy/sparta/interpreter"
 )
 
 func main() {
@@ -17,12 +18,12 @@ func main() {
 	p := parser.NewSpartaParser(stream)
 	p.BuildParseTrees = true
 	tree := p.Chunk()
-	fmt.Println(tree.ToStringTree(nil,p))
+	fmt.Println(tree.ToStringTree(nil, p))
 	//visitor := &DemoVisitor{}
 	//visitor.Visit(tree)
 	//tree.Accept(visitor)
 
-	listener := &DemoListener{}
+	listener := interpreter.NewInterpreter()
 	antlr.ParseTreeWalkerDefault.Walk(listener, tree)
 	//fmt.Println(tree)
 }

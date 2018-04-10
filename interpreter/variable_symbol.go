@@ -8,6 +8,6 @@ type VariableSymbol struct {
 }
 
 // Symbol接口实现
-func (ms *VariableSymbol) GetName() string {
+func (ms VariableSymbol) GetName() string {
 	return ms.Name
 }
