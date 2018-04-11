@@ -30,10 +30,10 @@ func (s *DemoListener) EnterFuncname(ctx *parser.FuncnameContext) {
 	//s.symbols.Define(ctx.GetText())
 }
 
-func (s *DemoListener) EnterChunk(ctx *parser.ChunkContext) {
+func (s *DemoListener) EnterChunk(ctx *parser.ProgramContext) {
 	s.symbols = interpreter.NewGlobalScope()
 }
 
-func (s *DemoListener) ExitChunk(ctx *parser.ChunkContext) {
+func (s *DemoListener) ExitChunk(ctx *parser.ProgramContext) {
 	fmt.Println(s.symbols)
 }

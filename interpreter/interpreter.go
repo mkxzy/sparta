@@ -4,6 +4,10 @@ import (
 	"fmt"
 	"github.com/mkxzy/sparta/parser"
 	//"reflect"
+	//"reflect"
+	//"github.com/antlr/antlr4/runtime/Go/antlr"
+	"reflect"
+	"github.com/antlr/antlr4/runtime/Go/antlr"
 )
 
 type Interpreter struct {
@@ -11,7 +15,6 @@ type Interpreter struct {
 
 	Symbols map[string]Symbol
 	GlobalSpace []interface{}
-	GlobalIndex int
 	CurrentScope Scope
 }
 
@@ -20,8 +23,7 @@ func(s *Interpreter) defineSymbol(symbol Symbol)  {
 }
 
 func(s *Interpreter) pushGlobalVar(v interface{})  {
-	s.GlobalSpace[s.GlobalIndex] = v
-	s.GlobalIndex++
+	s.GlobalSpace = append(s.GlobalSpace, v)
 }
 
 func(s *Interpreter) setScope(scope Scope)  {
@@ -31,7 +33,6 @@ func(s *Interpreter) setScope(scope Scope)  {
 func(s *Interpreter) String()  {
 	fmt.Println(s.Symbols)
 	fmt.Println(s.GlobalSpace)
-	fmt.Println(s.GlobalIndex)
 }
 
 func(s *Interpreter) defineVariable(name string, v interface{})  {
@@ -49,21 +50,19 @@ func exec(address int)  {
 func NewInterpreter() *Interpreter{
 	interpreter := &Interpreter{
 		Symbols: make(map[string]Symbol),
-		GlobalSpace: make([]interface{}, 500),
-		GlobalIndex: 0,
+		GlobalSpace: make([]interface{}, 0, 500),
 		CurrentScope: nil,
 	}
 	return interpreter
 }
 
-func (s *Interpreter) EnterChunk(ctx *parser.ChunkContext) {
+func (s *Interpreter) EnterProgram(ctx *parser.ProgramContext) {
 	s.CurrentScope = NewGlobalScope()
 }
 
-func (s *Interpreter) ExitChunk(ctx *parser.ChunkContext) {
+func (s *Interpreter) ExitProgram(ctx *parser.ProgramContext) {
 	fmt.Println(s.CurrentScope.GetScopeName())
 	fmt.Println(s.GlobalSpace)
-	fmt.Println(s.GlobalIndex)
 }
 
 // EnterStat is called when production stat is entered.
@@ -71,8 +70,14 @@ func (s *Interpreter) EnterStat(ctx *parser.StatContext) {
 	//for i:=0;i<ctx.GetChildCount();i++{
 	//	fmt.Println(ctx.GetChild(i))
 	//}
-	s.defineVariable("a", "abcdefg")
-	s.defineVariable("b", "abcdefg")
+	fmt.Println(ctx.ToStringTree(nil, ctx.GetParser()))
+	name := ctx.GetChild(0).GetChild(1).GetChild(0).(antlr.TerminalNode)
+	value := ctx.GetChild(0).GetChild(3).GetChild(0).GetChild(0).GetChild(0).(antlr.TerminalNode)
+	fmt.Println(value.(antlr.ParseTree).ToStringTree(nil, ctx.GetParser()))
+	//fmt.Println(value(nil, ctx.GetParser()))
+	fmt.Println(reflect.TypeOf(value))
+	s.defineVariable(name.GetText(), value.GetText())
+	//s.defineVariable("b", "abcdefg")
 }
 
 // ExitStat is called when production stat is exited.

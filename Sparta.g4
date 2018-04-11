@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 grammar Sparta;
 
-chunk
+program
     : block EOF
     ;
 
@@ -41,26 +41,45 @@ block
     ;
 
 stat
-    : ';'
-    | varlist '=' explist
-    | functioncall
-    | label
-    | 'break'
-    | 'while' exp '{' block '}'
-    | 'repeat' block 'until' exp
-    | 'if' exp '{' block '}' ('elseif' exp '{' block '}')* ('else' '{' block '}')?
-    | 'for' NAME '=' exp ',' exp (',' exp)? 'do' block 'end'
-    | 'for' namelist 'in' explist 'do' block 'end'
-    | 'fun' funcname funcbody
-    | 'var' namelist ('=' explist)?
+    | assignstat
+    | breakstat
+    | whilestat
+    | ifstat
+    | forstat
+    | fundef
+    | varstat
+    ;
+
+varstat
+    : 'var' namelist ('=' explist)?
+    ;
+
+assignstat
+    : varlist '=' explist
+    ;
+
+breakstat
+    : 'break'
+    ;
+
+ifstat
+    : 'if' exp '{' block '}' ('elseif' exp '{' block '}')* ('else' '{' block '}')?
+    ;
+
+whilestat
+    : 'while' exp '{' block '}'
+    ;
+
+forstat
+    : 'for' NAME '=' exp ',' exp (',' exp)? '{' block '}'
     ;
 
 retstat
     : 'return' explist? ';'?
     ;
 
-label
-    : '::' NAME '::'
+fundef
+    : 'fun' funcname funcbody
     ;
 
 funcname
@@ -80,11 +99,13 @@ explist
     ;
 
 exp
-    : 'nil' | 'false' | 'true'
+    : 'nil'
+    | 'false'
+    | 'true'
     | number
     | str
-    | '...'
-    | functiondef
+    | funexp
+    | funcall
     | prefixexp
     | tableconstructor
     | <assoc=right> exp operatorPower exp
@@ -102,7 +123,7 @@ prefixexp
     : varOrExp nameAndArgs*
     ;
 
-functioncall
+funcall
     : varOrExp nameAndArgs+
     ;
 
@@ -126,7 +147,7 @@ args
     : '(' explist? ')' | tableconstructor | str
     ;
 
-functiondef
+funexp
     : 'fun' funcbody
     ;
 

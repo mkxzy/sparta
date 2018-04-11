@@ -8,8 +8,8 @@ import "github.com/antlr/antlr4/runtime/Go/antlr"
 type SpartaVisitor interface {
 	antlr.ParseTreeVisitor
 
-	// Visit a parse tree produced by SpartaParser#chunk.
-	VisitChunk(ctx *ChunkContext) interface{}
+	// Visit a parse tree produced by SpartaParser#program.
+	VisitProgram(ctx *ProgramContext) interface{}
 
 	// Visit a parse tree produced by SpartaParser#block.
 	VisitBlock(ctx *BlockContext) interface{}
@@ -17,11 +17,29 @@ type SpartaVisitor interface {
 	// Visit a parse tree produced by SpartaParser#stat.
 	VisitStat(ctx *StatContext) interface{}
 
+	// Visit a parse tree produced by SpartaParser#varstat.
+	VisitVarstat(ctx *VarstatContext) interface{}
+
+	// Visit a parse tree produced by SpartaParser#assignstat.
+	VisitAssignstat(ctx *AssignstatContext) interface{}
+
+	// Visit a parse tree produced by SpartaParser#breakstat.
+	VisitBreakstat(ctx *BreakstatContext) interface{}
+
+	// Visit a parse tree produced by SpartaParser#ifstat.
+	VisitIfstat(ctx *IfstatContext) interface{}
+
+	// Visit a parse tree produced by SpartaParser#whilestat.
+	VisitWhilestat(ctx *WhilestatContext) interface{}
+
+	// Visit a parse tree produced by SpartaParser#forstat.
+	VisitForstat(ctx *ForstatContext) interface{}
+
 	// Visit a parse tree produced by SpartaParser#retstat.
 	VisitRetstat(ctx *RetstatContext) interface{}
 
-	// Visit a parse tree produced by SpartaParser#label.
-	VisitLabel(ctx *LabelContext) interface{}
+	// Visit a parse tree produced by SpartaParser#fundef.
+	VisitFundef(ctx *FundefContext) interface{}
 
 	// Visit a parse tree produced by SpartaParser#funcname.
 	VisitFuncname(ctx *FuncnameContext) interface{}
@@ -41,8 +59,8 @@ type SpartaVisitor interface {
 	// Visit a parse tree produced by SpartaParser#prefixexp.
 	VisitPrefixexp(ctx *PrefixexpContext) interface{}
 
-	// Visit a parse tree produced by SpartaParser#functioncall.
-	VisitFunctioncall(ctx *FunctioncallContext) interface{}
+	// Visit a parse tree produced by SpartaParser#funcall.
+	VisitFuncall(ctx *FuncallContext) interface{}
 
 	// Visit a parse tree produced by SpartaParser#varOrExp.
 	VisitVarOrExp(ctx *VarOrExpContext) interface{}
@@ -59,8 +77,8 @@ type SpartaVisitor interface {
 	// Visit a parse tree produced by SpartaParser#args.
 	VisitArgs(ctx *ArgsContext) interface{}
 
-	// Visit a parse tree produced by SpartaParser#functiondef.
-	VisitFunctiondef(ctx *FunctiondefContext) interface{}
+	// Visit a parse tree produced by SpartaParser#funexp.
+	VisitFunexp(ctx *FunexpContext) interface{}
 
 	// Visit a parse tree produced by SpartaParser#funcbody.
 	VisitFuncbody(ctx *FuncbodyContext) interface{}

@@ -17,7 +17,7 @@ func main() {
 	stream := antlr.NewCommonTokenStream(lexer, 0)
 	p := parser.NewSpartaParser(stream)
 	p.BuildParseTrees = true
-	tree := p.Chunk()
+	tree := p.Program()
 	fmt.Println(tree.ToStringTree(nil, p))
 	//visitor := &DemoVisitor{}
 	//visitor.Visit(tree)

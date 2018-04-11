@@ -8,7 +8,7 @@ type BaseSpartaVisitor struct {
 	*antlr.BaseParseTreeVisitor
 }
 
-func (v *BaseSpartaVisitor) VisitChunk(ctx *ChunkContext) interface{} {
+func (v *BaseSpartaVisitor) VisitProgram(ctx *ProgramContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -20,11 +20,35 @@ func (v *BaseSpartaVisitor) VisitStat(ctx *StatContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSpartaVisitor) VisitVarstat(ctx *VarstatContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSpartaVisitor) VisitAssignstat(ctx *AssignstatContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSpartaVisitor) VisitBreakstat(ctx *BreakstatContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSpartaVisitor) VisitIfstat(ctx *IfstatContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSpartaVisitor) VisitWhilestat(ctx *WhilestatContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSpartaVisitor) VisitForstat(ctx *ForstatContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSpartaVisitor) VisitRetstat(ctx *RetstatContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSpartaVisitor) VisitLabel(ctx *LabelContext) interface{} {
+func (v *BaseSpartaVisitor) VisitFundef(ctx *FundefContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -52,7 +76,7 @@ func (v *BaseSpartaVisitor) VisitPrefixexp(ctx *PrefixexpContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSpartaVisitor) VisitFunctioncall(ctx *FunctioncallContext) interface{} {
+func (v *BaseSpartaVisitor) VisitFuncall(ctx *FuncallContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -76,7 +100,7 @@ func (v *BaseSpartaVisitor) VisitArgs(ctx *ArgsContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSpartaVisitor) VisitFunctiondef(ctx *FunctiondefContext) interface{} {
+func (v *BaseSpartaVisitor) VisitFunexp(ctx *FunexpContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

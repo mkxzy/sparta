@@ -8,8 +8,8 @@ import "github.com/antlr/antlr4/runtime/Go/antlr"
 type SpartaListener interface {
 	antlr.ParseTreeListener
 
-	// EnterChunk is called when entering the chunk production.
-	EnterChunk(c *ChunkContext)
+	// EnterProgram is called when entering the program production.
+	EnterProgram(c *ProgramContext)
 
 	// EnterBlock is called when entering the block production.
 	EnterBlock(c *BlockContext)
@@ -17,11 +17,29 @@ type SpartaListener interface {
 	// EnterStat is called when entering the stat production.
 	EnterStat(c *StatContext)
 
+	// EnterVarstat is called when entering the varstat production.
+	EnterVarstat(c *VarstatContext)
+
+	// EnterAssignstat is called when entering the assignstat production.
+	EnterAssignstat(c *AssignstatContext)
+
+	// EnterBreakstat is called when entering the breakstat production.
+	EnterBreakstat(c *BreakstatContext)
+
+	// EnterIfstat is called when entering the ifstat production.
+	EnterIfstat(c *IfstatContext)
+
+	// EnterWhilestat is called when entering the whilestat production.
+	EnterWhilestat(c *WhilestatContext)
+
+	// EnterForstat is called when entering the forstat production.
+	EnterForstat(c *ForstatContext)
+
 	// EnterRetstat is called when entering the retstat production.
 	EnterRetstat(c *RetstatContext)
 
-	// EnterLabel is called when entering the label production.
-	EnterLabel(c *LabelContext)
+	// EnterFundef is called when entering the fundef production.
+	EnterFundef(c *FundefContext)
 
 	// EnterFuncname is called when entering the funcname production.
 	EnterFuncname(c *FuncnameContext)
@@ -41,8 +59,8 @@ type SpartaListener interface {
 	// EnterPrefixexp is called when entering the prefixexp production.
 	EnterPrefixexp(c *PrefixexpContext)
 
-	// EnterFunctioncall is called when entering the functioncall production.
-	EnterFunctioncall(c *FunctioncallContext)
+	// EnterFuncall is called when entering the funcall production.
+	EnterFuncall(c *FuncallContext)
 
 	// EnterVarOrExp is called when entering the varOrExp production.
 	EnterVarOrExp(c *VarOrExpContext)
@@ -59,8 +77,8 @@ type SpartaListener interface {
 	// EnterArgs is called when entering the args production.
 	EnterArgs(c *ArgsContext)
 
-	// EnterFunctiondef is called when entering the functiondef production.
-	EnterFunctiondef(c *FunctiondefContext)
+	// EnterFunexp is called when entering the funexp production.
+	EnterFunexp(c *FunexpContext)
 
 	// EnterFuncbody is called when entering the funcbody production.
 	EnterFuncbody(c *FuncbodyContext)
@@ -113,8 +131,8 @@ type SpartaListener interface {
 	// EnterStr is called when entering the str production.
 	EnterStr(c *StrContext)
 
-	// ExitChunk is called when exiting the chunk production.
-	ExitChunk(c *ChunkContext)
+	// ExitProgram is called when exiting the program production.
+	ExitProgram(c *ProgramContext)
 
 	// ExitBlock is called when exiting the block production.
 	ExitBlock(c *BlockContext)
@@ -122,11 +140,29 @@ type SpartaListener interface {
 	// ExitStat is called when exiting the stat production.
 	ExitStat(c *StatContext)
 
+	// ExitVarstat is called when exiting the varstat production.
+	ExitVarstat(c *VarstatContext)
+
+	// ExitAssignstat is called when exiting the assignstat production.
+	ExitAssignstat(c *AssignstatContext)
+
+	// ExitBreakstat is called when exiting the breakstat production.
+	ExitBreakstat(c *BreakstatContext)
+
+	// ExitIfstat is called when exiting the ifstat production.
+	ExitIfstat(c *IfstatContext)
+
+	// ExitWhilestat is called when exiting the whilestat production.
+	ExitWhilestat(c *WhilestatContext)
+
+	// ExitForstat is called when exiting the forstat production.
+	ExitForstat(c *ForstatContext)
+
 	// ExitRetstat is called when exiting the retstat production.
 	ExitRetstat(c *RetstatContext)
 
-	// ExitLabel is called when exiting the label production.
-	ExitLabel(c *LabelContext)
+	// ExitFundef is called when exiting the fundef production.
+	ExitFundef(c *FundefContext)
 
 	// ExitFuncname is called when exiting the funcname production.
 	ExitFuncname(c *FuncnameContext)
@@ -146,8 +182,8 @@ type SpartaListener interface {
 	// ExitPrefixexp is called when exiting the prefixexp production.
 	ExitPrefixexp(c *PrefixexpContext)
 
-	// ExitFunctioncall is called when exiting the functioncall production.
-	ExitFunctioncall(c *FunctioncallContext)
+	// ExitFuncall is called when exiting the funcall production.
+	ExitFuncall(c *FuncallContext)
 
 	// ExitVarOrExp is called when exiting the varOrExp production.
 	ExitVarOrExp(c *VarOrExpContext)
@@ -164,8 +200,8 @@ type SpartaListener interface {
 	// ExitArgs is called when exiting the args production.
 	ExitArgs(c *ArgsContext)
 
-	// ExitFunctiondef is called when exiting the functiondef production.
-	ExitFunctiondef(c *FunctiondefContext)
+	// ExitFunexp is called when exiting the funexp production.
+	ExitFunexp(c *FunexpContext)
 
 	// ExitFuncbody is called when exiting the funcbody production.
 	ExitFuncbody(c *FuncbodyContext)
