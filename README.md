@@ -2,8 +2,14 @@
 A new language for everybody
 为所有人开发的全新语言
 
+# 签出源代码
+```
+git clone https://github.com/mkxzy/sparta.git $GOPATH/src/github.com/mkxzy/sparta
+```
+
 # 构建
 项目采用govendor管理依赖，所以要先安装govendor
+
 ``` 安装govendor
 go get -u github.com/kardianos/govendor
 ```
