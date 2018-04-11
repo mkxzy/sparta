@@ -3,9 +3,6 @@ package interpreter
 import (
 	"fmt"
 	"github.com/mkxzy/sparta/parser"
-	//"reflect"
-	//"reflect"
-	//"github.com/antlr/antlr4/runtime/Go/antlr"
 	"reflect"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 )
@@ -13,17 +10,31 @@ import (
 type Interpreter struct {
 	parser.BaseSpartaListener
 
+	globalTop int
 	Symbols map[string]Symbol
 	GlobalSpace []interface{}
 	CurrentScope Scope
+}
+
+func NewInterpreter() *Interpreter{
+	interpreter := &Interpreter{
+		Symbols: make(map[string]Symbol),
+		GlobalSpace: make([]interface{}, 0, 500),
+		CurrentScope: nil,
+		globalTop: -1,
+	}
+	return interpreter
 }
 
 func(s *Interpreter) defineSymbol(symbol Symbol)  {
 	s.Symbols[symbol.GetName()] = symbol
 }
 
-func(s *Interpreter) pushGlobalVar(v interface{})  {
+func(s *Interpreter) pushGlobalVar(v interface{}) (addr int)  {
 	s.GlobalSpace = append(s.GlobalSpace, v)
+	s.globalTop++
+	addr = s.globalTop
+	return
 }
 
 func(s *Interpreter) setScope(scope Scope)  {
@@ -36,24 +47,11 @@ func(s *Interpreter) String()  {
 }
 
 func(s *Interpreter) defineVariable(name string, v interface{})  {
-	sym := VariableSymbol{
+	sym := &VariableSymbol{
 		Name: name,
 	}
 	s.defineSymbol(sym)
 	s.pushGlobalVar(v)
-}
-
-//执行指令
-func exec(address int)  {
-}
-
-func NewInterpreter() *Interpreter{
-	interpreter := &Interpreter{
-		Symbols: make(map[string]Symbol),
-		GlobalSpace: make([]interface{}, 0, 500),
-		CurrentScope: nil,
-	}
-	return interpreter
 }
 
 func (s *Interpreter) EnterProgram(ctx *parser.ProgramContext) {
