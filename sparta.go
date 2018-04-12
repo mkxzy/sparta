@@ -6,9 +6,22 @@ import (
 	"os"
 	//"fmt"
 	//"github.com/mkxzy/sparta/interpreter"
-	"fmt"
 	"github.com/mkxzy/sparta/interpreter"
+	"github.com/op/go-logging"
 )
+
+var log = logging.MustGetLogger("ExpVisitor")
+
+func init()  {
+	//var format = logging.MustStringFormatter(
+	//	`%{color}%{time:15:04:05.000} %{shortfunc} ▶ %{level:.4s} %{id:03x}%{color:reset} %{message}`,
+	//)
+	//backend := logging.NewLogBackend(os.Stdout, "", 0)
+	//formatter := logging.NewBackendFormatter(backend, format)
+	//logging.SetBackend(backend, formatter)
+	//backend1Leveled := logging.AddModuleLevel(backend)
+	logging.SetLevel(logging.DEBUG, "")
+}
 
 func main() {
 	input, _ := antlr.NewFileStream(os.Args[1])
@@ -18,12 +31,13 @@ func main() {
 	p := parser.NewSpartaParser(stream)
 	p.BuildParseTrees = true
 	tree := p.Program()
-	fmt.Println(tree.ToStringTree(nil, p))
-	//visitor := &DemoVisitor{}
+	log.Debug(tree.ToStringTree(nil, p))
+	visitor := interpreter.NewExpVisitor()
+	//fmt.Println(visitor)
 	//visitor.Visit(tree)
-	//tree.Accept(visitor)
+	tree.Accept(visitor)
 
-	listener := interpreter.NewInterpreter()
-	antlr.ParseTreeWalkerDefault.Walk(listener, tree)
+	//listener := interpreter.NewInterpreter()
+	//antlr.ParseTreeWalkerDefault.Walk(listener, tree)
 	//fmt.Println(tree)
 }

@@ -87,11 +87,4 @@ func (s *DemoInterpreter) EnterStat(ctx *parser.StatContext) {
 
 // ExitStat is called when production stat is exited.
 func (s *DemoInterpreter) ExitStat(ctx *parser.StatContext) {
-
 }
-
-// EnterStr is called when production str is entered.
-func (s *DemoInterpreter) EnterStr(ctx *parser.StrContext) {}
-
-// ExitStr is called when production str is exited.
-func (s *DemoInterpreter) ExitStr(ctx *parser.StrContext) {}

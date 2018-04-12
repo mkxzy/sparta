@@ -32,304 +32,46 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 grammar Sparta;
 
-program
-    : block EOF
-    ;
+program: statList? EOF;
 
-block
-    : stat* retstat?
-    ;
+statList: stat+;
 
 stat
-    : assignstat
-    | breakstat
-    | whilestat
-    | ifstat
-    | forstat
-    | fundef
-    | varstat
+    : varStat
     ;
 
-varstat
-    : 'var' namelist ('=' explist)?
-    ;
-
-assignstat
-    : varlist '=' explist
-    ;
-
-breakstat
-    : 'break'
-    ;
-
-ifstat
-    : 'if' exp '{' block '}' ('elseif' exp '{' block '}')* ('else' '{' block '}')?
-    ;
-
-whilestat
-    : 'while' exp '{' block '}'
-    ;
-
-forstat
-    : 'for' NAME '=' exp ',' exp (',' exp)? '{' block '}'
-    ;
-
-retstat
-    : 'return' explist? ';'?
-    ;
-
-fundef
-    : 'fun' funcname funcbody
-    ;
-
-funcname
-    : NAME ('.' NAME)* (':' NAME)?
-    ;
-
-varlist
-    : variable (',' variable)*
-    ;
-
-namelist
-    : NAME (',' NAME)*
-    ;
-
-explist
-    : exp (',' exp)*
-    ;
+varStat: 'var' IDENTIFIER '=' exp;
 
 exp
-    : 'nil'
-    | 'false'
-    | 'true'
-    | number
-    | str
-    | funexp
-    | funcall
-    | prefixexp
-    | tableconstructor
-    | <assoc=right> exp operatorPower exp
-    | operatorUnary exp
-    | exp operatorMulDivMod exp
-    | exp operatorAddSub exp
-    | <assoc=right> exp operatorStrcat exp
-    | exp operatorComparison exp
-    | exp operatorAnd exp
-    | exp operatorOr exp
-    | exp operatorBitwise exp
+    : NUMBER_LITERAL
     ;
 
-prefixexp
-    : varOrExp nameAndArgs*
+NUMBER_LITERAL
+    : DecimalIntegerLiteral '.' [0-9]*
+    | DecimalIntegerLiteral
     ;
 
-funcall
-    : varOrExp nameAndArgs+
-    ;
+IDENTIFIER: Letter LetterOrDigit*;
 
-varOrExp
-    : variable | '(' exp ')'
-    ;
+COMMENT:'/*' .*? '*/' -> skip;
 
-variable
-    : (NAME | '(' exp ')' varSuffix) varSuffix*
-    ;
-
-varSuffix
-    : nameAndArgs* ('[' exp ']' | '.' NAME)
-    ;
-
-nameAndArgs
-    : (':' NAME)? args
-    ;
-
-args
-    : '(' explist? ')' | tableconstructor | str
-    ;
-
-funexp
-    : 'fun' funcbody
-    ;
-
-funcbody
-    : '(' parlist? ')' '{' block '}'
-    ;
-
-parlist
-    : namelist (',' '...')? | '...'
-    ;
-
-tableconstructor
-    : '{' fieldlist? '}'
-    ;
-
-fieldlist
-    : field (fieldsep field)* fieldsep?
-    ;
-
-field
-    : '[' exp ']' '=' exp | NAME '=' exp | exp
-    ;
-
-fieldsep
-    : ',' | ';'
-    ;
-
-operatorOr 
-	: 'or';
-
-operatorAnd 
-	: 'and';
-
-operatorComparison 
-	: '<' | '>' | '<=' | '>=' | '~=' | '==';
-
-operatorStrcat
-	: '..';
-
-operatorAddSub
-	: '+' | '-';
-
-operatorMulDivMod
-	: '*' | '/' | '%' | '//';
-
-operatorBitwise
-	: '&' | '|' | '~' | '<<' | '>>';
-
-operatorUnary
-    : 'not' | '#' | '-' | '~';
-
-operatorPower
-    : '^';
-
-number
-    : INT | HEX | FLOAT | HEX_FLOAT
-    ;
-
-str
-    : NORMALSTRING | CHARSTRING | LONGSTRING
-    ;
-
-
-// 词法
-NAME
-    : [a-zA-Z_][a-zA-Z_0-9]*
-    ;
-
-NORMALSTRING
-    : '"' ( EscapeSequence | ~('\\'|'"') )* '"' 
-    ;
-
-CHARSTRING
-    : '\'' ( EscapeSequence | ~('\''|'\\') )* '\''
-    ;
-
-LONGSTRING
-    : '[' NESTED_STR ']'
-    ;
-
-fragment
-NESTED_STR
-    : '=' NESTED_STR '='
-    | '[' .*? ']'
-    ;
-
-INT
-    : Digit+
-    ;
-
-HEX
-    : '0' [xX] HexDigit+
-    ;
-
-FLOAT
-    : Digit+ '.' Digit* ExponentPart?
-    | '.' Digit+ ExponentPart?
-    | Digit+ ExponentPart
-    ;
-
-HEX_FLOAT
-    : '0' [xX] HexDigit+ '.' HexDigit* HexExponentPart?
-    | '0' [xX] '.' HexDigit+ HexExponentPart?
-    | '0' [xX] HexDigit+ HexExponentPart
-    ;
-
-fragment
-ExponentPart
-    : [eE] [+-]? Digit+
-    ;
-
-fragment
-HexExponentPart
-    : [pP] [+-]? Digit+
-    ;
-
-fragment
-EscapeSequence
-    : '\\' [abfnrtvz"'\\]
-    | '\\' '\r'? '\n'
-    | DecimalEscape
-    | HexEscape
-    | UtfEscape
-    ;
+LINE_COMMENT:'//' ~[\r\n]* -> skip;
     
-fragment
-DecimalEscape
-    : '\\' Digit
-    | '\\' Digit Digit
-    | '\\' [0-2] Digit Digit
+WS: [ \t\u000C\r\n]+ -> skip;
+
+SHEBANG: '#' '!' ~('\n'|'\r')* -> channel(HIDDEN);
+
+fragment LetterOrDigit
+    : Letter
+    | [0-9]
     ;
-    
-fragment
-HexEscape
-    : '\\' 'x' HexDigit HexDigit
+fragment Letter
+    : [a-zA-Z$_] // these are the "java letters" below 0x7F
+    | ~[\u0000-\u007F\uD800-\uDBFF] // covers all characters above 0x7F which are not a surrogate
+    | [\uD800-\uDBFF] [\uDC00-\uDFFF] // covers UTF-16 surrogate pairs encodings for U+10000 to U+10FFFF
     ;
 
-fragment
-UtfEscape
-    : '\\' 'u{' HexDigit+ '}'
-    ;
-
-fragment
-Digit
-    : [0-9]
-    ;
-
-fragment
-HexDigit
-    : [0-9a-fA-F]
-    ;
-
-/**
-COMMENT
-    : '--[' NESTED_STR ']' -> channel(HIDDEN)
-    ;
-    
-LINE_COMMENT
-    : '--'
-    (                                               // --
-    | '[' '='*                                      // --[==
-    | '[' '='* ~('='|'['|'\r'|'\n') ~('\r'|'\n')*   // --[==AA
-    | ~('['|'\r'|'\n') ~('\r'|'\n')*                // --AAA
-    ) ('\r\n'|'\r'|'\n'|EOF)
-    -> channel(HIDDEN)
-    ;
-*/
-
-COMMENT
-:
-	'/*' .*? '*/' -> skip
-;
-
-LINE_COMMENT
-:
-	'//' ~[\r\n]* -> skip
-;
-    
-WS  
-    : [ \t\u000C\r\n]+ -> skip
-    ;
-
-SHEBANG
-    : '#' '!' ~('\n'|'\r')* -> channel(HIDDEN)
+fragment DecimalIntegerLiteral
+    : '0'
+    | [1-9] [0-9]*
     ;
