@@ -41,7 +41,7 @@ block
     ;
 
 stat
-    | assignstat
+    : assignstat
     | breakstat
     | whilestat
     | ifstat
@@ -210,8 +210,8 @@ str
     : NORMALSTRING | CHARSTRING | LONGSTRING
     ;
 
-// LEXER
 
+// 词法
 NAME
     : [a-zA-Z_][a-zA-Z_0-9]*
     ;
