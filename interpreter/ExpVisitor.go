@@ -9,7 +9,7 @@ import (
 var log = logging.MustGetLogger("ExpVisitor")
 
 type ExpVisitor struct {
-	parser.BaseSpartaVisitor
+	*parser.BaseSpartaVisitor
 }
 
 func NewExpVisitor() *ExpVisitor {
@@ -18,13 +18,13 @@ func NewExpVisitor() *ExpVisitor {
 
 func (v *ExpVisitor) VisitProgram(ctx *parser.ProgramContext) interface{} {
 
-	defer func () {
+	defer func() {
 		if err := recover(); err != nil{
 			log.Debug(err)
 		}
 	}()
-	//return v.VisitChildren(ctx)
-	if(ctx.GetChildCount() == 2){
+
+	if ctx.GetChildCount() == 2 {
 		v.VisitStatList(ctx.GetChild(0).(*parser.StatListContext))
 	}
 	return nil
