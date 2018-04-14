@@ -20,8 +20,26 @@ type SpartaListener interface {
 	// EnterVarStat is called when entering the varStat production.
 	EnterVarStat(c *VarStatContext)
 
-	// EnterExp is called when entering the exp production.
-	EnterExp(c *ExpContext)
+	// EnterExpr is called when entering the expr production.
+	EnterExpr(c *ExprContext)
+
+	// EnterUnaryExpr is called when entering the unaryExpr production.
+	EnterUnaryExpr(c *UnaryExprContext)
+
+	// EnterPrimaryExpr is called when entering the primaryExpr production.
+	EnterPrimaryExpr(c *PrimaryExprContext)
+
+	// EnterOperand is called when entering the operand production.
+	EnterOperand(c *OperandContext)
+
+	// EnterLiteral is called when entering the literal production.
+	EnterLiteral(c *LiteralContext)
+
+	// EnterOperandName is called when entering the operandName production.
+	EnterOperandName(c *OperandNameContext)
+
+	// EnterBasicLit is called when entering the basicLit production.
+	EnterBasicLit(c *BasicLitContext)
 
 	// ExitProgram is called when exiting the program production.
 	ExitProgram(c *ProgramContext)
@@ -35,6 +53,24 @@ type SpartaListener interface {
 	// ExitVarStat is called when exiting the varStat production.
 	ExitVarStat(c *VarStatContext)
 
-	// ExitExp is called when exiting the exp production.
-	ExitExp(c *ExpContext)
+	// ExitExpr is called when exiting the expr production.
+	ExitExpr(c *ExprContext)
+
+	// ExitUnaryExpr is called when exiting the unaryExpr production.
+	ExitUnaryExpr(c *UnaryExprContext)
+
+	// ExitPrimaryExpr is called when exiting the primaryExpr production.
+	ExitPrimaryExpr(c *PrimaryExprContext)
+
+	// ExitOperand is called when exiting the operand production.
+	ExitOperand(c *OperandContext)
+
+	// ExitLiteral is called when exiting the literal production.
+	ExitLiteral(c *LiteralContext)
+
+	// ExitOperandName is called when exiting the operandName production.
+	ExitOperandName(c *OperandNameContext)
+
+	// ExitBasicLit is called when exiting the basicLit production.
+	ExitBasicLit(c *BasicLitContext)
 }

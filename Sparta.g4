@@ -40,10 +40,46 @@ stat
     : varStat
     ;
 
-varStat: 'var' IDENTIFIER '=' exp;
+varStat: 'var' IDENTIFIER '=' expr;
 
-exp
+expr
+    : unaryExpr
+    | expr ('+' | '-' | '*' | '/') expr
+    ;
+
+unaryExpr
+    : primaryExpr
+    | ('+'|'-') unaryExpr
+    ;
+
+primaryExpr
+    : operand
+    ;
+
+operand
+    : literal
+    | operandName
+//    | methodExpr
+    | '(' expr ')'
+    ;
+
+literal
+    : basicLit
+//    | compositeLit
+//    | functionLit
+    ;
+
+operandName
+    : IDENTIFIER
+//    | qualifiedIdent
+    ;
+
+basicLit
     : NUMBER_LITERAL
+//    | FLOAT_LIT
+//    | IMAGINARY_LIT
+//    | RUNE_LIT
+//    | STRING_LIT
     ;
 
 NUMBER_LITERAL

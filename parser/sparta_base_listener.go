@@ -45,8 +45,44 @@ func (s *BaseSpartaListener) EnterVarStat(ctx *VarStatContext) {}
 // ExitVarStat is called when production varStat is exited.
 func (s *BaseSpartaListener) ExitVarStat(ctx *VarStatContext) {}
 
-// EnterExp is called when production exp is entered.
-func (s *BaseSpartaListener) EnterExp(ctx *ExpContext) {}
+// EnterExpr is called when production expr is entered.
+func (s *BaseSpartaListener) EnterExpr(ctx *ExprContext) {}
 
-// ExitExp is called when production exp is exited.
-func (s *BaseSpartaListener) ExitExp(ctx *ExpContext) {}
+// ExitExpr is called when production expr is exited.
+func (s *BaseSpartaListener) ExitExpr(ctx *ExprContext) {}
+
+// EnterUnaryExpr is called when production unaryExpr is entered.
+func (s *BaseSpartaListener) EnterUnaryExpr(ctx *UnaryExprContext) {}
+
+// ExitUnaryExpr is called when production unaryExpr is exited.
+func (s *BaseSpartaListener) ExitUnaryExpr(ctx *UnaryExprContext) {}
+
+// EnterPrimaryExpr is called when production primaryExpr is entered.
+func (s *BaseSpartaListener) EnterPrimaryExpr(ctx *PrimaryExprContext) {}
+
+// ExitPrimaryExpr is called when production primaryExpr is exited.
+func (s *BaseSpartaListener) ExitPrimaryExpr(ctx *PrimaryExprContext) {}
+
+// EnterOperand is called when production operand is entered.
+func (s *BaseSpartaListener) EnterOperand(ctx *OperandContext) {}
+
+// ExitOperand is called when production operand is exited.
+func (s *BaseSpartaListener) ExitOperand(ctx *OperandContext) {}
+
+// EnterLiteral is called when production literal is entered.
+func (s *BaseSpartaListener) EnterLiteral(ctx *LiteralContext) {}
+
+// ExitLiteral is called when production literal is exited.
+func (s *BaseSpartaListener) ExitLiteral(ctx *LiteralContext) {}
+
+// EnterOperandName is called when production operandName is entered.
+func (s *BaseSpartaListener) EnterOperandName(ctx *OperandNameContext) {}
+
+// ExitOperandName is called when production operandName is exited.
+func (s *BaseSpartaListener) ExitOperandName(ctx *OperandNameContext) {}
+
+// EnterBasicLit is called when production basicLit is entered.
+func (s *BaseSpartaListener) EnterBasicLit(ctx *BasicLitContext) {}
+
+// ExitBasicLit is called when production basicLit is exited.
+func (s *BaseSpartaListener) ExitBasicLit(ctx *BasicLitContext) {}

@@ -3,7 +3,6 @@ package interpreter
 import (
 	"github.com/mkxzy/sparta/parser"
 	"github.com/op/go-logging"
-	"strconv"
 )
 
 var log = logging.MustGetLogger("ExpVisitor")
@@ -18,13 +17,13 @@ func NewExpVisitor() *ExpVisitor {
 
 func (v *ExpVisitor) VisitProgram(ctx *parser.ProgramContext) interface{} {
 
-	defer func() {
-		if err := recover(); err != nil{
-			log.Debug(err)
-		}
-	}()
-
-	if ctx.GetChildCount() == 2 {
+	//defer func () {
+	//	if err := recover(); err != nil{
+	//		log.Debug(err)
+	//	}
+	//}()
+	//return v.VisitChildren(ctx)
+	if(ctx.GetChildCount() == 2){
 		v.VisitStatList(ctx.GetChild(0).(*parser.StatListContext))
 	}
 	return nil
@@ -52,16 +51,25 @@ func (v *ExpVisitor) VisitVarStat(ctx *parser.VarStatContext) interface{} {
 		panic("标识符不正确")
 	}
 	name := ctx.GetToken(parser.SpartaParserIDENTIFIER, 0).GetText()
-	value := v.VisitExp(ctx.GetChild(3).(*parser.ExpContext))
-	log.Debugf("%s = %f", name, value)
+	value := v.VisitExpr(ctx.GetChild(3).(*parser.ExprContext))
+	log.Debugf("%s = %v", name, value)
 	return nil
 }
 
-func (v *ExpVisitor) VisitExp(ctx *parser.ExpContext) interface{} {
-	i, err := strconv.ParseFloat(ctx.GetToken(parser.SpartaParserNUMBER_LITERAL, 0).GetText(), 32)
-	if err != nil {
-		//log.Debugf("数字解析异常")
-		panic("数字解析异常")
-	}
-	return i
+func (v *ExpVisitor) VisitExpr(ctx *parser.ExprContext) interface{} {
+	//i, err := strconv.ParseFloat(ctx.GetToken(parser.SpartaParserNUMBER_LITERAL, 0).GetText(), 32)
+	//if err != nil {
+	//	//log.Debugf("数字解析异常")
+	//	panic("数字解析异常")
+	//}
+	//return i
+	return nil
+}
+
+func (v *ExpVisitor) VisitPrimaryExpr(ctx *parser.PrimaryExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *ExpVisitor) VisitUnaryExpr(ctx *parser.UnaryExprContext) interface{} {
+	return v.VisitChildren(ctx)
 }

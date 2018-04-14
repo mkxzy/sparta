@@ -24,6 +24,30 @@ func (v *BaseSpartaVisitor) VisitVarStat(ctx *VarStatContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSpartaVisitor) VisitExp(ctx *ExpContext) interface{} {
+func (v *BaseSpartaVisitor) VisitExpr(ctx *ExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSpartaVisitor) VisitUnaryExpr(ctx *UnaryExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSpartaVisitor) VisitPrimaryExpr(ctx *PrimaryExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSpartaVisitor) VisitOperand(ctx *OperandContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSpartaVisitor) VisitLiteral(ctx *LiteralContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSpartaVisitor) VisitOperandName(ctx *OperandNameContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSpartaVisitor) VisitBasicLit(ctx *BasicLitContext) interface{} {
 	return v.VisitChildren(ctx)
 }
