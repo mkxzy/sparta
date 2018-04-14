@@ -27,23 +27,71 @@ func (s *BaseSpartaListener) EnterProgram(ctx *ProgramContext) {}
 // ExitProgram is called when production program is exited.
 func (s *BaseSpartaListener) ExitProgram(ctx *ProgramContext) {}
 
-// EnterStatList is called when production statList is entered.
-func (s *BaseSpartaListener) EnterStatList(ctx *StatListContext) {}
+// EnterStmt_list is called when production stmt_list is entered.
+func (s *BaseSpartaListener) EnterStmt_list(ctx *Stmt_listContext) {}
 
-// ExitStatList is called when production statList is exited.
-func (s *BaseSpartaListener) ExitStatList(ctx *StatListContext) {}
+// ExitStmt_list is called when production stmt_list is exited.
+func (s *BaseSpartaListener) ExitStmt_list(ctx *Stmt_listContext) {}
 
-// EnterStat is called when production stat is entered.
-func (s *BaseSpartaListener) EnterStat(ctx *StatContext) {}
+// EnterStmt is called when production stmt is entered.
+func (s *BaseSpartaListener) EnterStmt(ctx *StmtContext) {}
 
-// ExitStat is called when production stat is exited.
-func (s *BaseSpartaListener) ExitStat(ctx *StatContext) {}
+// ExitStmt is called when production stmt is exited.
+func (s *BaseSpartaListener) ExitStmt(ctx *StmtContext) {}
 
-// EnterVarStat is called when production varStat is entered.
-func (s *BaseSpartaListener) EnterVarStat(ctx *VarStatContext) {}
+// EnterExpr_stmt is called when production expr_stmt is entered.
+func (s *BaseSpartaListener) EnterExpr_stmt(ctx *Expr_stmtContext) {}
 
-// ExitVarStat is called when production varStat is exited.
-func (s *BaseSpartaListener) ExitVarStat(ctx *VarStatContext) {}
+// ExitExpr_stmt is called when production expr_stmt is exited.
+func (s *BaseSpartaListener) ExitExpr_stmt(ctx *Expr_stmtContext) {}
+
+// EnterVar_stmt is called when production var_stmt is entered.
+func (s *BaseSpartaListener) EnterVar_stmt(ctx *Var_stmtContext) {}
+
+// ExitVar_stmt is called when production var_stmt is exited.
+func (s *BaseSpartaListener) ExitVar_stmt(ctx *Var_stmtContext) {}
+
+// EnterAssign_stmt is called when production assign_stmt is entered.
+func (s *BaseSpartaListener) EnterAssign_stmt(ctx *Assign_stmtContext) {}
+
+// ExitAssign_stmt is called when production assign_stmt is exited.
+func (s *BaseSpartaListener) ExitAssign_stmt(ctx *Assign_stmtContext) {}
+
+// EnterTest is called when production test is entered.
+func (s *BaseSpartaListener) EnterTest(ctx *TestContext) {}
+
+// ExitTest is called when production test is exited.
+func (s *BaseSpartaListener) ExitTest(ctx *TestContext) {}
+
+// EnterOr_test is called when production or_test is entered.
+func (s *BaseSpartaListener) EnterOr_test(ctx *Or_testContext) {}
+
+// ExitOr_test is called when production or_test is exited.
+func (s *BaseSpartaListener) ExitOr_test(ctx *Or_testContext) {}
+
+// EnterAnd_test is called when production and_test is entered.
+func (s *BaseSpartaListener) EnterAnd_test(ctx *And_testContext) {}
+
+// ExitAnd_test is called when production and_test is exited.
+func (s *BaseSpartaListener) ExitAnd_test(ctx *And_testContext) {}
+
+// EnterNot_test is called when production not_test is entered.
+func (s *BaseSpartaListener) EnterNot_test(ctx *Not_testContext) {}
+
+// ExitNot_test is called when production not_test is exited.
+func (s *BaseSpartaListener) ExitNot_test(ctx *Not_testContext) {}
+
+// EnterComparison is called when production comparison is entered.
+func (s *BaseSpartaListener) EnterComparison(ctx *ComparisonContext) {}
+
+// ExitComparison is called when production comparison is exited.
+func (s *BaseSpartaListener) ExitComparison(ctx *ComparisonContext) {}
+
+// EnterComp_op is called when production comp_op is entered.
+func (s *BaseSpartaListener) EnterComp_op(ctx *Comp_opContext) {}
+
+// ExitComp_op is called when production comp_op is exited.
+func (s *BaseSpartaListener) ExitComp_op(ctx *Comp_opContext) {}
 
 // EnterExpr is called when production expr is entered.
 func (s *BaseSpartaListener) EnterExpr(ctx *ExprContext) {}
@@ -51,38 +99,56 @@ func (s *BaseSpartaListener) EnterExpr(ctx *ExprContext) {}
 // ExitExpr is called when production expr is exited.
 func (s *BaseSpartaListener) ExitExpr(ctx *ExprContext) {}
 
-// EnterUnaryExpr is called when production unaryExpr is entered.
-func (s *BaseSpartaListener) EnterUnaryExpr(ctx *UnaryExprContext) {}
+// EnterXor_expr is called when production xor_expr is entered.
+func (s *BaseSpartaListener) EnterXor_expr(ctx *Xor_exprContext) {}
 
-// ExitUnaryExpr is called when production unaryExpr is exited.
-func (s *BaseSpartaListener) ExitUnaryExpr(ctx *UnaryExprContext) {}
+// ExitXor_expr is called when production xor_expr is exited.
+func (s *BaseSpartaListener) ExitXor_expr(ctx *Xor_exprContext) {}
 
-// EnterPrimaryExpr is called when production primaryExpr is entered.
-func (s *BaseSpartaListener) EnterPrimaryExpr(ctx *PrimaryExprContext) {}
+// EnterAnd_expr is called when production and_expr is entered.
+func (s *BaseSpartaListener) EnterAnd_expr(ctx *And_exprContext) {}
 
-// ExitPrimaryExpr is called when production primaryExpr is exited.
-func (s *BaseSpartaListener) ExitPrimaryExpr(ctx *PrimaryExprContext) {}
+// ExitAnd_expr is called when production and_expr is exited.
+func (s *BaseSpartaListener) ExitAnd_expr(ctx *And_exprContext) {}
 
-// EnterOperand is called when production operand is entered.
-func (s *BaseSpartaListener) EnterOperand(ctx *OperandContext) {}
+// EnterShift_expr is called when production shift_expr is entered.
+func (s *BaseSpartaListener) EnterShift_expr(ctx *Shift_exprContext) {}
 
-// ExitOperand is called when production operand is exited.
-func (s *BaseSpartaListener) ExitOperand(ctx *OperandContext) {}
+// ExitShift_expr is called when production shift_expr is exited.
+func (s *BaseSpartaListener) ExitShift_expr(ctx *Shift_exprContext) {}
 
-// EnterLiteral is called when production literal is entered.
-func (s *BaseSpartaListener) EnterLiteral(ctx *LiteralContext) {}
+// EnterArith_expr is called when production arith_expr is entered.
+func (s *BaseSpartaListener) EnterArith_expr(ctx *Arith_exprContext) {}
 
-// ExitLiteral is called when production literal is exited.
-func (s *BaseSpartaListener) ExitLiteral(ctx *LiteralContext) {}
+// ExitArith_expr is called when production arith_expr is exited.
+func (s *BaseSpartaListener) ExitArith_expr(ctx *Arith_exprContext) {}
 
-// EnterOperandName is called when production operandName is entered.
-func (s *BaseSpartaListener) EnterOperandName(ctx *OperandNameContext) {}
+// EnterTerm is called when production term is entered.
+func (s *BaseSpartaListener) EnterTerm(ctx *TermContext) {}
 
-// ExitOperandName is called when production operandName is exited.
-func (s *BaseSpartaListener) ExitOperandName(ctx *OperandNameContext) {}
+// ExitTerm is called when production term is exited.
+func (s *BaseSpartaListener) ExitTerm(ctx *TermContext) {}
 
-// EnterBasicLit is called when production basicLit is entered.
-func (s *BaseSpartaListener) EnterBasicLit(ctx *BasicLitContext) {}
+// EnterFactor is called when production factor is entered.
+func (s *BaseSpartaListener) EnterFactor(ctx *FactorContext) {}
 
-// ExitBasicLit is called when production basicLit is exited.
-func (s *BaseSpartaListener) ExitBasicLit(ctx *BasicLitContext) {}
+// ExitFactor is called when production factor is exited.
+func (s *BaseSpartaListener) ExitFactor(ctx *FactorContext) {}
+
+// EnterPower is called when production power is entered.
+func (s *BaseSpartaListener) EnterPower(ctx *PowerContext) {}
+
+// ExitPower is called when production power is exited.
+func (s *BaseSpartaListener) ExitPower(ctx *PowerContext) {}
+
+// EnterAtom_expr is called when production atom_expr is entered.
+func (s *BaseSpartaListener) EnterAtom_expr(ctx *Atom_exprContext) {}
+
+// ExitAtom_expr is called when production atom_expr is exited.
+func (s *BaseSpartaListener) ExitAtom_expr(ctx *Atom_exprContext) {}
+
+// EnterAtom is called when production atom is entered.
+func (s *BaseSpartaListener) EnterAtom(ctx *AtomContext) {}
+
+// ExitAtom is called when production atom is exited.
+func (s *BaseSpartaListener) ExitAtom(ctx *AtomContext) {}

@@ -11,66 +11,132 @@ type SpartaListener interface {
 	// EnterProgram is called when entering the program production.
 	EnterProgram(c *ProgramContext)
 
-	// EnterStatList is called when entering the statList production.
-	EnterStatList(c *StatListContext)
+	// EnterStmt_list is called when entering the stmt_list production.
+	EnterStmt_list(c *Stmt_listContext)
 
-	// EnterStat is called when entering the stat production.
-	EnterStat(c *StatContext)
+	// EnterStmt is called when entering the stmt production.
+	EnterStmt(c *StmtContext)
 
-	// EnterVarStat is called when entering the varStat production.
-	EnterVarStat(c *VarStatContext)
+	// EnterExpr_stmt is called when entering the expr_stmt production.
+	EnterExpr_stmt(c *Expr_stmtContext)
+
+	// EnterVar_stmt is called when entering the var_stmt production.
+	EnterVar_stmt(c *Var_stmtContext)
+
+	// EnterAssign_stmt is called when entering the assign_stmt production.
+	EnterAssign_stmt(c *Assign_stmtContext)
+
+	// EnterTest is called when entering the test production.
+	EnterTest(c *TestContext)
+
+	// EnterOr_test is called when entering the or_test production.
+	EnterOr_test(c *Or_testContext)
+
+	// EnterAnd_test is called when entering the and_test production.
+	EnterAnd_test(c *And_testContext)
+
+	// EnterNot_test is called when entering the not_test production.
+	EnterNot_test(c *Not_testContext)
+
+	// EnterComparison is called when entering the comparison production.
+	EnterComparison(c *ComparisonContext)
+
+	// EnterComp_op is called when entering the comp_op production.
+	EnterComp_op(c *Comp_opContext)
 
 	// EnterExpr is called when entering the expr production.
 	EnterExpr(c *ExprContext)
 
-	// EnterUnaryExpr is called when entering the unaryExpr production.
-	EnterUnaryExpr(c *UnaryExprContext)
+	// EnterXor_expr is called when entering the xor_expr production.
+	EnterXor_expr(c *Xor_exprContext)
 
-	// EnterPrimaryExpr is called when entering the primaryExpr production.
-	EnterPrimaryExpr(c *PrimaryExprContext)
+	// EnterAnd_expr is called when entering the and_expr production.
+	EnterAnd_expr(c *And_exprContext)
 
-	// EnterOperand is called when entering the operand production.
-	EnterOperand(c *OperandContext)
+	// EnterShift_expr is called when entering the shift_expr production.
+	EnterShift_expr(c *Shift_exprContext)
 
-	// EnterLiteral is called when entering the literal production.
-	EnterLiteral(c *LiteralContext)
+	// EnterArith_expr is called when entering the arith_expr production.
+	EnterArith_expr(c *Arith_exprContext)
 
-	// EnterOperandName is called when entering the operandName production.
-	EnterOperandName(c *OperandNameContext)
+	// EnterTerm is called when entering the term production.
+	EnterTerm(c *TermContext)
 
-	// EnterBasicLit is called when entering the basicLit production.
-	EnterBasicLit(c *BasicLitContext)
+	// EnterFactor is called when entering the factor production.
+	EnterFactor(c *FactorContext)
+
+	// EnterPower is called when entering the power production.
+	EnterPower(c *PowerContext)
+
+	// EnterAtom_expr is called when entering the atom_expr production.
+	EnterAtom_expr(c *Atom_exprContext)
+
+	// EnterAtom is called when entering the atom production.
+	EnterAtom(c *AtomContext)
 
 	// ExitProgram is called when exiting the program production.
 	ExitProgram(c *ProgramContext)
 
-	// ExitStatList is called when exiting the statList production.
-	ExitStatList(c *StatListContext)
+	// ExitStmt_list is called when exiting the stmt_list production.
+	ExitStmt_list(c *Stmt_listContext)
 
-	// ExitStat is called when exiting the stat production.
-	ExitStat(c *StatContext)
+	// ExitStmt is called when exiting the stmt production.
+	ExitStmt(c *StmtContext)
 
-	// ExitVarStat is called when exiting the varStat production.
-	ExitVarStat(c *VarStatContext)
+	// ExitExpr_stmt is called when exiting the expr_stmt production.
+	ExitExpr_stmt(c *Expr_stmtContext)
+
+	// ExitVar_stmt is called when exiting the var_stmt production.
+	ExitVar_stmt(c *Var_stmtContext)
+
+	// ExitAssign_stmt is called when exiting the assign_stmt production.
+	ExitAssign_stmt(c *Assign_stmtContext)
+
+	// ExitTest is called when exiting the test production.
+	ExitTest(c *TestContext)
+
+	// ExitOr_test is called when exiting the or_test production.
+	ExitOr_test(c *Or_testContext)
+
+	// ExitAnd_test is called when exiting the and_test production.
+	ExitAnd_test(c *And_testContext)
+
+	// ExitNot_test is called when exiting the not_test production.
+	ExitNot_test(c *Not_testContext)
+
+	// ExitComparison is called when exiting the comparison production.
+	ExitComparison(c *ComparisonContext)
+
+	// ExitComp_op is called when exiting the comp_op production.
+	ExitComp_op(c *Comp_opContext)
 
 	// ExitExpr is called when exiting the expr production.
 	ExitExpr(c *ExprContext)
 
-	// ExitUnaryExpr is called when exiting the unaryExpr production.
-	ExitUnaryExpr(c *UnaryExprContext)
+	// ExitXor_expr is called when exiting the xor_expr production.
+	ExitXor_expr(c *Xor_exprContext)
 
-	// ExitPrimaryExpr is called when exiting the primaryExpr production.
-	ExitPrimaryExpr(c *PrimaryExprContext)
+	// ExitAnd_expr is called when exiting the and_expr production.
+	ExitAnd_expr(c *And_exprContext)
 
-	// ExitOperand is called when exiting the operand production.
-	ExitOperand(c *OperandContext)
+	// ExitShift_expr is called when exiting the shift_expr production.
+	ExitShift_expr(c *Shift_exprContext)
 
-	// ExitLiteral is called when exiting the literal production.
-	ExitLiteral(c *LiteralContext)
+	// ExitArith_expr is called when exiting the arith_expr production.
+	ExitArith_expr(c *Arith_exprContext)
 
-	// ExitOperandName is called when exiting the operandName production.
-	ExitOperandName(c *OperandNameContext)
+	// ExitTerm is called when exiting the term production.
+	ExitTerm(c *TermContext)
 
-	// ExitBasicLit is called when exiting the basicLit production.
-	ExitBasicLit(c *BasicLitContext)
+	// ExitFactor is called when exiting the factor production.
+	ExitFactor(c *FactorContext)
+
+	// ExitPower is called when exiting the power production.
+	ExitPower(c *PowerContext)
+
+	// ExitAtom_expr is called when exiting the atom_expr production.
+	ExitAtom_expr(c *Atom_exprContext)
+
+	// ExitAtom is called when exiting the atom production.
+	ExitAtom(c *AtomContext)
 }

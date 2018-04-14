@@ -32,54 +32,72 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 grammar Sparta;
 
-program: statList? EOF;
+program: stmt_list? EOF;
 
-statList: stat+;
+stmt_list: stmt+;
 
-stat
-    : varStat
+stmt
+    : expr_stmt
     ;
 
-varStat: 'var' IDENTIFIER '=' expr;
-
-expr
-    : unaryExpr
-    | expr ('+' | '-' | '*' | '/') expr
+expr_stmt
+    : var_stmt
+    | assign_stmt
     ;
 
-unaryExpr
-    : primaryExpr
-    | ('+'|'-') unaryExpr
+var_stmt: 'var' IDENTIFIER '=' test;
+
+assign_stmt: IDENTIFIER '=' test;
+
+test: or_test ('if' or_test 'else' test)?;
+
+or_test: and_test ('or' and_test)*;
+
+and_test: not_test ('and' not_test)*;
+
+not_test: 'not' not_test | comparison;
+
+comparison: expr (comp_op expr)*;
+
+comp_op
+    : '<'
+    |'>'
+    |'=='
+    |'>='
+    |'<='
+    |'<>'
+    |'!='
+    |'in'
+    |'not' 'in'
+    |'is'
+    |'is' 'not';
+
+expr: xor_expr ('|' xor_expr)*;
+
+xor_expr: and_expr ('^' and_expr)*;
+
+and_expr: shift_expr ('&' shift_expr)*;
+
+shift_expr: arith_expr (('<<'|'>>') arith_expr)*;
+
+arith_expr: term (('+'|'-') term)*;
+
+term: factor (('*'|'/'|'%') factor)*;
+
+factor
+    : ('+'|'-') factor
+    | power;
+
+power: atom_expr ('**' factor)?;
+
+atom_expr
+    : atom
     ;
 
-primaryExpr
-    : operand
-    ;
-
-operand
-    : literal
-    | operandName
-//    | methodExpr
-    | '(' expr ')'
-    ;
-
-literal
-    : basicLit
-//    | compositeLit
-//    | functionLit
-    ;
-
-operandName
-    : IDENTIFIER
-//    | qualifiedIdent
-    ;
-
-basicLit
-    : NUMBER_LITERAL
-//    | FLOAT_LIT
-//    | IMAGINARY_LIT
-//    | RUNE_LIT
-//    | STRING_LIT
+atom
+    : '(' arith_expr ')'
+    | NUMBER_LITERAL
+    | IDENTIFIER
     ;
 
 NUMBER_LITERAL

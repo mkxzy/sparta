@@ -24,26 +24,26 @@ func (v *ExpVisitor) VisitProgram(ctx *parser.ProgramContext) interface{} {
 	//}()
 	//return v.VisitChildren(ctx)
 	if(ctx.GetChildCount() == 2){
-		v.VisitStatList(ctx.GetChild(0).(*parser.StatListContext))
+		v.VisitStatList(ctx.GetChild(0).(*parser.Stmt_listContext))
 	}
 	return nil
 }
 
-func (v *ExpVisitor) VisitStatList(ctx *parser.StatListContext) interface{} {
+func (v *ExpVisitor) VisitStatList(ctx *parser.Stmt_listContext) interface{} {
 	log.Debug("Visit StatList")
 	for i:=0; i<ctx.GetChildCount(); i++ {
-		v.VisitStat(ctx.GetChild(i).(*parser.StatContext))
+		v.VisitStat(ctx.GetChild(i).(*parser.StmtContext))
 	}
 	return nil
 }
 
-func (v *ExpVisitor) VisitStat(ctx *parser.StatContext) interface{} {
+func (v *ExpVisitor) VisitStat(ctx *parser.StmtContext) interface{} {
 	log.Debug("Visit Stat")
-	v.VisitVarStat(ctx.GetChild(0).(*parser.VarStatContext))
+	v.VisitVarStat(ctx.GetChild(0).(*parser.Var_stmtContext))
 	return nil
 }
 
-func (v *ExpVisitor) VisitVarStat(ctx *parser.VarStatContext) interface{} {
+func (v *ExpVisitor) VisitVarStat(ctx *parser.Var_stmtContext) interface{} {
 
 	log.Debug("Visit VarStat")
 	token := ctx.GetToken(parser.SpartaParserIDENTIFIER, 0)
@@ -64,12 +64,4 @@ func (v *ExpVisitor) VisitExpr(ctx *parser.ExprContext) interface{} {
 	//}
 	//return i
 	return nil
-}
-
-func (v *ExpVisitor) VisitPrimaryExpr(ctx *parser.PrimaryExprContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *ExpVisitor) VisitUnaryExpr(ctx *parser.UnaryExprContext) interface{} {
-	return v.VisitChildren(ctx)
 }
