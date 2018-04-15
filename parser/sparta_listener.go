@@ -20,9 +20,6 @@ type SpartaListener interface {
 	// EnterExpr_stmt is called when entering the expr_stmt production.
 	EnterExpr_stmt(c *Expr_stmtContext)
 
-	// EnterVar_stmt is called when entering the var_stmt production.
-	EnterVar_stmt(c *Var_stmtContext)
-
 	// EnterAssign_stmt is called when entering the assign_stmt production.
 	EnterAssign_stmt(c *Assign_stmtContext)
 
@@ -47,15 +44,6 @@ type SpartaListener interface {
 	// EnterExpr is called when entering the expr production.
 	EnterExpr(c *ExprContext)
 
-	// EnterXor_expr is called when entering the xor_expr production.
-	EnterXor_expr(c *Xor_exprContext)
-
-	// EnterAnd_expr is called when entering the and_expr production.
-	EnterAnd_expr(c *And_exprContext)
-
-	// EnterShift_expr is called when entering the shift_expr production.
-	EnterShift_expr(c *Shift_exprContext)
-
 	// EnterArith_expr is called when entering the arith_expr production.
 	EnterArith_expr(c *Arith_exprContext)
 
@@ -74,6 +62,9 @@ type SpartaListener interface {
 	// EnterAtom is called when entering the atom production.
 	EnterAtom(c *AtomContext)
 
+	// EnterTestlist_comp is called when entering the testlist_comp production.
+	EnterTestlist_comp(c *Testlist_compContext)
+
 	// ExitProgram is called when exiting the program production.
 	ExitProgram(c *ProgramContext)
 
@@ -85,9 +76,6 @@ type SpartaListener interface {
 
 	// ExitExpr_stmt is called when exiting the expr_stmt production.
 	ExitExpr_stmt(c *Expr_stmtContext)
-
-	// ExitVar_stmt is called when exiting the var_stmt production.
-	ExitVar_stmt(c *Var_stmtContext)
 
 	// ExitAssign_stmt is called when exiting the assign_stmt production.
 	ExitAssign_stmt(c *Assign_stmtContext)
@@ -113,15 +101,6 @@ type SpartaListener interface {
 	// ExitExpr is called when exiting the expr production.
 	ExitExpr(c *ExprContext)
 
-	// ExitXor_expr is called when exiting the xor_expr production.
-	ExitXor_expr(c *Xor_exprContext)
-
-	// ExitAnd_expr is called when exiting the and_expr production.
-	ExitAnd_expr(c *And_exprContext)
-
-	// ExitShift_expr is called when exiting the shift_expr production.
-	ExitShift_expr(c *Shift_exprContext)
-
 	// ExitArith_expr is called when exiting the arith_expr production.
 	ExitArith_expr(c *Arith_exprContext)
 
@@ -139,4 +118,7 @@ type SpartaListener interface {
 
 	// ExitAtom is called when exiting the atom production.
 	ExitAtom(c *AtomContext)
+
+	// ExitTestlist_comp is called when exiting the testlist_comp production.
+	ExitTestlist_comp(c *Testlist_compContext)
 }

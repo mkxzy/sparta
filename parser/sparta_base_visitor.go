@@ -24,10 +24,6 @@ func (v *BaseSpartaVisitor) VisitExpr_stmt(ctx *Expr_stmtContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSpartaVisitor) VisitVar_stmt(ctx *Var_stmtContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
 func (v *BaseSpartaVisitor) VisitAssign_stmt(ctx *Assign_stmtContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -60,18 +56,6 @@ func (v *BaseSpartaVisitor) VisitExpr(ctx *ExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSpartaVisitor) VisitXor_expr(ctx *Xor_exprContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseSpartaVisitor) VisitAnd_expr(ctx *And_exprContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseSpartaVisitor) VisitShift_expr(ctx *Shift_exprContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
 func (v *BaseSpartaVisitor) VisitArith_expr(ctx *Arith_exprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -93,5 +77,9 @@ func (v *BaseSpartaVisitor) VisitAtom_expr(ctx *Atom_exprContext) interface{} {
 }
 
 func (v *BaseSpartaVisitor) VisitAtom(ctx *AtomContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSpartaVisitor) VisitTestlist_comp(ctx *Testlist_compContext) interface{} {
 	return v.VisitChildren(ctx)
 }

@@ -41,15 +41,12 @@ stmt
     ;
 
 expr_stmt
-    : var_stmt
-    | assign_stmt
+    : assign_stmt
     ;
-
-var_stmt: 'var' IDENTIFIER '=' test;
 
 assign_stmt: IDENTIFIER '=' test;
 
-test: or_test ('if' or_test 'else' test)?;
+test: or_test;
 
 or_test: and_test ('or' and_test)*;
 
@@ -57,7 +54,7 @@ and_test: not_test ('and' not_test)*;
 
 not_test: 'not' not_test | comparison;
 
-comparison: expr (comp_op expr)*;
+comparison: expr (comp_op expr)?;
 
 comp_op
     : '<'
@@ -67,25 +64,26 @@ comp_op
     |'<='
     |'<>'
     |'!='
-    |'in'
-    |'not' 'in'
-    |'is'
-    |'is' 'not';
+//    |'in'
+//    |'not' 'in'
+//    |'is'
+//    |'is' 'not'
+    ;
 
-expr: xor_expr ('|' xor_expr)*;
+expr: arith_expr;
 
-xor_expr: and_expr ('^' and_expr)*;
-
-and_expr: shift_expr ('&' shift_expr)*;
-
-shift_expr: arith_expr (('<<'|'>>') arith_expr)*;
+//xor_expr: and_expr ('^' and_expr)*;
+//
+//and_expr: shift_expr ('&' shift_expr)*;
+//
+//shift_expr: arith_expr (('<<'|'>>') arith_expr)*;
 
 arith_expr: term (('+'|'-') term)*;
 
-term: factor (('*'|'/'|'%') factor)*;
+term: factor (('*' | '/' | '%') factor)*;
 
 factor
-    : ('+'|'-') factor
+    : ('+' | '-') factor
     | power;
 
 power: atom_expr ('**' factor)?;
@@ -95,15 +93,23 @@ atom_expr
     ;
 
 atom
-    : '(' arith_expr ')'
+    : '(' testlist_comp ')'
     | NUMBER_LITERAL
     | IDENTIFIER
     ;
 
-NUMBER_LITERAL
-    : DecimalIntegerLiteral '.' [0-9]*
-    | DecimalIntegerLiteral
+testlist_comp
+    : test
     ;
+
+NUMBER_LITERAL
+    : FLOAT_LITERAL
+    | INT_LITERAL
+    ;
+
+FLOAT_LITERAL: DecimalIntegerLiteral '.' [0-9]*;
+
+INT_LITERAL: DecimalIntegerLiteral;
 
 IDENTIFIER: Letter LetterOrDigit*;
 
