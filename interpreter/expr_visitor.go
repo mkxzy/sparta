@@ -3,20 +3,22 @@ package interpreter
 import (
 	"github.com/mkxzy/sparta/parser"
 	"github.com/op/go-logging"
-	//"reflect"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"math"
 	"strconv"
 )
 
-var log = logging.MustGetLogger("ExpVisitor")
+var log = logging.MustGetLogger("ExprVisitor")
 
 type ExpVisitor struct {
 	*parser.BaseSpartaVisitor
+	vars map[string]interface{}
 }
 
 func NewExpVisitor() *ExpVisitor {
-	return &ExpVisitor{}
+	return &ExpVisitor{
+		vars: make(map[string]interface{}),
+	}
 }
 
 func (v *ExpVisitor) VisitProgram(ctx *parser.ProgramContext) interface{} {
@@ -24,6 +26,7 @@ func (v *ExpVisitor) VisitProgram(ctx *parser.ProgramContext) interface{} {
 	log.Debug("Visit Program")
 	if(ctx.GetChildCount() == 2){
 		v.VisitStatList(ctx.GetChild(0).(*parser.Stmt_listContext))
+		log.Debug(v.vars)
 	}
 	return nil
 }
@@ -57,6 +60,7 @@ func (v *ExpVisitor) VisitAssign_stmt(ctx *parser.Assign_stmtContext) interface{
 	}
 	name := token.GetText()
 	value := v.VisitTest(ctx.GetChild(2).(*parser.TestContext))
+	v.putVar(name, value)
 	log.Debugf("%s = %v", name, value)
 	return nil
 }
@@ -193,7 +197,7 @@ func (v *ExpVisitor) VisitAtom(ctx *parser.AtomContext) interface{} {
 		log.Debug(terminalNode.GetText())
 		switch tt {
 		case parser.SpartaLexerIDENTIFIER:
-			return 1.0
+			return v.getVar(terminalNode.GetText()).(float64)
 		case parser.SpartaLexerNUMBER_LITERAL:
 			return parseNumber(terminalNode.GetText())
 		default:
@@ -247,6 +251,14 @@ func arithmetic(first, second float64, op string) float64  {
 	default:
 		panic("不支持的操作")
 	}
+}
+
+func(v *ExpVisitor) putVar(name string, value interface{})  {
+	v.vars[name] = value
+}
+
+func(v *ExpVisitor) getVar(name string) interface{}  {
+	return v.vars[name]
 }
 
 /**
