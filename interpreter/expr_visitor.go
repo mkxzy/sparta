@@ -212,6 +212,14 @@ func (v *ExpVisitor) VisitTestlist_comp(ctx *parser.Testlist_compContext) interf
 	return v.VisitTest(ctx.GetChild(0).(*parser.TestContext))
 }
 
+func(v *ExpVisitor) putVar(name string, value interface{})  {
+	v.vars[name] = value
+}
+
+func(v *ExpVisitor) getVar(name string) interface{}  {
+	return v.vars[name]
+}
+
 /**
 判断数据是否为真
  */
@@ -251,14 +259,6 @@ func arithmetic(first, second float64, op string) float64  {
 	default:
 		panic("不支持的操作")
 	}
-}
-
-func(v *ExpVisitor) putVar(name string, value interface{})  {
-	v.vars[name] = value
-}
-
-func(v *ExpVisitor) getVar(name string) interface{}  {
-	return v.vars[name]
 }
 
 /**
