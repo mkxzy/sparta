@@ -129,6 +129,24 @@ func (s *BaseSpartaListener) EnterAtom(ctx *AtomContext) {}
 // ExitAtom is called when production atom is exited.
 func (s *BaseSpartaListener) ExitAtom(ctx *AtomContext) {}
 
+// EnterTrailer is called when production trailer is entered.
+func (s *BaseSpartaListener) EnterTrailer(ctx *TrailerContext) {}
+
+// ExitTrailer is called when production trailer is exited.
+func (s *BaseSpartaListener) ExitTrailer(ctx *TrailerContext) {}
+
+// EnterArg_list is called when production arg_list is entered.
+func (s *BaseSpartaListener) EnterArg_list(ctx *Arg_listContext) {}
+
+// ExitArg_list is called when production arg_list is exited.
+func (s *BaseSpartaListener) ExitArg_list(ctx *Arg_listContext) {}
+
+// EnterArgument is called when production argument is entered.
+func (s *BaseSpartaListener) EnterArgument(ctx *ArgumentContext) {}
+
+// ExitArgument is called when production argument is exited.
+func (s *BaseSpartaListener) ExitArgument(ctx *ArgumentContext) {}
+
 // EnterTestlist_comp is called when production testlist_comp is entered.
 func (s *BaseSpartaListener) EnterTestlist_comp(ctx *Testlist_compContext) {}
 

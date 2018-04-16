@@ -89,13 +89,23 @@ factor
 power: atom_expr ('**' factor)?;
 
 atom_expr
-    : atom
+    : atom trailer?
     ;
 
 atom
     : '(' testlist_comp ')'
     | NUMBER_LITERAL
     | IDENTIFIER
+    ;
+
+trailer
+    : '(' (arg_list)? ')'
+    ;
+
+arg_list: argument (',' argument)*;
+
+argument
+    : test
     ;
 
 testlist_comp

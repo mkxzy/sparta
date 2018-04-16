@@ -62,6 +62,15 @@ type SpartaVisitor interface {
 	// Visit a parse tree produced by SpartaParser#atom.
 	VisitAtom(ctx *AtomContext) interface{}
 
+	// Visit a parse tree produced by SpartaParser#trailer.
+	VisitTrailer(ctx *TrailerContext) interface{}
+
+	// Visit a parse tree produced by SpartaParser#arg_list.
+	VisitArg_list(ctx *Arg_listContext) interface{}
+
+	// Visit a parse tree produced by SpartaParser#argument.
+	VisitArgument(ctx *ArgumentContext) interface{}
+
 	// Visit a parse tree produced by SpartaParser#testlist_comp.
 	VisitTestlist_comp(ctx *Testlist_compContext) interface{}
 }

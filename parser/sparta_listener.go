@@ -62,6 +62,15 @@ type SpartaListener interface {
 	// EnterAtom is called when entering the atom production.
 	EnterAtom(c *AtomContext)
 
+	// EnterTrailer is called when entering the trailer production.
+	EnterTrailer(c *TrailerContext)
+
+	// EnterArg_list is called when entering the arg_list production.
+	EnterArg_list(c *Arg_listContext)
+
+	// EnterArgument is called when entering the argument production.
+	EnterArgument(c *ArgumentContext)
+
 	// EnterTestlist_comp is called when entering the testlist_comp production.
 	EnterTestlist_comp(c *Testlist_compContext)
 
@@ -118,6 +127,15 @@ type SpartaListener interface {
 
 	// ExitAtom is called when exiting the atom production.
 	ExitAtom(c *AtomContext)
+
+	// ExitTrailer is called when exiting the trailer production.
+	ExitTrailer(c *TrailerContext)
+
+	// ExitArg_list is called when exiting the arg_list production.
+	ExitArg_list(c *Arg_listContext)
+
+	// ExitArgument is called when exiting the argument production.
+	ExitArgument(c *ArgumentContext)
 
 	// ExitTestlist_comp is called when exiting the testlist_comp production.
 	ExitTestlist_comp(c *Testlist_compContext)

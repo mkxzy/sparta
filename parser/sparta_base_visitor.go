@@ -80,6 +80,18 @@ func (v *BaseSpartaVisitor) VisitAtom(ctx *AtomContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSpartaVisitor) VisitTrailer(ctx *TrailerContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSpartaVisitor) VisitArg_list(ctx *Arg_listContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSpartaVisitor) VisitArgument(ctx *ArgumentContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSpartaVisitor) VisitTestlist_comp(ctx *Testlist_compContext) interface{} {
 	return v.VisitChildren(ctx)
 }
