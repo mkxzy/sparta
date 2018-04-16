@@ -7,7 +7,6 @@ import (
 	"math"
 	"strconv"
 	"fmt"
-	"strings"
 )
 
 var log = logging.MustGetLogger("ExprVisitor")
@@ -246,7 +245,7 @@ func (v *ExpVisitor) VisitAtom(ctx *parser.AtomContext) interface{} {
 		case parser.SpartaLexerNUMBER_LITERAL:
 			return parseNumber(terminalNode.GetText())
 		case parser.SpartaLexerSTRING:
-			return trimString(terminalNode.GetText())
+			return escapeString(terminalNode.GetText())
 		default:
 			panic("类型无效")
 		}
@@ -314,8 +313,44 @@ func parseNumber(text string) float64 {
 }
 
 /**
-解析字符串
+转义字符串（状态机）
  */
-func trimString(text string) string {
-	return strings.Trim(text, "\"")
+func escapeString(text string) string {
+	var result = make([]rune, 0 , len(text))
+	escaped := false //是否处于转义状态
+	for _, c := range text {
+		if escaped {
+			result = append(result, escapeMapping(c))
+			escaped = false //关闭转义状态
+		}else{
+			switch c {
+			case '"':
+				continue
+			case '\\':
+				escaped = true
+			default:
+				result = append(result, c)
+			}
+		}
+	}
+	s := string(result)
+	return s
+}
+
+/**
+转义字符映射
+ */
+func escapeMapping(c rune) rune {
+	switch c {
+	case '"', '\\':
+		return c
+	case 't':
+		return '\t'
+	case 'r':
+		return '\r'
+	case 'n':
+		return '\n'
+	default:
+		return c
+	}
 }
