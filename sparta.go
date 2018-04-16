@@ -12,7 +12,7 @@ import (
 
 var log = logging.MustGetLogger("ExpVisitor")
 
-func init()  {
+func init() {
 	//var format = logging.MustStringFormatter(
 	//	`%{color}%{time:15:04:05.000} %{shortfunc} ▶ %{level:.4s} %{id:03x}%{color:reset} %{message}`,
 	//)
@@ -20,7 +20,7 @@ func init()  {
 	//formatter := logging.NewBackendFormatter(backend, format)
 	//logging.SetBackend(backend, formatter)
 	//backend1Leveled := logging.AddModuleLevel(backend)
-	logging.SetLevel(logging.DEBUG, "")
+	logging.SetLevel(logging.ERROR, "")
 }
 
 func main() {

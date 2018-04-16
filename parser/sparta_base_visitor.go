@@ -12,11 +12,11 @@ func (v *BaseSpartaVisitor) VisitProgram(ctx *ProgramContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSpartaVisitor) VisitStmt_list(ctx *Stmt_listContext) interface{} {
+func (v *BaseSpartaVisitor) VisitStmt(ctx *StmtContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSpartaVisitor) VisitStmt(ctx *StmtContext) interface{} {
+func (v *BaseSpartaVisitor) VisitSimple_stmt(ctx *Simple_stmtContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -24,11 +24,11 @@ func (v *BaseSpartaVisitor) VisitExpr_stmt(ctx *Expr_stmtContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSpartaVisitor) VisitAssign_stmt(ctx *Assign_stmtContext) interface{} {
+func (v *BaseSpartaVisitor) VisitPrimary_expr(ctx *Primary_exprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSpartaVisitor) VisitTest(ctx *TestContext) interface{} {
+func (v *BaseSpartaVisitor) VisitPostfix_expr(ctx *Postfix_exprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -44,15 +44,11 @@ func (v *BaseSpartaVisitor) VisitNot_test(ctx *Not_testContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSpartaVisitor) VisitComparison(ctx *ComparisonContext) interface{} {
+func (v *BaseSpartaVisitor) VisitCompare_expr(ctx *Compare_exprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
 func (v *BaseSpartaVisitor) VisitComp_op(ctx *Comp_opContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseSpartaVisitor) VisitExpr(ctx *ExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -80,18 +76,10 @@ func (v *BaseSpartaVisitor) VisitAtom(ctx *AtomContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseSpartaVisitor) VisitTrailer(ctx *TrailerContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
 func (v *BaseSpartaVisitor) VisitArg_list(ctx *Arg_listContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
 func (v *BaseSpartaVisitor) VisitArgument(ctx *ArgumentContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseSpartaVisitor) VisitTestlist_comp(ctx *Testlist_compContext) interface{} {
 	return v.VisitChildren(ctx)
 }

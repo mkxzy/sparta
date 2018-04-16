@@ -32,29 +32,40 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 grammar Sparta;
 
-program: stmt_list? EOF;
-
-stmt_list: stmt+;
+program: (stmt)* EOF;
 
 stmt
+    : simple_stmt
+    ;
+
+simple_stmt
     : expr_stmt
     ;
 
+//small_stmt
+//    : expr_stmt
+//    ;
+
 expr_stmt
-    : assign_stmt
+    : primary_expr '=' postfix_expr
+    | postfix_expr
     ;
 
-assign_stmt: IDENTIFIER '=' test;
+primary_expr
+    : IDENTIFIER
+    ;
 
-test: or_test;
+//assign_stmt: IDENTIFIER '=' test;
+
+postfix_expr: or_test;
 
 or_test: and_test ('or' and_test)*;
 
 and_test: not_test ('and' not_test)*;
 
-not_test: 'not' not_test | comparison;
+not_test: 'not' not_test | compare_expr;
 
-comparison: expr (comp_op expr)?;
+compare_expr: arith_expr (comp_op arith_expr)?;
 
 comp_op
     : '<'
@@ -70,7 +81,7 @@ comp_op
 //    |'is' 'not'
     ;
 
-expr: arith_expr;
+//expr: arith_expr;
 
 //xor_expr: and_expr ('^' and_expr)*;
 //
@@ -89,27 +100,33 @@ factor
 power: atom_expr ('**' factor)?;
 
 atom_expr
-    : atom trailer?
+    : IDENTIFIER '(' (arg_list)? ')' //函数调用
+    | atom
     ;
 
 atom
-    : '(' testlist_comp ')'
+    : '(' postfix_expr ')'
     | NUMBER_LITERAL
     | IDENTIFIER
-    ;
-
-trailer
-    : '(' (arg_list)? ')'
+    | STRING
     ;
 
 arg_list: argument (',' argument)*;
 
 argument
-    : test
+    : postfix_expr
     ;
 
-testlist_comp
-    : test
+STRING
+    : '"' UNICODE_CHAR* '"'
+    ;
+
+fragment
+UNICODE_CHAR   : ~[\u000A] ;
+
+fragment
+STRING_ESCAPE_SEQ
+    : '\\' .
     ;
 
 NUMBER_LITERAL
@@ -117,8 +134,10 @@ NUMBER_LITERAL
     | INT_LITERAL
     ;
 
+fragment
 FLOAT_LITERAL: DecimalIntegerLiteral '.' [0-9]*;
 
+fragment
 INT_LITERAL: DecimalIntegerLiteral;
 
 IDENTIFIER: Letter LetterOrDigit*;

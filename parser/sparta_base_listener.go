@@ -27,17 +27,17 @@ func (s *BaseSpartaListener) EnterProgram(ctx *ProgramContext) {}
 // ExitProgram is called when production program is exited.
 func (s *BaseSpartaListener) ExitProgram(ctx *ProgramContext) {}
 
-// EnterStmt_list is called when production stmt_list is entered.
-func (s *BaseSpartaListener) EnterStmt_list(ctx *Stmt_listContext) {}
-
-// ExitStmt_list is called when production stmt_list is exited.
-func (s *BaseSpartaListener) ExitStmt_list(ctx *Stmt_listContext) {}
-
 // EnterStmt is called when production stmt is entered.
 func (s *BaseSpartaListener) EnterStmt(ctx *StmtContext) {}
 
 // ExitStmt is called when production stmt is exited.
 func (s *BaseSpartaListener) ExitStmt(ctx *StmtContext) {}
+
+// EnterSimple_stmt is called when production simple_stmt is entered.
+func (s *BaseSpartaListener) EnterSimple_stmt(ctx *Simple_stmtContext) {}
+
+// ExitSimple_stmt is called when production simple_stmt is exited.
+func (s *BaseSpartaListener) ExitSimple_stmt(ctx *Simple_stmtContext) {}
 
 // EnterExpr_stmt is called when production expr_stmt is entered.
 func (s *BaseSpartaListener) EnterExpr_stmt(ctx *Expr_stmtContext) {}
@@ -45,17 +45,17 @@ func (s *BaseSpartaListener) EnterExpr_stmt(ctx *Expr_stmtContext) {}
 // ExitExpr_stmt is called when production expr_stmt is exited.
 func (s *BaseSpartaListener) ExitExpr_stmt(ctx *Expr_stmtContext) {}
 
-// EnterAssign_stmt is called when production assign_stmt is entered.
-func (s *BaseSpartaListener) EnterAssign_stmt(ctx *Assign_stmtContext) {}
+// EnterPrimary_expr is called when production primary_expr is entered.
+func (s *BaseSpartaListener) EnterPrimary_expr(ctx *Primary_exprContext) {}
 
-// ExitAssign_stmt is called when production assign_stmt is exited.
-func (s *BaseSpartaListener) ExitAssign_stmt(ctx *Assign_stmtContext) {}
+// ExitPrimary_expr is called when production primary_expr is exited.
+func (s *BaseSpartaListener) ExitPrimary_expr(ctx *Primary_exprContext) {}
 
-// EnterTest is called when production test is entered.
-func (s *BaseSpartaListener) EnterTest(ctx *TestContext) {}
+// EnterPostfix_expr is called when production postfix_expr is entered.
+func (s *BaseSpartaListener) EnterPostfix_expr(ctx *Postfix_exprContext) {}
 
-// ExitTest is called when production test is exited.
-func (s *BaseSpartaListener) ExitTest(ctx *TestContext) {}
+// ExitPostfix_expr is called when production postfix_expr is exited.
+func (s *BaseSpartaListener) ExitPostfix_expr(ctx *Postfix_exprContext) {}
 
 // EnterOr_test is called when production or_test is entered.
 func (s *BaseSpartaListener) EnterOr_test(ctx *Or_testContext) {}
@@ -75,23 +75,17 @@ func (s *BaseSpartaListener) EnterNot_test(ctx *Not_testContext) {}
 // ExitNot_test is called when production not_test is exited.
 func (s *BaseSpartaListener) ExitNot_test(ctx *Not_testContext) {}
 
-// EnterComparison is called when production comparison is entered.
-func (s *BaseSpartaListener) EnterComparison(ctx *ComparisonContext) {}
+// EnterCompare_expr is called when production compare_expr is entered.
+func (s *BaseSpartaListener) EnterCompare_expr(ctx *Compare_exprContext) {}
 
-// ExitComparison is called when production comparison is exited.
-func (s *BaseSpartaListener) ExitComparison(ctx *ComparisonContext) {}
+// ExitCompare_expr is called when production compare_expr is exited.
+func (s *BaseSpartaListener) ExitCompare_expr(ctx *Compare_exprContext) {}
 
 // EnterComp_op is called when production comp_op is entered.
 func (s *BaseSpartaListener) EnterComp_op(ctx *Comp_opContext) {}
 
 // ExitComp_op is called when production comp_op is exited.
 func (s *BaseSpartaListener) ExitComp_op(ctx *Comp_opContext) {}
-
-// EnterExpr is called when production expr is entered.
-func (s *BaseSpartaListener) EnterExpr(ctx *ExprContext) {}
-
-// ExitExpr is called when production expr is exited.
-func (s *BaseSpartaListener) ExitExpr(ctx *ExprContext) {}
 
 // EnterArith_expr is called when production arith_expr is entered.
 func (s *BaseSpartaListener) EnterArith_expr(ctx *Arith_exprContext) {}
@@ -129,12 +123,6 @@ func (s *BaseSpartaListener) EnterAtom(ctx *AtomContext) {}
 // ExitAtom is called when production atom is exited.
 func (s *BaseSpartaListener) ExitAtom(ctx *AtomContext) {}
 
-// EnterTrailer is called when production trailer is entered.
-func (s *BaseSpartaListener) EnterTrailer(ctx *TrailerContext) {}
-
-// ExitTrailer is called when production trailer is exited.
-func (s *BaseSpartaListener) ExitTrailer(ctx *TrailerContext) {}
-
 // EnterArg_list is called when production arg_list is entered.
 func (s *BaseSpartaListener) EnterArg_list(ctx *Arg_listContext) {}
 
@@ -146,9 +134,3 @@ func (s *BaseSpartaListener) EnterArgument(ctx *ArgumentContext) {}
 
 // ExitArgument is called when production argument is exited.
 func (s *BaseSpartaListener) ExitArgument(ctx *ArgumentContext) {}
-
-// EnterTestlist_comp is called when production testlist_comp is entered.
-func (s *BaseSpartaListener) EnterTestlist_comp(ctx *Testlist_compContext) {}
-
-// ExitTestlist_comp is called when production testlist_comp is exited.
-func (s *BaseSpartaListener) ExitTestlist_comp(ctx *Testlist_compContext) {}

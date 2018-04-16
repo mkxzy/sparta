@@ -6,6 +6,8 @@ import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"math"
 	"strconv"
+	"fmt"
+	"strings"
 )
 
 var log = logging.MustGetLogger("ExprVisitor")
@@ -24,50 +26,47 @@ func NewExpVisitor() *ExpVisitor {
 func (v *ExpVisitor) VisitProgram(ctx *parser.ProgramContext) interface{} {
 
 	log.Debug("Visit Program")
-	if(ctx.GetChildCount() == 2){
-		v.VisitStatList(ctx.GetChild(0).(*parser.Stmt_listContext))
-		log.Debug(v.vars)
-	}
-	return nil
-}
-
-func (v *ExpVisitor) VisitStatList(ctx *parser.Stmt_listContext) interface{} {
-	log.Debug("Visit Stmt_List")
-	for i := 0; i < ctx.GetChildCount(); i++ {
+	for i := 0; i < ctx.GetChildCount()-1; i++ {
 		v.VisitStat(ctx.GetChild(i).(*parser.StmtContext))
 	}
+	log.Debug(v.vars)
 	return nil
 }
 
 func (v *ExpVisitor) VisitStat(ctx *parser.StmtContext) interface{} {
 	log.Debug("Visit Stmt")
+	v.VisitSimple_stmt(ctx.GetChild(0).(*parser.Simple_stmtContext))
+	return nil
+}
+
+func (v *ExpVisitor) VisitSimple_stmt(ctx *parser.Simple_stmtContext) interface{} {
+	log.Debug("Visit Simple_Stmt")
+
+	//return v.VisitChildren(ctx)
 	v.VisitExpr_stmt(ctx.GetChild(0).(*parser.Expr_stmtContext))
 	return nil
 }
 
 func (v *ExpVisitor) VisitExpr_stmt(ctx *parser.Expr_stmtContext) interface{} {
 	log.Debug("Visit Expr_Stmt")
-	v.VisitAssign_stmt(ctx.GetChild(0).(*parser.Assign_stmtContext))
-	return nil
-}
 
-func (v *ExpVisitor) VisitAssign_stmt(ctx *parser.Assign_stmtContext) interface{} {
-	//return v.VisitChildren(ctx)
-	log.Debug("Visit Assign_Stmt")
-	token := ctx.GetToken(parser.SpartaParserIDENTIFIER, 0)
-	if token == nil {
-		panic("标识符不正确")
+	if ctx.GetChildCount() == 1 {
+		v.VisitPostfix_expr(ctx.GetChild(0).(*parser.Postfix_exprContext))
+	} else {
+		name := v.VisitPrimary_expr(ctx.GetChild(0).(*parser.Primary_exprContext)).(string)
+		value := v.VisitPostfix_expr(ctx.GetChild(2).(*parser.Postfix_exprContext))
+		v.putVar(name, value)
+		log.Debugf("%s = %v", name, value)
 	}
-	name := token.GetText()
-	value := v.VisitTest(ctx.GetChild(2).(*parser.TestContext))
-	v.putVar(name, value)
-	log.Debugf("%s = %v", name, value)
 	return nil
 }
 
-func (v *ExpVisitor) VisitTest(ctx *parser.TestContext) interface{} {
-	log.Debug("Visit Test")
+func (v *ExpVisitor) VisitPrimary_expr(ctx *parser.Primary_exprContext) interface{} {
+	return ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
+}
 
+func (v *ExpVisitor) VisitPostfix_expr(ctx *parser.Postfix_exprContext) interface{} {
+	//return v.VisitChildren(ctx)
 	return v.VisitOr_test(ctx.GetChild(0).(*parser.Or_testContext))
 }
 
@@ -104,56 +103,67 @@ func (v *ExpVisitor) VisitNot_test(ctx *parser.Not_testContext) interface{} {
 		result := v.VisitNot_test(ctx.GetChild(1).(*parser.Not_testContext))
 		return getInvert(result)
 	} else {
-		return v.VisitComparison(ctx.GetChild(0).(*parser.ComparisonContext))
+		return v.VisitComparison(ctx.GetChild(0).(*parser.Compare_exprContext))
 	}
 }
 
-func (v *ExpVisitor) VisitComparison(ctx *parser.ComparisonContext) interface{} {
+func (v *ExpVisitor) VisitComparison(ctx *parser.Compare_exprContext) interface{} {
 	log.Debug("Visit Comparison")
 
 	// 目前先不支持比较，只返回表达式
-	return v.VisitExpr(ctx.GetChild(0).(*parser.ExprContext))
-}
-
-func (v *ExpVisitor) VisitExpr(ctx *parser.ExprContext) interface{} {
-	log.Debug("Visit Expr")
-
 	return v.VisitArith_expr(ctx.GetChild(0).(*parser.Arith_exprContext))
 }
 
 func (v *ExpVisitor) VisitArith_expr(ctx *parser.Arith_exprContext) interface{} {
 	log.Debug("Visit Arith_Expr")
 
-	//termResult := v.VisitTerm(ctx.GetChild(0).(*parser.TermContext)).(float64)
-	//log.Debug(termResult)
-
-	var termResult = 0.0 //默认为0，累加的时候不需要判断了
-	var op = "+" // 统一处理
-	for i := 0; i < ctx.GetChildCount(); i++ {
-		if i % 2 == 0 {
-			r := v.VisitTerm(ctx.GetChild(i).(*parser.TermContext)).(float64)
-			termResult = arithmetic(termResult, r, op)
-		} else {
-			op = ctx.GetChild(i).(*antlr.TerminalNodeImpl).GetText()
+	if ctx.GetChildCount() == 1 {
+		return v.VisitTerm(ctx.GetChild(0).(*parser.TermContext))
+	}else{
+		var termResult = 0.0 //默认为0，累加的时候不需要判断了
+		var op = "+" // 统一处理
+		for i := 0; i < ctx.GetChildCount(); i++ {
+			if i % 2 == 0 {
+				r := v.VisitTerm(ctx.GetChild(i).(*parser.TermContext))
+				if r == nil {
+					return nil
+				}
+				termResult = arithmetic(termResult, r.(float64), op)
+			} else {
+				op = ctx.GetChild(i).(*antlr.TerminalNodeImpl).GetText()
+			}
 		}
+		return termResult
 	}
-	return termResult
 }
 
 func (v *ExpVisitor) VisitTerm(ctx *parser.TermContext) interface{} {
 	log.Debug("Visit Term")
 
-	var termResult = 1.0 //默认为1方便处理
-	var op = "*"
-	for i := 0; i < ctx.GetChildCount(); i++ {
-		if i % 2 == 0 {
-			r := v.VisitFactor(ctx.GetChild(i).(*parser.FactorContext)).(float64)
-			termResult = arithmetic(termResult, r, op)
-		} else {
-			op = ctx.GetChild(i).(*antlr.TerminalNodeImpl).GetText()
+	//r := v.VisitFactor(ctx.GetChild(0).(*parser.FactorContext))
+	if ctx.GetChildCount() == 1 {
+		return v.VisitFactor(ctx.GetChild(0).(*parser.FactorContext))
+	} else {
+		var termResult = 1.0 //默认为1方便处理
+		var op = "*"
+		for i := 0; i < ctx.GetChildCount(); i++ {
+			if i % 2 == 0 {
+				r := v.VisitFactor(ctx.GetChild(i).(*parser.FactorContext))
+				if r == nil{
+					return nil
+				}
+				switch r.(type) {
+				case float64:
+					termResult = arithmetic(termResult, r.(float64), op)
+				default:
+					panic("类型无效")
+				}
+			} else {
+				op = ctx.GetChild(i).(*antlr.TerminalNodeImpl).GetText()
+			}
 		}
+		return termResult
 	}
-	return termResult
 }
 
 func (v *ExpVisitor) VisitFactor(ctx *parser.FactorContext) interface{} {
@@ -171,26 +181,61 @@ func (v *ExpVisitor) VisitFactor(ctx *parser.FactorContext) interface{} {
 func (v *ExpVisitor) VisitPower(ctx *parser.PowerContext) interface{} {
 	log.Debug("Visit Power")
 
-	atom := v.VisitAtom_expr(ctx.GetChild(0).(*parser.Atom_exprContext)).(float64)
+	atom := v.VisitAtom_expr(ctx.GetChild(0).(*parser.Atom_exprContext))
+	if atom == nil {
+		return nil
+	}
 	if ctx.GetChildCount() == 1 {
 		return atom
 	} else {
 		factor := v.VisitFactor(ctx.GetChild(2).(*parser.FactorContext)).(float64)
-		return math.Pow(atom, factor)
+		return math.Pow(atom.(float64), factor)
 	}
 }
 
 func (v *ExpVisitor) VisitAtom_expr(ctx *parser.Atom_exprContext) interface{} {
 	log.Debug("Visit Atom_Expr")
 
-	return v.VisitAtom(ctx.GetChild(0).(*parser.AtomContext))
+	if ctx.GetChildCount() == 1 {
+		return v.VisitAtom(ctx.GetChild(0).(*parser.AtomContext))
+	} else {
+		////函数调用
+		name := ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
+		args := v.VisitArg_list(ctx.GetChild(2).(*parser.Arg_listContext))
+		return callInternalFunc(name, args.([]interface{}))
+		//return nil
+	}
+}
+
+func (v *ExpVisitor) VisitArg_list(ctx *parser.Arg_listContext) interface{} {
+	//return v.VisitChildren(ctx)
+	argList := make([]interface{}, 0, 10)
+	for i := 0; i < ctx.GetChildCount(); i += 2 {
+		v := v.VisitArgument(ctx.GetChild(i).(*parser.ArgumentContext))
+		argList = append(argList, v)
+	}
+	return argList
+}
+
+func (v *ExpVisitor) VisitArgument(ctx *parser.ArgumentContext) interface{} {
+	return v.VisitPostfix_expr(ctx.GetChild(0).(*parser.Postfix_exprContext))
+}
+
+func callInternalFunc(name string, args []interface{}) interface{} {
+	switch name {
+	case "print":
+		fmt.Println(args...)
+		return nil
+	default:
+		return nil
+	}
 }
 
 func (v *ExpVisitor) VisitAtom(ctx *parser.AtomContext) interface{} {
 	log.Debug("Visit Atom")
 
 	if ctx.GetChildCount() == 3 {
-		return v.VisitTestlist_comp(ctx.GetChild(1).(*parser.Testlist_compContext))
+		return v.VisitPostfix_expr(ctx.GetChild(1).(*parser.Postfix_exprContext))
 	} else {
 		terminalNode := ctx.GetChild(0).(*antlr.TerminalNodeImpl)
 		tt := terminalNode.GetSymbol().GetTokenType()
@@ -200,16 +245,12 @@ func (v *ExpVisitor) VisitAtom(ctx *parser.AtomContext) interface{} {
 			return v.getVar(terminalNode.GetText()).(float64)
 		case parser.SpartaLexerNUMBER_LITERAL:
 			return parseNumber(terminalNode.GetText())
+		case parser.SpartaLexerSTRING:
+			return trimString(terminalNode.GetText())
 		default:
 			panic("类型无效")
 		}
 	}
-}
-
-func (v *ExpVisitor) VisitTestlist_comp(ctx *parser.Testlist_compContext) interface{} {
-	log.Debug("Visit Test_Comp")
-
-	return v.VisitTest(ctx.GetChild(0).(*parser.TestContext))
 }
 
 func(v *ExpVisitor) putVar(name string, value interface{})  {
@@ -270,4 +311,11 @@ func parseNumber(text string) float64 {
 		panic("数字转化错误")
 	}
 	return r
+}
+
+/**
+解析字符串
+ */
+func trimString(text string) string {
+	return strings.Trim(text, "\"")
 }
