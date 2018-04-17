@@ -42,10 +42,6 @@ simple_stmt
     : expr_stmt
     ;
 
-//small_stmt
-//    : expr_stmt
-//    ;
-
 expr_stmt
     : primary_expr '=' postfix_expr
     | postfix_expr
@@ -118,27 +114,27 @@ argument
     ;
 
 STRING
-    : '"' UNICODE_CHAR* '"'
+    : '"' StringCharacter* '"'
     ;
 
 fragment
-UNICODE_CHAR   : ~[\u000A] ;
+StringCharacter
+	: ~["\\\r\n]
+	| EscapeSequence
+	;
 
 fragment
-STRING_ESCAPE_SEQ
-    : '\\' .
-    ;
+EscapeSequence
+	: '\\' [btnfr"'\\]
+	;
+
+//fragment
+//UNICODE_CHAR   : ~[\u000A] ;
 
 NUMBER_LITERAL
-    : FLOAT_LITERAL
-    | INT_LITERAL
+    : DecimalIntegerLiteral '.' [0-9]*
+    | DecimalIntegerLiteral
     ;
-
-fragment
-FLOAT_LITERAL: DecimalIntegerLiteral '.' [0-9]*;
-
-fragment
-INT_LITERAL: DecimalIntegerLiteral;
 
 IDENTIFIER: Letter LetterOrDigit*;
 
