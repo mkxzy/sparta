@@ -198,7 +198,7 @@ func (v *ExpVisitor) VisitAtom_expr(ctx *parser.Atom_exprContext) interface{} {
 	if ctx.GetChildCount() == 1 {
 		return v.VisitAtom(ctx.GetChild(0).(*parser.AtomContext))
 	} else {
-		////函数调用
+		//函数调用
 		name := ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
 		args := v.VisitArg_list(ctx.GetChild(2).(*parser.Arg_listContext))
 		return callInternalFunc(name, args.([]interface{}))
@@ -226,7 +226,7 @@ func callInternalFunc(name string, args []interface{}) interface{} {
 		fmt.Println(args...)
 		return nil
 	default:
-		return nil
+		panic("function not found")
 	}
 }
 
@@ -241,7 +241,7 @@ func (v *ExpVisitor) VisitAtom(ctx *parser.AtomContext) interface{} {
 		log.Debug(terminalNode.GetText())
 		switch tt {
 		case parser.SpartaLexerIDENTIFIER:
-			return v.getVar(terminalNode.GetText()).(float64)
+ 			return v.getVar(terminalNode.GetText()).(float64)
 		case parser.SpartaLexerNUMBER_LITERAL:
 			return parseNumber(terminalNode.GetText())
 		case parser.SpartaLexerSTRING:
