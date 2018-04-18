@@ -24,6 +24,8 @@ func NewExpVisitor() *ExpVisitor {
 
 func (v *ExpVisitor) VisitProgram(ctx *parser.ProgramContext) interface{} {
 
+	//nu := base.Null()
+	//log.Debug(nu.IsTrue())
 	log.Debug("Visit Program")
 	for i := 0; i < ctx.GetChildCount()-1; i++ {
 		v.VisitStat(ctx.GetChild(i).(*parser.StmtContext))

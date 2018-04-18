@@ -5,3 +5,10 @@ package base
  */
 type SPAValue interface {
 }
+
+/**
+值是否为真
+ */
+type Booler interface {
+	IsTrue() bool
+}
