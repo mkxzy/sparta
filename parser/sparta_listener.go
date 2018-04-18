@@ -20,6 +20,18 @@ type SpartaListener interface {
 	// EnterExpr_stmt is called when entering the expr_stmt production.
 	EnterExpr_stmt(c *Expr_stmtContext)
 
+	// EnterPar_seq is called when entering the par_seq production.
+	EnterPar_seq(c *Par_seqContext)
+
+	// EnterParlist is called when entering the parlist production.
+	EnterParlist(c *ParlistContext)
+
+	// EnterNamelist is called when entering the namelist production.
+	EnterNamelist(c *NamelistContext)
+
+	// EnterBlock is called when entering the block production.
+	EnterBlock(c *BlockContext)
+
 	// EnterPrimary_expr is called when entering the primary_expr production.
 	EnterPrimary_expr(c *Primary_exprContext)
 
@@ -56,9 +68,6 @@ type SpartaListener interface {
 	// EnterAtom_expr is called when entering the atom_expr production.
 	EnterAtom_expr(c *Atom_exprContext)
 
-	// EnterAtom is called when entering the atom production.
-	EnterAtom(c *AtomContext)
-
 	// EnterArg_list is called when entering the arg_list production.
 	EnterArg_list(c *Arg_listContext)
 
@@ -76,6 +85,18 @@ type SpartaListener interface {
 
 	// ExitExpr_stmt is called when exiting the expr_stmt production.
 	ExitExpr_stmt(c *Expr_stmtContext)
+
+	// ExitPar_seq is called when exiting the par_seq production.
+	ExitPar_seq(c *Par_seqContext)
+
+	// ExitParlist is called when exiting the parlist production.
+	ExitParlist(c *ParlistContext)
+
+	// ExitNamelist is called when exiting the namelist production.
+	ExitNamelist(c *NamelistContext)
+
+	// ExitBlock is called when exiting the block production.
+	ExitBlock(c *BlockContext)
 
 	// ExitPrimary_expr is called when exiting the primary_expr production.
 	ExitPrimary_expr(c *Primary_exprContext)
@@ -112,9 +133,6 @@ type SpartaListener interface {
 
 	// ExitAtom_expr is called when exiting the atom_expr production.
 	ExitAtom_expr(c *Atom_exprContext)
-
-	// ExitAtom is called when exiting the atom production.
-	ExitAtom(c *AtomContext)
 
 	// ExitArg_list is called when exiting the arg_list production.
 	ExitArg_list(c *Arg_listContext)

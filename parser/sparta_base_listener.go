@@ -45,6 +45,30 @@ func (s *BaseSpartaListener) EnterExpr_stmt(ctx *Expr_stmtContext) {}
 // ExitExpr_stmt is called when production expr_stmt is exited.
 func (s *BaseSpartaListener) ExitExpr_stmt(ctx *Expr_stmtContext) {}
 
+// EnterPar_seq is called when production par_seq is entered.
+func (s *BaseSpartaListener) EnterPar_seq(ctx *Par_seqContext) {}
+
+// ExitPar_seq is called when production par_seq is exited.
+func (s *BaseSpartaListener) ExitPar_seq(ctx *Par_seqContext) {}
+
+// EnterParlist is called when production parlist is entered.
+func (s *BaseSpartaListener) EnterParlist(ctx *ParlistContext) {}
+
+// ExitParlist is called when production parlist is exited.
+func (s *BaseSpartaListener) ExitParlist(ctx *ParlistContext) {}
+
+// EnterNamelist is called when production namelist is entered.
+func (s *BaseSpartaListener) EnterNamelist(ctx *NamelistContext) {}
+
+// ExitNamelist is called when production namelist is exited.
+func (s *BaseSpartaListener) ExitNamelist(ctx *NamelistContext) {}
+
+// EnterBlock is called when production block is entered.
+func (s *BaseSpartaListener) EnterBlock(ctx *BlockContext) {}
+
+// ExitBlock is called when production block is exited.
+func (s *BaseSpartaListener) ExitBlock(ctx *BlockContext) {}
+
 // EnterPrimary_expr is called when production primary_expr is entered.
 func (s *BaseSpartaListener) EnterPrimary_expr(ctx *Primary_exprContext) {}
 
@@ -116,12 +140,6 @@ func (s *BaseSpartaListener) EnterAtom_expr(ctx *Atom_exprContext) {}
 
 // ExitAtom_expr is called when production atom_expr is exited.
 func (s *BaseSpartaListener) ExitAtom_expr(ctx *Atom_exprContext) {}
-
-// EnterAtom is called when production atom is entered.
-func (s *BaseSpartaListener) EnterAtom(ctx *AtomContext) {}
-
-// ExitAtom is called when production atom is exited.
-func (s *BaseSpartaListener) ExitAtom(ctx *AtomContext) {}
 
 // EnterArg_list is called when production arg_list is entered.
 func (s *BaseSpartaListener) EnterArg_list(ctx *Arg_listContext) {}

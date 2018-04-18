@@ -20,6 +20,18 @@ type SpartaVisitor interface {
 	// Visit a parse tree produced by SpartaParser#expr_stmt.
 	VisitExpr_stmt(ctx *Expr_stmtContext) interface{}
 
+	// Visit a parse tree produced by SpartaParser#par_seq.
+	VisitPar_seq(ctx *Par_seqContext) interface{}
+
+	// Visit a parse tree produced by SpartaParser#parlist.
+	VisitParlist(ctx *ParlistContext) interface{}
+
+	// Visit a parse tree produced by SpartaParser#namelist.
+	VisitNamelist(ctx *NamelistContext) interface{}
+
+	// Visit a parse tree produced by SpartaParser#block.
+	VisitBlock(ctx *BlockContext) interface{}
+
 	// Visit a parse tree produced by SpartaParser#primary_expr.
 	VisitPrimary_expr(ctx *Primary_exprContext) interface{}
 
@@ -55,9 +67,6 @@ type SpartaVisitor interface {
 
 	// Visit a parse tree produced by SpartaParser#atom_expr.
 	VisitAtom_expr(ctx *Atom_exprContext) interface{}
-
-	// Visit a parse tree produced by SpartaParser#atom.
-	VisitAtom(ctx *AtomContext) interface{}
 
 	// Visit a parse tree produced by SpartaParser#arg_list.
 	VisitArg_list(ctx *Arg_listContext) interface{}

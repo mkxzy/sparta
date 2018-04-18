@@ -24,6 +24,22 @@ func (v *BaseSpartaVisitor) VisitExpr_stmt(ctx *Expr_stmtContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseSpartaVisitor) VisitPar_seq(ctx *Par_seqContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSpartaVisitor) VisitParlist(ctx *ParlistContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSpartaVisitor) VisitNamelist(ctx *NamelistContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseSpartaVisitor) VisitBlock(ctx *BlockContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseSpartaVisitor) VisitPrimary_expr(ctx *Primary_exprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -69,10 +85,6 @@ func (v *BaseSpartaVisitor) VisitPower(ctx *PowerContext) interface{} {
 }
 
 func (v *BaseSpartaVisitor) VisitAtom_expr(ctx *Atom_exprContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseSpartaVisitor) VisitAtom(ctx *AtomContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

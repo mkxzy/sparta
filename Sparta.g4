@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 grammar Sparta;
 
-program: (stmt)* EOF;
+program: stmt* EOF;
 
 stmt
     : simple_stmt
@@ -40,20 +40,43 @@ stmt
 
 simple_stmt
     : expr_stmt
+    | return_stmt
+    ;
+
+return_stmt
+    : 'return' stmt?
     ;
 
 expr_stmt
     : primary_expr '=' postfix_expr
     | postfix_expr
+    | 'fun' IDENTIFIER par_seq block
+    ;
+
+par_seq
+    : '(' parlist? ')'
+    ;
+
+parlist
+    : namelist
+    ;
+
+namelist
+    : IDENTIFIER (',' IDENTIFIER)*
+    ;
+
+block
+    : '{' stmt* '}'
     ;
 
 primary_expr
     : IDENTIFIER
     ;
 
-//assign_stmt: IDENTIFIER '=' test;
-
-postfix_expr: or_test;
+postfix_expr
+    : or_test
+    | 'fun' par_seq block
+    ;
 
 or_test: and_test ('or' and_test)*;
 
@@ -96,18 +119,19 @@ factor
 power: atom_expr ('**' factor)?;
 
 atom_expr
-    : IDENTIFIER '(' (arg_list)? ')' //函数调用
-    | atom
-    ;
-
-atom
-    : '(' postfix_expr ')'
-    | NUMBER_LITERAL
+    : '(' postfix_expr ')' //括号优先表达式
+    | IDENTIFIER arg_seq //函数调用
     | IDENTIFIER
+    | NUMBER_LITERAL
     | STRING
     ;
 
-arg_list: argument (',' argument)*;
+arg_seq
+    : '(' arg_list? ')'
+    ;
+
+arg_list
+    : argument (',' argument)*;
 
 argument
     : postfix_expr

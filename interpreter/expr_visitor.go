@@ -7,6 +7,7 @@ import (
 	"math"
 	"strconv"
 	"fmt"
+	"github.com/mkxzy/sparta/base"
 )
 
 var log = logging.MustGetLogger("ExprVisitor")
@@ -28,13 +29,13 @@ func (v *ExpVisitor) VisitProgram(ctx *parser.ProgramContext) interface{} {
 	//log.Debug(nu.IsTrue())
 	log.Debug("Visit Program")
 	for i := 0; i < ctx.GetChildCount()-1; i++ {
-		v.VisitStat(ctx.GetChild(i).(*parser.StmtContext))
+		v.VisitStmt(ctx.GetChild(i).(*parser.StmtContext))
 	}
 	log.Debug(v.vars)
 	return nil
 }
 
-func (v *ExpVisitor) VisitStat(ctx *parser.StmtContext) interface{} {
+func (v *ExpVisitor) VisitStmt(ctx *parser.StmtContext) interface{} {
 	log.Debug("Visit Stmt")
 	v.VisitSimple_stmt(ctx.GetChild(0).(*parser.Simple_stmtContext))
 	return nil
@@ -53,11 +54,14 @@ func (v *ExpVisitor) VisitExpr_stmt(ctx *parser.Expr_stmtContext) interface{} {
 
 	if ctx.GetChildCount() == 1 {
 		v.VisitPostfix_expr(ctx.GetChild(0).(*parser.Postfix_exprContext))
+	} else if ctx.GetChildCount() == 4 {
+		log.Debug("函数定义")
 	} else {
+		// 赋值
 		name := v.VisitPrimary_expr(ctx.GetChild(0).(*parser.Primary_exprContext)).(string)
 		value := v.VisitPostfix_expr(ctx.GetChild(2).(*parser.Postfix_exprContext))
 		v.putVar(name, value)
-		log.Debugf("%s = %v", name, value)
+		log.Debugf("%s = %t", name, value)
 	}
 	return nil
 }
@@ -68,7 +72,12 @@ func (v *ExpVisitor) VisitPrimary_expr(ctx *parser.Primary_exprContext) interfac
 
 func (v *ExpVisitor) VisitPostfix_expr(ctx *parser.Postfix_exprContext) interface{} {
 	//return v.VisitChildren(ctx)
-	return v.VisitOr_test(ctx.GetChild(0).(*parser.Or_testContext))
+	if ctx.GetChildCount() == 1{
+		return v.VisitOr_test(ctx.GetChild(0).(*parser.Or_testContext))
+	} else {
+		log.Debug("函数定义")
+		return base.SPAFunction{}
+	}
 }
 
 func (v *ExpVisitor) VisitOr_test(ctx *parser.Or_testContext) interface{} {
@@ -197,14 +206,29 @@ func (v *ExpVisitor) VisitPower(ctx *parser.PowerContext) interface{} {
 func (v *ExpVisitor) VisitAtom_expr(ctx *parser.Atom_exprContext) interface{} {
 	log.Debug("Visit Atom_Expr")
 
-	if ctx.GetChildCount() == 1 {
-		return v.VisitAtom(ctx.GetChild(0).(*parser.AtomContext))
-	} else {
-		//函数调用
+	if ctx.GetChildCount() == 3 {
+		return v.VisitPostfix_expr(ctx.GetChild(1).(*parser.Postfix_exprContext))
+	}
+	if ctx.GetChildCount() == 4 {
 		name := ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
 		args := v.VisitArg_list(ctx.GetChild(2).(*parser.Arg_listContext))
 		return callInternalFunc(name, args.([]interface{}))
-		//return nil
+	}
+
+	//log.Debug(v.vars)
+	//终结符
+	terminalNode := ctx.GetChild(0).(*antlr.TerminalNodeImpl)
+	tt := terminalNode.GetSymbol().GetTokenType()
+	//log.Debug(terminalNode.GetText())
+	switch tt {
+	case parser.SpartaLexerIDENTIFIER:
+		return v.getVar(terminalNode.GetText()).(float64)
+	case parser.SpartaLexerNUMBER_LITERAL:
+		return parseNumber(terminalNode.GetText())
+	case parser.SpartaLexerSTRING:
+		return escapeString(terminalNode.GetText())
+	default:
+		panic("类型无效")
 	}
 }
 
@@ -229,28 +253,6 @@ func callInternalFunc(name string, args []interface{}) interface{} {
 		return nil
 	default:
 		panic("function not found")
-	}
-}
-
-func (v *ExpVisitor) VisitAtom(ctx *parser.AtomContext) interface{} {
-	log.Debug("Visit Atom")
-
-	if ctx.GetChildCount() == 3 {
-		return v.VisitPostfix_expr(ctx.GetChild(1).(*parser.Postfix_exprContext))
-	} else {
-		terminalNode := ctx.GetChild(0).(*antlr.TerminalNodeImpl)
-		tt := terminalNode.GetSymbol().GetTokenType()
-		log.Debug(terminalNode.GetText())
-		switch tt {
-		case parser.SpartaLexerIDENTIFIER:
- 			return v.getVar(terminalNode.GetText()).(float64)
-		case parser.SpartaLexerNUMBER_LITERAL:
-			return parseNumber(terminalNode.GetText())
-		case parser.SpartaLexerSTRING:
-			return escapeString(terminalNode.GetText())
-		default:
-			panic("类型无效")
-		}
 	}
 }
 

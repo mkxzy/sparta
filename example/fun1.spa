@@ -1,4 +1,4 @@
-var a = 100
+a = 100
 
 fun foo(n) {
     bar()
@@ -9,4 +9,8 @@ fun foo(n) {
 fun bar(){
     var b = "abc"
     return b
+}
+
+c = fun(){
+    print("abcd")
 }
