@@ -1,7 +1,7 @@
 /**
 变量符号
  */
-package interpreter
+package scope
 
 import (
 	"github.com/mkxzy/sparta/base"
@@ -12,8 +12,8 @@ type VariableSymbol struct {
 	Value base.SPAValue
 }
 
-func NewVariable(name string, value base.SPAValue) VariableSymbol {
-	return VariableSymbol{
+func NewVariable(name string, value base.SPAValue) *VariableSymbol {
+	return &VariableSymbol{
 		Name: name,
 		Value: value,
 	}

@@ -1,8 +1,9 @@
-package interpreter
+package scope
 
 import (
 	"github.com/mkxzy/sparta/parser"
 	"strings"
+	"github.com/mkxzy/sparta/base"
 )
 
 /**
@@ -13,7 +14,7 @@ type SPAFunction struct {
 	Args []string //参数名
 	Locals []*VariableSymbol //局部变量
 	Outer  Scope //外部作用域
-	Body *parser.BlockContext //函数体
+	Body *parser.BlockContext //函数体（模拟指令地址）
 }
 
 func NewFunction(name string, args []string, body *parser.BlockContext) *SPAFunction  {
@@ -72,4 +73,10 @@ func (table *SPAFunction) Resolve(name string) Symbol {
 
 func(s SPAFunction) IsTrue() bool  {
 	return true
+}
+
+func(ff *SPAFunction) PushArgs(args []base.SPAValue)  {
+	for i := 0; i < len(ff.Args); i++{
+		ff.Locals = append(ff.Locals, NewVariable(ff.Args[i], args[i]))
+	}
 }

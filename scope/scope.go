@@ -1,4 +1,4 @@
-package interpreter
+package scope
 
 /**
 作用域

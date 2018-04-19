@@ -1,6 +1,6 @@
 // 符号表， 管理程序符号实体
 
-package interpreter
+package scope
 
 import (
 	"bytes"
@@ -12,6 +12,13 @@ import (
  */
 type GlobalScope struct {
 	Symbols map[string]Symbol
+}
+
+func NewGlobalScope() *GlobalScope {
+	table := &GlobalScope{
+		Symbols: make(map[string]Symbol),
+	}
+	return table
 }
 
 // begein Scope接口实现
@@ -40,11 +47,4 @@ func (table *GlobalScope) String() string {
 		buffer.WriteString(entryString)
 	}
 	return buffer.String()
-}
-
-func NewGlobalScope() *GlobalScope {
-	table := &GlobalScope{
-		Symbols: make(map[string]Symbol),
-	}
-	return table
 }
