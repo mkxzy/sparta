@@ -9,8 +9,6 @@ func TestNull(t *testing.T)  {
 	} else{
 		t.Log("正确")
 	}
-
-
 }
 
 func TestSpaNull_IsTrue(t *testing.T) {
