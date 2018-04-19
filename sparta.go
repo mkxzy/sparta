@@ -10,7 +10,7 @@ import (
 	"github.com/op/go-logging"
 )
 
-var log = logging.MustGetLogger("ExpVisitor")
+var log = logging.MustGetLogger("SPAInterpreter")
 
 func init() {
 	//var format = logging.MustStringFormatter(
@@ -31,11 +31,12 @@ func main() {
 	p := parser.NewSpartaParser(stream)
 	p.BuildParseTrees = true
 	tree := p.Program()
-	log.Debug(tree.ToStringTree(nil, p))
-	visitor := interpreter.NewExpVisitor()
+	//log.Debug(tree.ToStringTree(nil, p))
+	state := interpreter.NewGlobalScope()
+	inter := interpreter.NewExpVisitor(state)
 	//fmt.Println(visitor)
 	//visitor.Visit(tree)
-	tree.Accept(visitor)
+	tree.Accept(inter)
 
 	//listener := interpreter.NewInterpreter()
 	//antlr.ParseTreeWalkerDefault.Walk(listener, tree)

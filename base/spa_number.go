@@ -8,23 +8,22 @@ import (
 type SPANumber float64
 
 func NewNumber(literal string) SPANumber {
-	var spa = SPANumber(parseNumber(literal))
-	return spa
-}
-
-func(n SPANumber) String() string {
-	return fmt.Sprintf("%f", n)
-}
-
-/**
-解析数字
- */
-func parseNumber(text string) float64 {
-	r, err := strconv.ParseFloat(text, 64)
+	r, err := strconv.ParseFloat(literal, 64)
 	if err != nil {
 		panic("数字转化错误")
 	}
-	return r
+	return SPANumber(r)
+}
+
+/**
+取负数
+ */
+func Negative(number SPANumber) SPANumber  {
+	return -number
+}
+
+func(n SPANumber) String() string {
+	return fmt.Sprintf("%.2f", n)
 }
 
 func(n SPANumber) IsTrue() bool {

@@ -6,11 +6,7 @@ fun foo(n) {
     return v
 }
 
-fun bar(){
+fun bar(x, y){
     var b = "abc"
     return b
-}
-
-c = fun(){
-    print("abcd")
 }

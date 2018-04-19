@@ -44,7 +44,7 @@ simple_stmt
     ;
 
 return_stmt
-    : 'return' stmt?
+    : 'return' postfix_expr?
     ;
 
 expr_stmt
@@ -53,9 +53,13 @@ expr_stmt
     | 'fun' IDENTIFIER par_seq block
     ;
 
+primary_expr
+    : IDENTIFIER
+    ;
+
 postfix_expr
     : or_test
-    | 'fun' par_seq block
+//    | 'fun' par_seq block
     ;
 
 par_seq
@@ -74,10 +78,6 @@ block
     : '{' stmt* '}'
     ;
 
-primary_expr
-    : IDENTIFIER
-    ;
-
 or_test: and_test ('or' and_test)*;
 
 and_test: not_test ('and' not_test)*;
@@ -88,12 +88,12 @@ compare_expr: arith_expr (comp_op arith_expr)?;
 
 comp_op
     : '<'
-    |'>'
-    |'=='
-    |'>='
-    |'<='
-    |'<>'
-    |'!='
+    | '>'
+    | '=='
+    | '>='
+    | '<='
+    | '<>'
+    | '!='
 //    |'in'
 //    |'not' 'in'
 //    |'is'
@@ -113,7 +113,7 @@ arith_expr: term (('+'|'-') term)*;
 term: factor (('*' | '/' | '%') factor)*;
 
 factor
-    : ('+' | '-') factor
+    : '-' factor
     | power;
 
 power: atom_expr ('**' factor)?;
@@ -156,7 +156,7 @@ EscapeSequence
 //UNICODE_CHAR   : ~[\u000A] ;
 
 NUMBER_LITERAL
-    : DecimalIntegerLiteral '.' [0-9]*
+    : DecimalIntegerLiteral '.' [0-9]+
     | DecimalIntegerLiteral
     ;
 

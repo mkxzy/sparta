@@ -39,11 +39,29 @@ func (s *BaseSpartaListener) EnterSimple_stmt(ctx *Simple_stmtContext) {}
 // ExitSimple_stmt is called when production simple_stmt is exited.
 func (s *BaseSpartaListener) ExitSimple_stmt(ctx *Simple_stmtContext) {}
 
+// EnterReturn_stmt is called when production return_stmt is entered.
+func (s *BaseSpartaListener) EnterReturn_stmt(ctx *Return_stmtContext) {}
+
+// ExitReturn_stmt is called when production return_stmt is exited.
+func (s *BaseSpartaListener) ExitReturn_stmt(ctx *Return_stmtContext) {}
+
 // EnterExpr_stmt is called when production expr_stmt is entered.
 func (s *BaseSpartaListener) EnterExpr_stmt(ctx *Expr_stmtContext) {}
 
 // ExitExpr_stmt is called when production expr_stmt is exited.
 func (s *BaseSpartaListener) ExitExpr_stmt(ctx *Expr_stmtContext) {}
+
+// EnterPrimary_expr is called when production primary_expr is entered.
+func (s *BaseSpartaListener) EnterPrimary_expr(ctx *Primary_exprContext) {}
+
+// ExitPrimary_expr is called when production primary_expr is exited.
+func (s *BaseSpartaListener) ExitPrimary_expr(ctx *Primary_exprContext) {}
+
+// EnterPostfix_expr is called when production postfix_expr is entered.
+func (s *BaseSpartaListener) EnterPostfix_expr(ctx *Postfix_exprContext) {}
+
+// ExitPostfix_expr is called when production postfix_expr is exited.
+func (s *BaseSpartaListener) ExitPostfix_expr(ctx *Postfix_exprContext) {}
 
 // EnterPar_seq is called when production par_seq is entered.
 func (s *BaseSpartaListener) EnterPar_seq(ctx *Par_seqContext) {}
@@ -68,18 +86,6 @@ func (s *BaseSpartaListener) EnterBlock(ctx *BlockContext) {}
 
 // ExitBlock is called when production block is exited.
 func (s *BaseSpartaListener) ExitBlock(ctx *BlockContext) {}
-
-// EnterPrimary_expr is called when production primary_expr is entered.
-func (s *BaseSpartaListener) EnterPrimary_expr(ctx *Primary_exprContext) {}
-
-// ExitPrimary_expr is called when production primary_expr is exited.
-func (s *BaseSpartaListener) ExitPrimary_expr(ctx *Primary_exprContext) {}
-
-// EnterPostfix_expr is called when production postfix_expr is entered.
-func (s *BaseSpartaListener) EnterPostfix_expr(ctx *Postfix_exprContext) {}
-
-// ExitPostfix_expr is called when production postfix_expr is exited.
-func (s *BaseSpartaListener) ExitPostfix_expr(ctx *Postfix_exprContext) {}
 
 // EnterOr_test is called when production or_test is entered.
 func (s *BaseSpartaListener) EnterOr_test(ctx *Or_testContext) {}
@@ -140,6 +146,12 @@ func (s *BaseSpartaListener) EnterAtom_expr(ctx *Atom_exprContext) {}
 
 // ExitAtom_expr is called when production atom_expr is exited.
 func (s *BaseSpartaListener) ExitAtom_expr(ctx *Atom_exprContext) {}
+
+// EnterArg_seq is called when production arg_seq is entered.
+func (s *BaseSpartaListener) EnterArg_seq(ctx *Arg_seqContext) {}
+
+// ExitArg_seq is called when production arg_seq is exited.
+func (s *BaseSpartaListener) ExitArg_seq(ctx *Arg_seqContext) {}
 
 // EnterArg_list is called when production arg_list is entered.
 func (s *BaseSpartaListener) EnterArg_list(ctx *Arg_listContext) {}

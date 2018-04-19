@@ -19,6 +19,9 @@ func IsNull(value SPAValue) bool {
 	return value == n
 }
 
-func(s spaNull) IsTrue() bool  {
+/**
+空值永远是false
+ */
+func(s *spaNull) IsTrue() bool  {
 	return false
 }

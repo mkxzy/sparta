@@ -17,8 +17,17 @@ type SpartaListener interface {
 	// EnterSimple_stmt is called when entering the simple_stmt production.
 	EnterSimple_stmt(c *Simple_stmtContext)
 
+	// EnterReturn_stmt is called when entering the return_stmt production.
+	EnterReturn_stmt(c *Return_stmtContext)
+
 	// EnterExpr_stmt is called when entering the expr_stmt production.
 	EnterExpr_stmt(c *Expr_stmtContext)
+
+	// EnterPrimary_expr is called when entering the primary_expr production.
+	EnterPrimary_expr(c *Primary_exprContext)
+
+	// EnterPostfix_expr is called when entering the postfix_expr production.
+	EnterPostfix_expr(c *Postfix_exprContext)
 
 	// EnterPar_seq is called when entering the par_seq production.
 	EnterPar_seq(c *Par_seqContext)
@@ -31,12 +40,6 @@ type SpartaListener interface {
 
 	// EnterBlock is called when entering the block production.
 	EnterBlock(c *BlockContext)
-
-	// EnterPrimary_expr is called when entering the primary_expr production.
-	EnterPrimary_expr(c *Primary_exprContext)
-
-	// EnterPostfix_expr is called when entering the postfix_expr production.
-	EnterPostfix_expr(c *Postfix_exprContext)
 
 	// EnterOr_test is called when entering the or_test production.
 	EnterOr_test(c *Or_testContext)
@@ -68,6 +71,9 @@ type SpartaListener interface {
 	// EnterAtom_expr is called when entering the atom_expr production.
 	EnterAtom_expr(c *Atom_exprContext)
 
+	// EnterArg_seq is called when entering the arg_seq production.
+	EnterArg_seq(c *Arg_seqContext)
+
 	// EnterArg_list is called when entering the arg_list production.
 	EnterArg_list(c *Arg_listContext)
 
@@ -83,8 +89,17 @@ type SpartaListener interface {
 	// ExitSimple_stmt is called when exiting the simple_stmt production.
 	ExitSimple_stmt(c *Simple_stmtContext)
 
+	// ExitReturn_stmt is called when exiting the return_stmt production.
+	ExitReturn_stmt(c *Return_stmtContext)
+
 	// ExitExpr_stmt is called when exiting the expr_stmt production.
 	ExitExpr_stmt(c *Expr_stmtContext)
+
+	// ExitPrimary_expr is called when exiting the primary_expr production.
+	ExitPrimary_expr(c *Primary_exprContext)
+
+	// ExitPostfix_expr is called when exiting the postfix_expr production.
+	ExitPostfix_expr(c *Postfix_exprContext)
 
 	// ExitPar_seq is called when exiting the par_seq production.
 	ExitPar_seq(c *Par_seqContext)
@@ -97,12 +112,6 @@ type SpartaListener interface {
 
 	// ExitBlock is called when exiting the block production.
 	ExitBlock(c *BlockContext)
-
-	// ExitPrimary_expr is called when exiting the primary_expr production.
-	ExitPrimary_expr(c *Primary_exprContext)
-
-	// ExitPostfix_expr is called when exiting the postfix_expr production.
-	ExitPostfix_expr(c *Postfix_exprContext)
 
 	// ExitOr_test is called when exiting the or_test production.
 	ExitOr_test(c *Or_testContext)
@@ -133,6 +142,9 @@ type SpartaListener interface {
 
 	// ExitAtom_expr is called when exiting the atom_expr production.
 	ExitAtom_expr(c *Atom_exprContext)
+
+	// ExitArg_seq is called when exiting the arg_seq production.
+	ExitArg_seq(c *Arg_seqContext)
 
 	// ExitArg_list is called when exiting the arg_list production.
 	ExitArg_list(c *Arg_listContext)
