@@ -5,7 +5,6 @@ import (
 	"github.com/op/go-logging"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"math"
-	"strconv"
 	"fmt"
 	"github.com/mkxzy/sparta/base"
 )
@@ -130,7 +129,7 @@ func (v *ExpVisitor) VisitArith_expr(ctx *parser.Arith_exprContext) interface{} 
 	if ctx.GetChildCount() == 1 {
 		return v.VisitTerm(ctx.GetChild(0).(*parser.TermContext))
 	}else{
-		var termResult = 0.0 //默认为0，累加的时候不需要判断了
+		var termResult base.SPAValue = base.SPANumber(1.0) //默认为0，累加的时候不需要判断了
 		var op = "+" // 统一处理
 		for i := 0; i < ctx.GetChildCount(); i++ {
 			if i % 2 == 0 {
@@ -138,7 +137,7 @@ func (v *ExpVisitor) VisitArith_expr(ctx *parser.Arith_exprContext) interface{} 
 				if r == nil {
 					return nil
 				}
-				termResult = arithmetic(termResult, r.(float64), op)
+				termResult = arithmetic(termResult, r.(base.SPAValue), op)
 			} else {
 				op = ctx.GetChild(i).(*antlr.TerminalNodeImpl).GetText()
 			}
@@ -154,7 +153,7 @@ func (v *ExpVisitor) VisitTerm(ctx *parser.TermContext) interface{} {
 	if ctx.GetChildCount() == 1 {
 		return v.VisitFactor(ctx.GetChild(0).(*parser.FactorContext))
 	} else {
-		var termResult = 1.0 //默认为1方便处理
+		var termResult base.SPAValue = base.SPANumber(1.0) //默认为1方便处理
 		var op = "*"
 		for i := 0; i < ctx.GetChildCount(); i++ {
 			if i % 2 == 0 {
@@ -162,12 +161,7 @@ func (v *ExpVisitor) VisitTerm(ctx *parser.TermContext) interface{} {
 				if r == nil{
 					return nil
 				}
-				switch r.(type) {
-				case float64:
-					termResult = arithmetic(termResult, r.(float64), op)
-				default:
-					panic("类型无效")
-				}
+				termResult = arithmetic(termResult, r.(base.SPAValue), op)
 			} else {
 				op = ctx.GetChild(i).(*antlr.TerminalNodeImpl).GetText()
 			}
@@ -183,8 +177,8 @@ func (v *ExpVisitor) VisitFactor(ctx *parser.FactorContext) interface{} {
 		return v.VisitPower(ctx.GetChild(0).(*parser.PowerContext))
 	} else {
 		op := ctx.GetChild(0).(*antlr.TerminalNodeImpl).GetText()
-		r := v.VisitFactor(ctx.GetChild(1).(*parser.FactorContext)).(float64)
-		return arithmetic(0.0, r, op)
+		r := v.VisitFactor(ctx.GetChild(1).(*parser.FactorContext))
+		return arithmetic(base.SPANumber(0.0), r.(base.SPAValue), op)
 	}
 }
 
@@ -212,7 +206,7 @@ func (v *ExpVisitor) VisitAtom_expr(ctx *parser.Atom_exprContext) interface{} {
 	if ctx.GetChildCount() == 4 {
 		name := ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
 		args := v.VisitArg_list(ctx.GetChild(2).(*parser.Arg_listContext))
-		return callInternalFunc(name, args.([]interface{}))
+		return callInternalFunc(name, args.([]base.SPAValue))
 	}
 
 	//log.Debug(v.vars)
@@ -222,11 +216,14 @@ func (v *ExpVisitor) VisitAtom_expr(ctx *parser.Atom_exprContext) interface{} {
 	//log.Debug(terminalNode.GetText())
 	switch tt {
 	case parser.SpartaLexerIDENTIFIER:
-		return v.getVar(terminalNode.GetText()).(float64)
+		return v.getVar(terminalNode.GetText()).(base.SPAValue)
 	case parser.SpartaLexerNUMBER_LITERAL:
-		return parseNumber(terminalNode.GetText())
+		exp := &SPANumberExpression{}
+		v := exp.interpret(ctx.GetChild(0))
+		log.Debugf("变量定义： %v", v)
+		return v
 	case parser.SpartaLexerSTRING:
-		return escapeString(terminalNode.GetText())
+		return base.NewString(terminalNode.GetText())
 	default:
 		panic("类型无效")
 	}
@@ -234,9 +231,9 @@ func (v *ExpVisitor) VisitAtom_expr(ctx *parser.Atom_exprContext) interface{} {
 
 func (v *ExpVisitor) VisitArg_list(ctx *parser.Arg_listContext) interface{} {
 	//return v.VisitChildren(ctx)
-	argList := make([]interface{}, 0, 10)
+	argList := make([]base.SPAValue, 0, 10)
 	for i := 0; i < ctx.GetChildCount(); i += 2 {
-		v := v.VisitArgument(ctx.GetChild(i).(*parser.ArgumentContext))
+		v := v.VisitArgument(ctx.GetChild(i).(*parser.ArgumentContext)).(base.SPAValue)
 		argList = append(argList, v)
 	}
 	return argList
@@ -246,10 +243,10 @@ func (v *ExpVisitor) VisitArgument(ctx *parser.ArgumentContext) interface{} {
 	return v.VisitPostfix_expr(ctx.GetChild(0).(*parser.Postfix_exprContext))
 }
 
-func callInternalFunc(name string, args []interface{}) interface{} {
+func callInternalFunc(name string, args []base.SPAValue) interface{} {
 	switch name {
 	case "print":
-		fmt.Println(args...)
+		fmt.Println(args[0])
 		return nil
 	default:
 		panic("function not found")
@@ -290,71 +287,61 @@ func getInvert(v interface{}) bool {
 /**
 算数运算
  */
-func arithmetic(first, second float64, op string) float64  {
-	switch op {
-	case "+":
-		return first + second
-	case "-":
-		return first - second
-	case "*":
-		return first * second
-	case "/":
-		return first / second
-	default:
-		panic("不支持的操作")
-	}
+func arithmetic(first, second base.SPAValue, op string) base.SPAValue  {
+	//switch op {
+	//case "+":
+	//	return first.(*base.SPANumber) + second.(*base.SPANumber)
+	//case "-":
+	//	return first - second
+	//case "*":
+	//	return first * second
+	//case "/":
+	//	return first / second
+	//default:
+	//	panic("不支持的操作")
+	//}
+	return first
 }
 
-/**
-解析数字
- */
-func parseNumber(text string) float64 {
-	r, err := strconv.ParseFloat(text, 64)
-	if err != nil {
-		panic("数字转化错误")
-	}
-	return r
-}
-
-/**
-转义字符串（状态机）
- */
-func escapeString(text string) string {
-	var result = make([]rune, 0 , len(text))
-	escaped := false //是否处于转义状态
-	for _, c := range text {
-		if escaped {
-			result = append(result, escapeMapping(c))
-			escaped = false //关闭转义状态
-		}else{
-			switch c {
-			case '"':
-				continue
-			case '\\':
-				escaped = true
-			default:
-				result = append(result, c)
-			}
-		}
-	}
-	s := string(result)
-	return s
-}
-
-/**
-转义字符映射
- */
-func escapeMapping(c rune) rune {
-	switch c {
-	case '"', '\\':
-		return c
-	case 't':
-		return '\t'
-	case 'r':
-		return '\r'
-	case 'n':
-		return '\n'
-	default:
-		return c
-	}
-}
+///**
+//转义字符串（状态机）
+// */
+//func escapeString(text string) string {
+//	var result = make([]rune, 0 , len(text))
+//	escaped := false //是否处于转义状态
+//	for _, c := range text {
+//		if escaped {
+//			result = append(result, escapeMapping(c))
+//			escaped = false //关闭转义状态
+//		}else{
+//			switch c {
+//			case '"':
+//				continue
+//			case '\\':
+//				escaped = true
+//			default:
+//				result = append(result, c)
+//			}
+//		}
+//	}
+//	s := string(result)
+//	return s
+//}
+//
+///**
+//转义字符映射
+// */
+//func escapeMapping(c rune) rune {
+//	switch c {
+//	case '"', '\\':
+//		return c
+//	case 't':
+//		return '\t'
+//	case 'r':
+//		return '\r'
+//	case 'n':
+//		return '\n'
+//	default:
+//		return c
+//	}
+//}

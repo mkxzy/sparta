@@ -53,6 +53,11 @@ expr_stmt
     | 'fun' IDENTIFIER par_seq block
     ;
 
+postfix_expr
+    : or_test
+    | 'fun' par_seq block
+    ;
+
 par_seq
     : '(' parlist? ')'
     ;
@@ -71,11 +76,6 @@ block
 
 primary_expr
     : IDENTIFIER
-    ;
-
-postfix_expr
-    : or_test
-    | 'fun' par_seq block
     ;
 
 or_test: and_test ('or' and_test)*;
