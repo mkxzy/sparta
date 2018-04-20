@@ -1,7 +1,7 @@
-package scope
+package base
 
 /**
-作用域
+作用域接口
  */
 type Scope interface {
 
@@ -12,4 +12,11 @@ type Scope interface {
 	Define(symbol Symbol)
 
 	Resolve(name string) Symbol
+}
+
+/**
+符号
+ */
+type Symbol interface {
+	GetName() string
 }

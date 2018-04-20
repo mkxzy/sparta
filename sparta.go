@@ -8,7 +8,6 @@ import (
 	//"github.com/mkxzy/sparta/interpreter"
 	"github.com/mkxzy/sparta/interpreter"
 	"github.com/op/go-logging"
-	"github.com/mkxzy/sparta/scope"
 )
 
 var log = logging.MustGetLogger("SPAInterpreter")
@@ -21,7 +20,7 @@ func init() {
 	//formatter := logging.NewBackendFormatter(backend, format)
 	//logging.SetBackend(backend, formatter)
 	//backend1Leveled := logging.AddModuleLevel(backend)
-	logging.SetLevel(logging.DEBUG, "")
+	logging.SetLevel(logging.INFO, "")
 }
 
 func main() {
@@ -33,8 +32,8 @@ func main() {
 	p.BuildParseTrees = true
 	tree := p.Program()
 	//log.Debug(tree.ToStringTree(nil, p))
-	state := scope.NewGlobalScope()
-	inter := interpreter.NewExpVisitor(state)
+	//state := scope.NewGlobalState()
+	inter := interpreter.NewInterpreter()
 	//fmt.Println(visitor)
 	//visitor.Visit(tree)
 	tree.Accept(inter)

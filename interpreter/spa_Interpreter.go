@@ -6,25 +6,54 @@ import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"math"
 	"github.com/mkxzy/sparta/base"
-	"github.com/mkxzy/sparta/scope"
 )
 
 var log = logging.MustGetLogger("ExprVisitor")
 
-type SPAInterpreter struct {
-	*parser.BaseSpartaVisitor
-	state scope.Scope
-	calls []*scope.FunFrame
-	fp int
-	returnValue base.SPAValue
+var calls [10000]*base.CallInfo            //栈空间最多10000
+var fp = -1                                 //函数栈指针
+//var returnValue base.SPAValue = base.Null() //函数返回值
+var state = base.NewMemorySpace("global")  //全局内存空间
+
+// 函数调用信息入栈
+func pushCallInfo(ci *base.CallInfo)  {
+	log.Debug("函数调用前", state)
+	//v.state = f
+	fp++
+	calls[fp] = ci
 }
 
-func NewExpVisitor(state scope.Scope) *SPAInterpreter {
+// 函数调用信息出栈
+func popCallInfo()  {
+	log.Debug("函数调用后", state)
+	//state = f.Outer
+	if hasCallInfo() {
+		calls[fp] = nil
+		fp--
+	} else {
+		panic("函数栈为空")
+	}
+}
+
+// 获取栈顶函数调用信息
+func getTopCallInfo() *base.CallInfo  {
+	if hasCallInfo() {
+		return calls[fp]
+	}
+	panic("函数栈为空")
+}
+
+// 判断是否有函数调用
+func hasCallInfo() bool  {
+	return fp > -1
+}
+
+type SPAInterpreter struct {
+	*parser.BaseSpartaVisitor
+}
+
+func NewInterpreter() *SPAInterpreter {
 	return &SPAInterpreter{
-		state: state,
-		calls: make([]*scope.FunFrame, 100, 100),
-		fp: -1,
-		returnValue: base.Null(),
 	}
 }
 
@@ -36,7 +65,7 @@ func (v *SPAInterpreter) VisitProgram(ctx *parser.ProgramContext) interface{} {
 	for i := 0; i < ctx.GetChildCount()-1; i++ {
 		v.VisitStmt(ctx.GetChild(i).(*parser.StmtContext))
 	}
-	log.Debug(v.state)
+	log.Debug(state)
 	return base.Null()
 }
 
@@ -62,8 +91,8 @@ func (v *SPAInterpreter) VisitSimple_stmt(ctx *parser.Simple_stmtContext) interf
 
 func (v *SPAInterpreter) VisitReturn_stmt(ctx *parser.Return_stmtContext) interface{} {
 	if ctx.GetChildCount() == 2 {
-		v.returnValue = v.VisitPostfix_expr(ctx.GetChild(1).(*parser.Postfix_exprContext)).(base.SPAValue)
-		log.Debug("函数返回值", v.returnValue)
+		return v.VisitPostfix_expr(ctx.GetChild(1).(*parser.Postfix_exprContext)).(base.SPAValue)
+		//log.Debug("函数返回值", returnValue)
 	}
 	return base.Null()
 }
@@ -74,27 +103,24 @@ func (v *SPAInterpreter) VisitExpr_stmt(ctx *parser.Expr_stmtContext) interface{
 	if ctx.GetChildCount() == 1 {
 		v.VisitPostfix_expr(ctx.GetChild(0).(*parser.Postfix_exprContext))
 	} else if ctx.GetChildCount() == 4 {
-		log.Debug("函数定义")
 		name := ctx.GetChild(1).(*antlr.TerminalNodeImpl).GetText()
 		pars := ctx.GetChild(2).(*parser.Par_seqContext)
 		body := ctx.GetChild(3).(*parser.BlockContext)
-		v.state.Define(v.defineFun(name, pars, body))
+		parNames := getParList(pars)
+		f := base.NewFunction(name, parNames, body)
+		f.Outer = state
+		state.Define(f) //函数定义
+		log.Infof("函数定义: %v", state)
 	} else {
 		// 赋值
 		name := v.VisitPrimary_expr(ctx.GetChild(0).(*parser.Primary_exprContext)).(string)
 		value := v.VisitPostfix_expr(ctx.GetChild(2).(*parser.Postfix_exprContext)).(base.SPAValue)
-		sym := scope.NewVariable(name, value)
-		v.state.Define(sym)
-		log.Debugf("%s = %t", name, value)
+		sym := base.NewVariable(name, value)
+		state.Define(sym)
+		log.Infof("变量定义: %v", state)
+		//log.Infof("%s = %t", name, value)
 	}
 	return base.Null()
-}
-
-func(v *SPAInterpreter) defineFun(name string,pars *parser.Par_seqContext, body *parser.BlockContext) *scope.SPAFunction {
-	parNames := getParList(pars)
-	f := scope.NewFunction(name, parNames, body)
-	f.Outer = v.state
-	return f
 }
 
 func getParList(ctx *parser.Par_seqContext) []string {
@@ -256,58 +282,38 @@ func (v *SPAInterpreter) VisitAtom_expr(ctx *parser.Atom_exprContext) interface{
 		return v.VisitPostfix_expr(ctx.GetChild(1).(*parser.Postfix_exprContext))
 	}
 	if ctx.GetChildCount() == 2 {
-		name := ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
-		args := v.VisitArg_seq(ctx.GetChild(1).(*parser.Arg_seqContext))
-		f := v.state.Resolve(name).(*scope.SPAFunction) //获取函数定义
-		v.preCall(f)
-		v.call(f, args.([]base.SPAValue))
-		v.postCall(f)
+		// 函数调用
+		name := ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()                    	//获取函数名
+		args := v.VisitArg_seq(ctx.GetChild(1).(*parser.Arg_seqContext)).([]base.SPAValue) 	//获取参数列表
+		f, ok := state.Resolve(name).(*base.SPAFunction)                                  		//获取函数定义
+		if !ok {
+			panic("函数未定义")
+		}
+		ci := base.NewCallInfo(f) //创建函数调用信息
+		ci.PushArgs(args) //传入参数
+		pushCallInfo(ci) //保存到函数调用栈
+		v.VisitBlock(getTopCallInfo().Body) //调用函数
+		popCallInfo() //结束调用
 		return base.Null()
 	}
 
-	//log.Debug(v.vars)
 	//终结符
 	terminalNode := ctx.GetChild(0).(*antlr.TerminalNodeImpl)
 	tt := terminalNode.GetSymbol().GetTokenType()
-	//log.Debug(terminalNode.GetText())
 	switch tt {
 	case parser.SpartaLexerIDENTIFIER:
-		log.Debug(terminalNode.GetText())
-		log.Debug(v.state)
-		//v.state.Resolve(terminalNode.GetText())
-		return v.state.Resolve(terminalNode.GetText()).(*scope.VariableSymbol).Value
+		if hasCallInfo(){
+			return getTopCallInfo().Resolve(terminalNode.GetText()).(base.VariableSymbol).Value
+		}
+		return state.Resolve(terminalNode.GetText()).(base.VariableSymbol).Value
 	case parser.SpartaLexerNUMBER_LITERAL:
-		//exp := &SPANumberInterpreter{terminalNode}
 		v := base.NewNumber(terminalNode.GetText())
-		//log.Debugf("变量定义： %v", v)
 		return v
 	case parser.SpartaLexerSTRING:
 		return base.NewString(terminalNode.GetText())
 	default:
 		panic("类型无效")
 	}
-}
-
-func(v *SPAInterpreter) preCall(f *scope.SPAFunction)  {
-	log.Debug("函数调用前\n", v.state)
-	v.state = f
-}
-
-func(v *SPAInterpreter) call(f *scope.SPAFunction, args []base.SPAValue){
-	log.Debug("函数调用")
-	//ff := scope.NewFrame(f)
-	//v.fp++
-	//v.calls[v.fp] = ff
-	//log.Debug(f.Args)
-	//log.Debug(args)
-	//ff.PushArgs(args)
-	//log.Debug(ff.Locals)
-	f.PushArgs(args)
-	v.VisitBlock(f.Body) //函数调用
-}
-
-func(v *SPAInterpreter) postCall(f *scope.SPAFunction)  {
-	v.state = f.Outer
 }
 
 func (v *SPAInterpreter) VisitArg_seq(ctx *parser.Arg_seqContext) interface{} {
