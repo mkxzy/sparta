@@ -1,6 +1,6 @@
 // 符号表， 管理程序符号实体
 
-package base
+package vm
 
 import (
 	"bytes"
@@ -8,7 +8,7 @@ import (
 )
 
 /**
-符号表
+变量存储空间
  */
 type MemorySpace struct {
 	Name string //符号名

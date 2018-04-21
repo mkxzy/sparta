@@ -1,4 +1,4 @@
-package base
+package vm
 
 type SPAMap struct {
 	mp map[SPAValue]SPAValue

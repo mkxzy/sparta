@@ -1,4 +1,4 @@
-package base
+package vm
 
 import (
 	"github.com/mkxzy/sparta/parser"

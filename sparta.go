@@ -4,13 +4,12 @@ import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/mkxzy/sparta/parser"
 	"os"
-	//"fmt"
-	//"github.com/mkxzy/sparta/interpreter"
 	"github.com/mkxzy/sparta/interpreter"
 	"github.com/op/go-logging"
+	"github.com/mkxzy/sparta/vm"
 )
 
-var log = logging.MustGetLogger("SPAInterpreter")
+var log = logging.MustGetLogger("sparta")
 
 func init() {
 	//var format = logging.MustStringFormatter(
@@ -30,15 +29,16 @@ func main() {
 	stream := antlr.NewCommonTokenStream(lexer, 0)
 	p := parser.NewSpartaParser(stream)
 	p.BuildParseTrees = true
-	tree := p.Program()
-	//log.Debug(tree.ToStringTree(nil, p))
-	//state := scope.NewGlobalState()
-	inter := interpreter.NewInterpreter()
-	//fmt.Println(visitor)
-	//visitor.Visit(tree)
-	tree.Accept(inter)
-
+	ctx := p.Program()        // 生成解析树
+	inter := getInterpreter() // 创建解释器
+	inter.Interpret(ctx)
+	//tree.Accept(inter) 	  // 解释执行
 	//listener := interpreter.NewInterpreter()
 	//antlr.ParseTreeWalkerDefault.Walk(listener, tree)
 	//fmt.Println(tree)
+}
+
+func getInterpreter() interpreter.SPAInterpreter {
+	globalState := vm.NewMemorySpace("global") //全局内存空间
+	return interpreter.NewDirectInterpreter(globalState)
 }

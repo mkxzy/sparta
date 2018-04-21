@@ -1,4 +1,4 @@
-package base
+package vm
 
 /**
 标记接口

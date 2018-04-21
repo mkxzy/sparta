@@ -35,10 +35,6 @@ grammar Sparta;
 program: stmt* EOF;
 
 stmt
-    : simple_stmt
-    ;
-
-simple_stmt
     : expr_stmt
     | return_stmt
     ;

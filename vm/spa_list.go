@@ -1,4 +1,4 @@
-package base
+package vm
 
 type SPAList struct {
 	arr []SPAValue

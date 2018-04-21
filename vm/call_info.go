@@ -1,4 +1,4 @@
-package base
+package vm
 
 /**
 函数调用状态
@@ -20,7 +20,7 @@ func(ci *CallInfo) PushArgs(args []SPAValue)  {
 		//ci.Locals = append(ci.Locals, NewVariable(ci.Args[i], args[i]))
 		ci.Define(NewVariable(ci.Args[i], args[i]))
 		if i >= len(args) {
-			//ci.Locals = append(ci.Locals, NewVariable(ci.Args[i], base.Null())) //不足的参数用NULL来补
+			//ci.Locals = append(ci.Locals, NewVariable(ci.Args[i], vm.Null())) //不足的参数用NULL来补
 			ci.Define(NewVariable(ci.Args[i], Null()))
 		}
 	}

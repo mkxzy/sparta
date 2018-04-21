@@ -1,4 +1,4 @@
-package base
+package vm
 
 type SPAString struct {
 	str string
