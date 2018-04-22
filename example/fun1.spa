@@ -1,6 +1,7 @@
 fun foo(n) {
-    a = 1 + n
+    a = 1 + n * 5
     return a
 }
 
 b = foo(1)
+print(b)

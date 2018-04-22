@@ -8,7 +8,6 @@ import (
 	"github.com/mkxzy/sparta/vm"
 	"github.com/mkxzy/sparta/parser"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"math"
 )
 
 var log = logging.MustGetLogger("SPADirectInterpreter")
@@ -27,276 +26,309 @@ func NewDirectInterpreter(globalState *vm.MemorySpace) *SPADirectInterpreter {
 // 实现解释接口
 func(v *SPADirectInterpreter) Interpret(ctx parser.IProgramContext)  {
 	for i := 0; i < ctx.GetChildCount()-1; i++ {
-		v.VisitStmt(ctx.GetChild(i).(*parser.StmtContext))
+		stmtContext := ctx.GetChild(i).(*parser.StmtContext)
+		v.ExecStmt(stmtContext)
 	}
-	//log.Debug(v.GlobalState)
 }
 
 // 执行语句
-func (v *SPADirectInterpreter) VisitStmt(ctx *parser.StmtContext) {
+// 返回值： 是否是返回语句
+func (v *SPADirectInterpreter) ExecStmt(ctx *parser.StmtContext) bool {
 	log.Debug("Visit Stmt")
 
-	switch ctx.GetChild(0).(type) {
-	case *parser.Expr_stmtContext:
-		v.VisitExpr_stmt(ctx.GetChild(0).(*parser.Expr_stmtContext))
-	case *parser.Return_stmtContext:
-		v.VisitReturn_stmt(ctx.GetChild(0).(*parser.Return_stmtContext))
+	rule := ctx.GetChild(0).(antlr.RuleContext)
+	switch rule.GetRuleIndex() {
+	case parser.SpartaParserRULE_assign_stmt:
+		v.ExecAssignStmt(rule.(*parser.Assign_stmtContext))
+		return false
+	case parser.SpartaParserRULE_fundef_stmt:
+		v.ExecFunDefStmt(rule.(*parser.Fundef_stmtContext))
+		return false
+	case parser.SpartaParserRULE_return_stmt:
+		v.ExecReturnStmt(rule.(*parser.Return_stmtContext))
+		return true
+	case parser.SpartaParserRULE_funcall_stmt:
+		v.ExecFunCallStmt(rule.(*parser.Funcall_stmtContext))
+		return false
+	default:
+		return false
 	}
 }
 
-func (v *SPADirectInterpreter) VisitReturn_stmt(ctx *parser.Return_stmtContext) interface{} {
-	if ctx.GetChildCount() == 2 {
-		return v.VisitPostfix_expr(ctx.GetChild(1).(*parser.Postfix_exprContext)).(vm.SPAValue)
-	}
-	return vm.Null()
-}
+/**
+赋值语句
+ */
+func (v *SPADirectInterpreter) ExecAssignStmt(ctx *parser.Assign_stmtContext)  {
 
-func (v *SPADirectInterpreter) VisitExpr_stmt(ctx *parser.Expr_stmtContext) interface{} {
-	log.Debug("Visit Expr_Stmt")
+	v.EvalPostExpr(ctx.GetChild(2).(*parser.Postfix_exprContext))
+	name := ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
+	value := vm.PopValue()
+	sym := vm.NewVariable(name, value)
 
-	if ctx.GetChildCount() == 1 {
-		v.VisitPostfix_expr(ctx.GetChild(0).(*parser.Postfix_exprContext))
-	} else if ctx.GetChildCount() == 4 {
-		name := ctx.GetChild(1).(*antlr.TerminalNodeImpl).GetText()
-		pars := ctx.GetChild(2).(*parser.Par_seqContext)
-		body := ctx.GetChild(3).(*parser.BlockContext)
-		parNames := getParList(pars)
-		f := vm.NewFunction(name, parNames, body)
-		f.Outer = v.GlobalState
-		v.GlobalState.Define(f) //函数定义
-		log.Infof("函数定义: %v", v.GlobalState)
-	} else {
-		// 赋值
-		name := v.VisitPrimary_expr(ctx.GetChild(0).(*parser.Primary_exprContext)).(string)
-		value := v.VisitPostfix_expr(ctx.GetChild(2).(*parser.Postfix_exprContext)).(vm.SPAValue)
-		sym := vm.NewVariable(name, value)
+	if vm.HasCallInfo(){
+		vm.GetTopCallInfo().Define(sym)
+		//log.Infof("局部变量定义： %v", vm.GetTopCallInfo())
+	}else{
 		v.GlobalState.Define(sym)
-		log.Infof("变量定义: %v", v.GlobalState)
-		//log.Infof("%s = %t", name, value)
+		//log.Infof("全局变量定义: %v", v.GlobalState)
 	}
-	return vm.Null()
 }
 
-func getParList(ctx *parser.Par_seqContext) []string {
-	var parNames []string = make([]string, 0, 10)
-	if ctx.GetChildCount() == 3 {
-		nameList := ctx.GetChild(1).GetChild(0).(*parser.NamelistContext)
-		for i := 0; i < nameList.GetChildCount(); i += 2{
-			name := nameList.GetChild(i).(*antlr.TerminalNodeImpl).GetText()
-			parNames = append(parNames, name)
-		}
+/**
+定义函数表达式
+ */
+func (v *SPADirectInterpreter) ExecFunDefStmt(ctx *parser.Fundef_stmtContext)  {
+	name := ctx.GetChild(1).GetChild(0).(*antlr.TerminalNodeImpl).GetText()
+	//pars := ctx.GetChild(2).(*parser.Fun_parContext)
+	body := ctx.GetChild(2).(*parser.Fun_bodyContext)
+	parNames := getParList(body.GetChild(0).(*parser.Fun_parContext))
+	log.Infof("参数： %v", parNames)
+	f := vm.NewFunction(name, parNames, body)
+	f.Outer = v.GlobalState
+	sym := vm.NewVariable(name, f)
+	v.GlobalState.Define(sym) //函数定义
+	log.Infof("函数定义: %v", v.GlobalState)
+}
+
+/**
+函数返回表达式
+ */
+func (v *SPADirectInterpreter) ExecReturnStmt(ctx *parser.Return_stmtContext) {
+	if !vm.HasCallInfo(){
+		panic("未执行函数不能用返回语句")
+	}
+	if ctx.GetChildCount() == 2 {
+		v.EvalPostExpr(ctx.GetChild(1).(*parser.Postfix_exprContext))
+	} else{
+		vm.PushValue(vm.Null()) //如果return没有参数，那么插入一个空的返回值
+	}
+}
+
+/**
+函数返回表达式
+ */
+func (v *SPADirectInterpreter) ExecFunCallStmt(ctx *parser.Funcall_stmtContext)  {
+	v.EvalFunCallExpr(ctx.GetChild(0).(*parser.Funcall_exprContext))
+}
+
+/**
+获取形参列表
+ */
+func getParList(ctx *parser.Fun_parContext) []string {
+
+	context := ctx.GetChild(1).(*parser.NamelistContext)
+	var parNames = make([]string, 0, 10)
+	for i := 0; i < context.GetChildCount(); i += 2{
+		name := context.GetChild(i).(*antlr.TerminalNodeImpl).GetText()
+		parNames = append(parNames, name)
 	}
 	return parNames
 }
 
-func (v *SPADirectInterpreter) VisitPrimary_expr(ctx *parser.Primary_exprContext) interface{} {
-	return ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
-}
-
-func (v *SPADirectInterpreter) VisitPostfix_expr(ctx *parser.Postfix_exprContext) interface{} {
+/**
+右值表达式
+ */
+func (v *SPADirectInterpreter) EvalPostExpr(ctx *parser.Postfix_exprContext) {
 	//return v.VisitChildren(ctx)
 	log.Debug("Visit Postfix Expr")
 
-	return v.VisitOr_test(ctx.GetChild(0).(*parser.Or_testContext))
+	v.EvalArithExpr(ctx.GetChild(0).(*parser.Arith_exprContext))
 }
 
-func (v *SPADirectInterpreter) VisitBlock(ctx *parser.BlockContext){
-	//var result vm.SPAValue
-	for i := 1; i < ctx.GetChildCount()-1; i++ {
-		v.VisitStmt(ctx.GetChild(i).(*parser.StmtContext))
-	}
-	//return result
-}
+// 计算算术表达式
+func (v *SPADirectInterpreter) EvalArithExpr(ctx *parser.Arith_exprContext) {
+	log.Debug("计算加减法")
 
-func (v *SPADirectInterpreter) VisitOr_test(ctx *parser.Or_testContext) interface{} {
-	log.Debug("Visit Or_Test")
-
-	var result vm.SPAValue
-	for i := 0; i < ctx.GetChildCount(); i += 2 {
-		result = v.VisitAnd_test(ctx.GetChild(0).(*parser.And_testContext)).(vm.SPAValue)
-		if result.IsTrue() {
-			return result
-		}
-	}
-	return result
-}
-
-func (v *SPADirectInterpreter) VisitAnd_test(ctx *parser.And_testContext) interface{} {
-	log.Debug("Visit And_Test")
-
-	var result vm.SPAValue
-	for i := 0; i < ctx.GetChildCount(); i += 2 {
-		result = v.VisitNot_test(ctx.GetChild(i).(*parser.Not_testContext)).(vm.SPAValue)
-		if !result.IsTrue() {
-			return result
-		}
-	}
-	return result
-}
-
-func (v *SPADirectInterpreter) VisitNot_test(ctx *parser.Not_testContext) interface{} {
-	log.Debug("Visit Not_Test")
-
-	if ctx.GetChildCount() == 2 {
-		result := v.VisitNot_test(ctx.GetChild(1).(*parser.Not_testContext)).(vm.SPAValue)
-		return vm.InvertBool(result)
-	} else {
-		return v.VisitComparison(ctx.GetChild(0).(*parser.Compare_exprContext))
-	}
-}
-
-func (v *SPADirectInterpreter) VisitComparison(ctx *parser.Compare_exprContext) interface{} {
-	log.Debug("Visit Comparison")
-
-	// 目前先不支持比较，只返回表达式
-	return v.VisitArith_expr(ctx.GetChild(0).(*parser.Arith_exprContext))
-}
-
-func (v *SPADirectInterpreter) VisitArith_expr(ctx *parser.Arith_exprContext) interface{} {
-	log.Debug("Visit Arith_Expr")
-
-	if ctx.GetChildCount() == 1 {
-		return v.VisitTerm(ctx.GetChild(0).(*parser.TermContext))
-	}else{
-		var termResult vm.SPAValue = vm.SPANumber(1.0) //默认为0，累加的时候不需要判断了
-		var op = "+"                                   // 统一处理
-		for i := 0; i < ctx.GetChildCount(); i++ {
-			if i % 2 == 0 {
-				r := v.VisitTerm(ctx.GetChild(i).(*parser.TermContext))
-				termResult = arithmetic(termResult, r.(vm.SPAValue), op)
-			} else {
+	v.EvalTerm(ctx.GetChild(0).(*parser.TermContext))
+	if ctx.GetChildCount() > 1 {
+		var op = ""
+		for i := 1; i < ctx.GetChildCount(); i++ {
+			if i % 2 == 1 {
 				op = ctx.GetChild(i).(*antlr.TerminalNodeImpl).GetText()
+			} else {
+				v.EvalTerm(ctx.GetChild(i).(*parser.TermContext))
+				arithmetic(op)
 			}
 		}
-		return termResult
 	}
 }
 
-func (v *SPADirectInterpreter) VisitTerm(ctx *parser.TermContext) interface{} {
-	log.Debug("Visit Term")
-
-	//r := v.VisitFactor(ctx.GetChild(0).(*parser.FactorContext))
-	if ctx.GetChildCount() == 1 {
-		return v.VisitFactor(ctx.GetChild(0).(*parser.FactorContext))
-	} else {
-		var termResult vm.SPAValue = vm.SPANumber(1.0) //默认为1方便处理
-		var op = "*"
-		for i := 0; i < ctx.GetChildCount(); i++ {
-			if i % 2 == 0 {
-				r := v.VisitFactor(ctx.GetChild(i).(*parser.FactorContext))
-				termResult = arithmetic(termResult, r.(vm.SPAValue), op)
-			} else {
+// 计算算术表达式
+func (v *SPADirectInterpreter) EvalTerm(ctx *parser.TermContext) {
+	log.Debug("计算乘除法")
+	
+	v.EvalFactor(ctx.GetChild(0).(*parser.FactorContext))
+	if ctx.GetChildCount() > 1 {
+		var op = ""
+		for i := 1; i < ctx.GetChildCount(); i++ {
+			if i % 2 == 1 {
 				op = ctx.GetChild(i).(*antlr.TerminalNodeImpl).GetText()
+			} else {
+				v.EvalFactor(ctx.GetChild(i).(*parser.FactorContext))
+				arithmetic(op)
 			}
 		}
-		return termResult
 	}
 }
 
-func (v *SPADirectInterpreter) VisitFactor(ctx *parser.FactorContext) interface{} {
+/**
+计算因子
+ */
+func (v *SPADirectInterpreter) EvalFactor(ctx *parser.FactorContext) {
 	log.Debug("Visit Factor")
-	//return v.VisitChildren(ctx)
-	if ctx.GetChildCount() == 1 {
-		return v.VisitPower(ctx.GetChild(0).(*parser.PowerContext))
-	} else {
-		//op := ctx.GetChild(0).(*antlr.TerminalNodeImpl).GetText()
-		r := v.VisitFactor(ctx.GetChild(1).(*parser.FactorContext)).(vm.SPANumber)
-		return vm.Negative(r)
+
+	if ctx.GetChildCount() == 1{
+		v.EvalAtomExpr(ctx.GetChild(0).(*parser.Atom_exprContext))
+	} else{
+		v.EvalAtomExpr(ctx.GetChild(1).(*parser.Atom_exprContext))
+		minusValue() //取反
 	}
 }
 
-func (v *SPADirectInterpreter) VisitPower(ctx *parser.PowerContext) interface{} {
-	log.Debug("Visit Power")
-
-	atom := v.VisitAtom_expr(ctx.GetChild(0).(*parser.Atom_exprContext))
-	if atom == nil {
-		return nil
-	}
-	if ctx.GetChildCount() == 1 {
-		return atom
-	} else {
-		factor := v.VisitFactor(ctx.GetChild(2).(*parser.FactorContext)).(float64)
-		return math.Pow(atom.(float64), factor)
-	}
-}
-
-func (v *SPADirectInterpreter) VisitAtom_expr(ctx *parser.Atom_exprContext) interface{} {
+/**
+原子表达式
+ */
+func (v *SPADirectInterpreter) EvalAtomExpr(ctx *parser.Atom_exprContext) {
 	log.Debug("Visit Atom_Expr")
 
 	if ctx.GetChildCount() == 3 {
-		return v.VisitPostfix_expr(ctx.GetChild(1).(*parser.Postfix_exprContext))
-	}
-	if ctx.GetChildCount() == 2 {
+		// 括号优先表达式
+		v.EvalPostExpr(ctx.GetChild(1).(*parser.Postfix_exprContext))
+	} else {
+		funCallExpr, ok := ctx.GetChild(0).(*parser.Funcall_exprContext)
 		// 函数调用
-		name := ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()                  //获取函数名
-		args := v.VisitArg_seq(ctx.GetChild(1).(*parser.Arg_seqContext)).([]vm.SPAValue) //获取参数列表
-		f, ok := v.GlobalState.Resolve(name).(*vm.SPAFunction)                           //获取函数定义
-		if !ok {
-			panic("函数未定义")
+		if ok {
+			v.EvalFunCallExpr(funCallExpr)
+		} else {
+			//终结符
+			terminalNode := ctx.GetChild(0).(antlr.TerminalNode)
+			tt := terminalNode.GetSymbol().GetTokenType()
+			switch tt {
+			case parser.SpartaLexerIDENTIFIER:
+				var value vm.SPAValue
+				if vm.HasCallInfo(){
+					value = vm.GetTopCallInfo().Resolve(terminalNode.GetText()).(*vm.VariableSymbol).Value
+				} else {
+					value = v.GlobalState.Resolve(terminalNode.GetText()).(*vm.VariableSymbol).Value
+				}
+				vm.PushValue(value)
+			case parser.SpartaLexerNUMBER_LITERAL:
+				vm.PushValue(vm.NewNumber(terminalNode.GetText()))
+			case parser.SpartaLexerSTRING:
+				vm.PushValue(vm.NewString(terminalNode.GetText()))
+			default:
+				panic("类型无效")
+			}
 		}
-		ci := vm.NewCallInfo(f)                //创建函数调用信息
-		ci.PushArgs(args)                      //传入参数
-		vm.PushCallInfo(ci)                    //保存到函数调用栈
-		v.VisitBlock(vm.GetTopCallInfo().Body) //调用函数
-		vm.PopCallInfo()                       //结束调用
-		return vm.Null()
-	}
-
-	//终结符
-	terminalNode := ctx.GetChild(0).(*antlr.TerminalNodeImpl)
-	tt := terminalNode.GetSymbol().GetTokenType()
-	switch tt {
-	case parser.SpartaLexerIDENTIFIER:
-		if vm.HasCallInfo(){
-			return vm.GetTopCallInfo().Resolve(terminalNode.GetText()).(vm.VariableSymbol).Value
-		}
-		return v.GlobalState.Resolve(terminalNode.GetText()).(vm.VariableSymbol).Value
-	case parser.SpartaLexerNUMBER_LITERAL:
-		v := vm.NewNumber(terminalNode.GetText())
-		return v
-	case parser.SpartaLexerSTRING:
-		return vm.NewString(terminalNode.GetText())
-	default:
-		panic("类型无效")
 	}
 }
 
-func (v *SPADirectInterpreter) VisitArg_seq(ctx *parser.Arg_seqContext) interface{} {
+func(v *SPADirectInterpreter) EvalFunCallExpr(funCallExpr *parser.Funcall_exprContext)  {
+	name := getFunName(funCallExpr.GetChild(0).(*parser.Fun_nameContext)) 		//获取函数名
+	argCount := v.pushArgs(funCallExpr.GetChild(1).(*parser.Arg_exprContext))		//参数入栈
+	va, ok := v.GlobalState.Resolve(name).(*vm.VariableSymbol)                     	//获取函数定义
+	if !ok {
+		panic("未找到函数定义")
+	}
+	f, ok := va.Value.(*vm.SPAFunction)
+	if !ok {
+		panic("未找到函数定义")
+	}
+	v.CallFunc(f, argCount) //调用函数
+}
+
+// 判断是否函数调用表达式
+func isFunCallExpr(expr antlr.Tree) bool {
+	_, ok := expr.(*parser.Funcall_exprContext)
+	return ok
+}
+
+// 获取函数名
+func getFunName(ctx *parser.Fun_nameContext) string {
+	return ctx.GetChild(0).(antlr.TerminalNode).GetText()
+}
+
+// 参数压栈
+func(v *SPADirectInterpreter) pushArgs(ctx *parser.Arg_exprContext) int {
 	if ctx.GetChildCount() == 2{
-		return []vm.SPAValue{}
+		return 0
 	}
-	return v.VisitArg_list(ctx.GetChild(1).(*parser.Arg_listContext))
+	args := 0
+	argListContext := ctx.GetChild(1).(*parser.Arg_listContext)
+	for i := 0; i < argListContext.GetChildCount(); i += 2 {
+		v.EvalArgument(argListContext.GetChild(i).(*parser.ArgContext))						//参数压栈
+		args++
+	}
+	return args
 }
 
-func (v *SPADirectInterpreter) VisitArg_list(ctx *parser.Arg_listContext) interface{} {
-	//return v.VisitChildren(ctx)
-	argList := make([]vm.SPAValue, 0, 10)
-	for i := 0; i < ctx.GetChildCount(); i += 2 {
-		v := v.VisitArgument(ctx.GetChild(i).(*parser.ArgumentContext)).(vm.SPAValue)
-		argList = append(argList, v)
+// 调用函数
+func (v *SPADirectInterpreter) CallFunc(f *vm.SPAFunction, args int) {
+	log.Info(f)
+	ci := vm.NewCallInfo(f) //创建函数调用信息
+	//ci.PushArgs(args)      	//传入参数
+	passArgs(ci, args)
+	log.Info(ci.Symbols)
+	vm.PushCallInfo(ci)    	//保存到函数调用栈
+	log.Info(vm.GetTopCallInfo())
+
+	defer vm.PopCallInfo() //函数退出时弹出调用栈
+
+	//var ret bool
+	//去掉大括号
+	for i := 2; i < f.Body.GetChildCount()-1; i++ {
+		ret := v.ExecStmt(f.Body.GetChild(i).(*parser.StmtContext))
+		if ret {
+			return
+		}
 	}
-	return argList
+	vm.PushValue(vm.Null())
 }
 
-func (v *SPADirectInterpreter) VisitArgument(ctx *parser.ArgumentContext) interface{} {
-	return v.VisitPostfix_expr(ctx.GetChild(0).(*parser.Postfix_exprContext))
+// 传递参数
+func passArgs(ci *vm.CallInfo, args int)  {
+	for i := 0; i < args; i++{
+		ci.Define(vm.NewVariable(ci.Args[i], vm.PopValue()))
+		if i >= args {
+			ci.Define(vm.NewVariable(ci.Args[i], vm.Null())) //不足的参数用NULL来补
+		}
+	}
+}
+
+// 参数入栈
+func (v *SPADirectInterpreter) EvalArgument(ctx *parser.ArgContext) {
+	v.EvalPostExpr(ctx.GetChild(0).(*parser.Postfix_exprContext))
 }
 
 /**
 算数运算
  */
-func arithmetic(first, second vm.SPAValue, op string) vm.SPAValue  {
-	//switch op {
-	//case "+":
-	//	return first.(*vm.SPANumber) + second.(*vm.SPANumber)
-	//case "-":
-	//	return first - second
-	//case "*":
-	//	return first * second
-	//case "/":
-	//	return first / second
-	//default:
-	//	panic("不支持的操作")
-	//}
-	return first
+func arithmetic(op string) {
+	second := vm.PopValue().(vm.SPANumber)
+	first := vm.PopValue().(vm.SPANumber)
+	switch op {
+	case "+":
+		result := first + second
+		vm.PushValue(result)
+	case "-":
+		result := first - second
+		vm.PushValue(result)
+	case "*":
+		result := first * second
+		vm.PushValue(result)
+	case "/":
+		result := first / second
+		vm.PushValue(result)
+	default:
+		panic("不支持的操作")
+	}
+}
+
+/**
+取反
+ */
+func minusValue()  {
+	first := vm.PopValue().(vm.SPANumber)
+	first = -first
+	vm.PushValue(first)
 }

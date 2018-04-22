@@ -13,10 +13,10 @@ type SPAFunction struct {
 	Name string 	//函数名
 	Args []string 	//参数名
 	Outer Scope 	//外部作用域
-	Body *parser.BlockContext //函数体（解析树）
+	Body *parser.Fun_bodyContext //函数体（解析树）
 }
 
-func NewFunction(name string, args []string, body *parser.BlockContext) *SPAFunction {
+func NewFunction(name string, args []string, body *parser.Fun_bodyContext) *SPAFunction {
 	return &SPAFunction{
 		Name: name,
 		Args: args,
@@ -24,9 +24,9 @@ func NewFunction(name string, args []string, body *parser.BlockContext) *SPAFunc
 	}
 }
 
-// Symbol接口实现
-func (f *SPAFunction) GetName() string {
-	return f.Name
+// Booler接口
+func(s *SPAFunction) IsTrue() bool  {
+	return true
 }
 
 //Stringer接口实现

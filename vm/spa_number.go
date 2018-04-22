@@ -15,13 +15,6 @@ func NewNumber(literal string) SPANumber {
 	return SPANumber(r)
 }
 
-/**
-取负数
- */
-func Negative(number SPANumber) SPANumber  {
-	return -number
-}
-
 func(n SPANumber) String() string {
 	return fmt.Sprintf("%.2f", n)
 }

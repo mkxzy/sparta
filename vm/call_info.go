@@ -1,5 +1,10 @@
 package vm
 
+import (
+	"bytes"
+	"fmt"
+)
+
 /**
 函数调用状态
  */
@@ -12,17 +17,6 @@ func NewCallInfo(f *SPAFunction)  *CallInfo {
 	return &CallInfo{
 		SPAFunction: f,
 		MemorySpace: NewMemorySpace(""),
-	}
-}
-
-func(ci *CallInfo) PushArgs(args []SPAValue)  {
-	for i := 0; i < len(ci.Args); i++{
-		//ci.Locals = append(ci.Locals, NewVariable(ci.Args[i], args[i]))
-		ci.Define(NewVariable(ci.Args[i], args[i]))
-		if i >= len(args) {
-			//ci.Locals = append(ci.Locals, NewVariable(ci.Args[i], vm.Null())) //不足的参数用NULL来补
-			ci.Define(NewVariable(ci.Args[i], Null()))
-		}
 	}
 }
 
@@ -41,3 +35,12 @@ func (ci *CallInfo) Resolve(name string) Symbol {
 	return nil
 }
 // Scope接口实现 end
+
+func(ci *CallInfo) String() string  {
+	var buffer bytes.Buffer
+	for k, v := range ci.Symbols {
+		s := fmt.Sprintf("%s: %v, ", k, v)
+		buffer.WriteString(s)
+	}
+	return buffer.String()
+}

@@ -35,66 +35,64 @@ grammar Sparta;
 program: stmt* EOF;
 
 stmt
-    : expr_stmt
+    : assign_stmt
+    | fundef_stmt
     | return_stmt
+    | funcall_stmt
     ;
 
-return_stmt
-    : 'return' postfix_expr?
-    ;
+assign_stmt: IDENTIFIER '=' postfix_expr;
 
-expr_stmt
-    : primary_expr '=' postfix_expr
-    | postfix_expr
-    | 'fun' IDENTIFIER par_seq block
-    ;
+fundef_stmt: 'fun' fun_name fun_body;
 
-primary_expr
-    : IDENTIFIER
-    ;
+fun_name: IDENTIFIER;
+
+fun_body: fun_par '{' stmt* '}';
+
+fun_par: '(' namelist? ')';
+
+namelist: IDENTIFIER (',' IDENTIFIER)*;
+
+return_stmt: 'return' postfix_expr?;
+
+funcall_stmt: funcall_expr;
+
+funcall_expr: fun_name arg_expr;
+
+// 参数表达式
+arg_expr: '(' arg_list? ')';
+
+// 参数列表
+arg_list: arg (',' arg)*;
+
+// 参数
+arg: postfix_expr;
 
 postfix_expr
-    : or_test
-//    | 'fun' par_seq block
+    : arith_expr         //算数表达式
     ;
 
-par_seq
-    : '(' parlist? ')'
-    ;
-
-parlist
-    : namelist
-    ;
-
-namelist
-    : IDENTIFIER (',' IDENTIFIER)*
-    ;
-
-block
-    : '{' stmt* '}'
-    ;
-
-or_test: and_test ('or' and_test)*;
-
-and_test: not_test ('and' not_test)*;
-
-not_test: 'not' not_test | compare_expr;
-
-compare_expr: arith_expr (comp_op arith_expr)?;
-
-comp_op
-    : '<'
-    | '>'
-    | '=='
-    | '>='
-    | '<='
-    | '<>'
-    | '!='
+//or_test: and_test ('or' and_test)*;
+//
+//and_test: not_test ('and' not_test)*;
+//
+//not_test: 'not' not_test | compare_expr;
+//
+//compare_expr: arith_expr (comp_op arith_expr)?;
+//
+//comp_op
+//    : '<'
+//    | '>'
+//    | '=='
+//    | '>='
+//    | '<='
+//    | '<>'
+//    | '!='
 //    |'in'
 //    |'not' 'in'
 //    |'is'
 //    |'is' 'not'
-    ;
+//    ;
 
 //expr: arith_expr;
 
@@ -104,35 +102,28 @@ comp_op
 //
 //shift_expr: arith_expr (('<<'|'>>') arith_expr)*;
 
+// 算数表达式
 arith_expr: term (('+'|'-') term)*;
 
+// 乘法
 term: factor (('*' | '/' | '%') factor)*;
 
-factor
-    : '-' factor
-    | power;
+// 乘法因子
+factor: '-'? atom_expr;
 
-power: atom_expr ('**' factor)?;
+//// N次方
+//power: atom_expr ('**' factor)?;
 
+//不可分割表达式
 atom_expr
-    : '(' postfix_expr ')' //括号优先表达式
-    | IDENTIFIER arg_seq //函数调用
+    : '(' postfix_expr ')'  //括号优先表达式
+    | funcall_expr          //函数调用
     | IDENTIFIER
     | NUMBER_LITERAL
     | STRING
     ;
 
-arg_seq
-    : '(' arg_list? ')'
-    ;
-
-arg_list
-    : argument (',' argument)*;
-
-argument
-    : postfix_expr
-    ;
-
+// 字符串
 STRING
     : '"' StringCharacter* '"'
     ;
