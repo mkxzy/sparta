@@ -67,10 +67,10 @@ func (v *SPADirectInterpreter) ExecAssignStmt(ctx *parser.Assign_stmtContext)  {
 	sym := vm.NewVariable(name, value)
 
 	if vm.HasCallInfo(){
-		vm.GetTopCallInfo().Define(sym)
+		vm.GetTopCallInfo().Define(sym) //局部变量定义
 		//log.Infof("局部变量定义： %v", vm.GetTopCallInfo())
 	}else{
-		v.GlobalState.Define(sym)
+		v.GlobalState.Define(sym) 		//全局变量定义
 		//log.Infof("全局变量定义: %v", v.GlobalState)
 	}
 }
@@ -137,7 +137,9 @@ func (v *SPADirectInterpreter) EvalPostExpr(ctx *parser.Postfix_exprContext) {
 	v.EvalArithExpr(ctx.GetChild(0).(*parser.Arith_exprContext))
 }
 
-// 计算算术表达式
+/**
+计算算数表达式
+ */
 func (v *SPADirectInterpreter) EvalArithExpr(ctx *parser.Arith_exprContext) {
 	log.Debug("计算加减法")
 
@@ -155,7 +157,9 @@ func (v *SPADirectInterpreter) EvalArithExpr(ctx *parser.Arith_exprContext) {
 	}
 }
 
-// 计算算术表达式
+/**
+计算算数表达式
+ */
 func (v *SPADirectInterpreter) EvalTerm(ctx *parser.TermContext) {
 	log.Debug("计算乘除法")
 	
@@ -225,6 +229,9 @@ func (v *SPADirectInterpreter) EvalAtomExpr(ctx *parser.Atom_exprContext) {
 	}
 }
 
+/**
+执行函数调用表达式
+ */
 func(v *SPADirectInterpreter) EvalFunCallExpr(funCallExpr *parser.Funcall_exprContext)  {
 	name := v.EvalFunName(funCallExpr.GetChild(0).(*parser.Fun_nameContext))     //获取函数名
 	argCount := v.EvalFunArgs(funCallExpr.GetChild(1).(*parser.Arg_exprContext)) //参数入栈
@@ -266,7 +273,7 @@ func(v *SPADirectInterpreter) EvalFunArgs(ctx *parser.Arg_exprContext) int {
 func (v *SPADirectInterpreter) CallFunc(f vm.SPAFunction, args int) {
 
 	ci := vm.NewCallInfo(f) //创建函数调用信息
-	passArgs(ci, args)
+	passArgs(ci, args)		//传递参数
 	vm.PushCallInfo(ci)    	//保存到函数调用栈
 
 	defer vm.PopCallInfo() //函数退出时弹出调用栈
@@ -296,10 +303,12 @@ func (v *SPADirectInterpreter) CallInternalFunc(f vm.SPAFunction, args int) {
 
 // 传递参数到函数调用栈
 func passArgs(ci *vm.CallInfo, args int)  {
-	for i := 0; i < args; i++{
-		ci.Define(vm.NewVariable(ci.Args[i], vm.PopValue()))
-		if i >= args {
-			ci.Define(vm.NewVariable(ci.Args[i], vm.Null())) //不足的参数用NULL来补
+	for i := 0; i < args; i++ {
+
+		v := vm.PopValue()
+		//多余参数丢弃
+		if i < len(ci.Args) {
+			ci.Define(vm.NewVariable(ci.Args[i], v))
 		}
 	}
 }

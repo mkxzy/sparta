@@ -2,11 +2,11 @@ package main
 
 import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/mkxzy/sparta/parser"
-	"os"
 	"github.com/mkxzy/sparta/interpreter"
-	"github.com/op/go-logging"
+	"github.com/mkxzy/sparta/parser"
 	"github.com/mkxzy/sparta/vm"
+	"github.com/op/go-logging"
+	"os"
 )
 
 var log = logging.MustGetLogger("sparta")
@@ -39,7 +39,7 @@ func main() {
 }
 
 func getInterpreter() interpreter.SPAInterpreter {
-	globalState := vm.NewMemorySpace("global") //全局内存空间
+	globalState := vm.NewMemorySpace("global")                  //全局内存空间
 	printFunc := vm.NewInternalFunction("print", []string{"s"}) //print内置函数
 	globalState.Define(vm.NewFunVariable(printFunc))
 	return interpreter.NewDirectInterpreter(globalState)

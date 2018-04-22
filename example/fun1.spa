@@ -2,4 +2,4 @@ fun sum(n){
     print(n)
     return n * n
 }
-print(sum(5))
+print(sum(5, 15))
