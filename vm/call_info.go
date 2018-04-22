@@ -9,11 +9,11 @@ import (
 函数调用状态
  */
 type CallInfo struct {
-	*SPAFunction //函数定义
+	SPAFunction //函数定义
 	*MemorySpace //函数内存空间
 }
 
-func NewCallInfo(f *SPAFunction)  *CallInfo {
+func NewCallInfo(f SPAFunction)  *CallInfo {
 	return &CallInfo{
 		SPAFunction: f,
 		MemorySpace: NewMemorySpace(""),

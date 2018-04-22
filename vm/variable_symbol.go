@@ -15,6 +15,13 @@ func NewVariable(name string, value SPAValue) *VariableSymbol {
 	}
 }
 
+func NewFunVariable(f SPAFunction) *VariableSymbol {
+	return &VariableSymbol{
+		Name: f.Name,
+		Value: f,
+	}
+}
+
 // Symbol接口实现
 func (ms  *VariableSymbol) GetName() string {
 	return ms.Name

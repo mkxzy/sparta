@@ -1,7 +1,5 @@
-fun foo(n) {
-    a = 1 + n * 5
-    return a
+fun sum(n){
+    print(n)
+    return n * n
 }
-
-b = foo(1)
-print(b)
+print(sum(5))

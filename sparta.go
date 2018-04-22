@@ -19,12 +19,11 @@ func init() {
 	//formatter := logging.NewBackendFormatter(backend, format)
 	//logging.SetBackend(backend, formatter)
 	//backend1Leveled := logging.AddModuleLevel(backend)
-	logging.SetLevel(logging.INFO, "")
+	logging.SetLevel(logging.ERROR, "")
 }
 
 func main() {
 	input, _ := antlr.NewFileStream(os.Args[1])
-	//fmt.Println(input)
 	lexer := parser.NewSpartaLexer(input)
 	stream := antlr.NewCommonTokenStream(lexer, 0)
 	p := parser.NewSpartaParser(stream)
@@ -32,6 +31,7 @@ func main() {
 	ctx := p.Program()        // 生成解析树
 	inter := getInterpreter() // 创建解释器
 	inter.Interpret(ctx)
+
 	//tree.Accept(inter) 	  // 解释执行
 	//listener := interpreter.NewInterpreter()
 	//antlr.ParseTreeWalkerDefault.Walk(listener, tree)
@@ -40,5 +40,7 @@ func main() {
 
 func getInterpreter() interpreter.SPAInterpreter {
 	globalState := vm.NewMemorySpace("global") //全局内存空间
+	printFunc := vm.NewInternalFunction("print", []string{"s"}) //print内置函数
+	globalState.Define(vm.NewFunVariable(printFunc))
 	return interpreter.NewDirectInterpreter(globalState)
 }

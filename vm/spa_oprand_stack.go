@@ -17,6 +17,10 @@ func PushValue(v SPAValue)  {
 	log.Infof("操作数压栈： %v", operands)
 }
 
+func PushNullValue()  {
+	PushValue(Null())
+}
+
 func PopValue() SPAValue  {
 	if sp > -1 {
 		v := operands[sp]

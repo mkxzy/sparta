@@ -8,6 +8,7 @@ import (
 	"github.com/mkxzy/sparta/vm"
 	"github.com/mkxzy/sparta/parser"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"fmt"
 )
 
 var log = logging.MustGetLogger("SPADirectInterpreter")
@@ -109,6 +110,7 @@ func (v *SPADirectInterpreter) ExecReturnStmt(ctx *parser.Return_stmtContext) {
  */
 func (v *SPADirectInterpreter) ExecFunCallStmt(ctx *parser.Funcall_stmtContext)  {
 	v.EvalFunCallExpr(ctx.GetChild(0).(*parser.Funcall_exprContext))
+	vm.PopValue() //丢弃返回值
 }
 
 /**
@@ -224,53 +226,48 @@ func (v *SPADirectInterpreter) EvalAtomExpr(ctx *parser.Atom_exprContext) {
 }
 
 func(v *SPADirectInterpreter) EvalFunCallExpr(funCallExpr *parser.Funcall_exprContext)  {
-	name := getFunName(funCallExpr.GetChild(0).(*parser.Fun_nameContext)) 		//获取函数名
-	argCount := v.pushArgs(funCallExpr.GetChild(1).(*parser.Arg_exprContext))		//参数入栈
-	va, ok := v.GlobalState.Resolve(name).(*vm.VariableSymbol)                     	//获取函数定义
+	name := v.EvalFunName(funCallExpr.GetChild(0).(*parser.Fun_nameContext))     //获取函数名
+	argCount := v.EvalFunArgs(funCallExpr.GetChild(1).(*parser.Arg_exprContext)) //参数入栈
+	va, ok := v.GlobalState.Resolve(name).(*vm.VariableSymbol)                   //获取函数定义
 	if !ok {
 		panic("未找到函数定义")
 	}
-	f, ok := va.Value.(*vm.SPAFunction)
+	f, ok := va.Value.(vm.SPAFunction)
 	if !ok {
 		panic("未找到函数定义")
 	}
-	v.CallFunc(f, argCount) //调用函数
-}
-
-// 判断是否函数调用表达式
-func isFunCallExpr(expr antlr.Tree) bool {
-	_, ok := expr.(*parser.Funcall_exprContext)
-	return ok
+	if f.Internal{
+		v.CallInternalFunc(f, argCount)
+	} else{
+		v.CallFunc(f, argCount) //调用函数
+	}
 }
 
 // 获取函数名
-func getFunName(ctx *parser.Fun_nameContext) string {
+func(v *SPADirectInterpreter) EvalFunName(ctx *parser.Fun_nameContext) string {
 	return ctx.GetChild(0).(antlr.TerminalNode).GetText()
 }
 
-// 参数压栈
-func(v *SPADirectInterpreter) pushArgs(ctx *parser.Arg_exprContext) int {
+// 保存参数到操作数栈
+func(v *SPADirectInterpreter) EvalFunArgs(ctx *parser.Arg_exprContext) int {
 	if ctx.GetChildCount() == 2{
 		return 0
 	}
 	args := 0
 	argListContext := ctx.GetChild(1).(*parser.Arg_listContext)
 	for i := 0; i < argListContext.GetChildCount(); i += 2 {
-		v.EvalArgument(argListContext.GetChild(i).(*parser.ArgContext))						//参数压栈
+		v.EvalArgument(argListContext.GetChild(i).(*parser.ArgContext))
 		args++
 	}
 	return args
 }
 
 // 调用函数
-func (v *SPADirectInterpreter) CallFunc(f *vm.SPAFunction, args int) {
-	log.Info(f)
+func (v *SPADirectInterpreter) CallFunc(f vm.SPAFunction, args int) {
+
 	ci := vm.NewCallInfo(f) //创建函数调用信息
-	//ci.PushArgs(args)      	//传入参数
 	passArgs(ci, args)
-	log.Info(ci.Symbols)
 	vm.PushCallInfo(ci)    	//保存到函数调用栈
-	log.Info(vm.GetTopCallInfo())
 
 	defer vm.PopCallInfo() //函数退出时弹出调用栈
 
@@ -282,10 +279,22 @@ func (v *SPADirectInterpreter) CallFunc(f *vm.SPAFunction, args int) {
 			return
 		}
 	}
-	vm.PushValue(vm.Null())
+	vm.PushNullValue() //函数体内没有返回语句，自动插入空返回值
 }
 
-// 传递参数
+func (v *SPADirectInterpreter) CallInternalFunc(f vm.SPAFunction, args int) {
+	switch f.Name {
+	case "print":
+		var arg vm.SPAValue
+		for i := args; i > 0; i--{
+			arg = vm.PopValue()
+		}
+		fmt.Println(arg)
+		vm.PushNullValue() //函数体内没有返回语句，自动插入空返回值
+	}
+}
+
+// 传递参数到函数调用栈
 func passArgs(ci *vm.CallInfo, args int)  {
 	for i := 0; i < args; i++{
 		ci.Define(vm.NewVariable(ci.Args[i], vm.PopValue()))
@@ -295,7 +304,7 @@ func passArgs(ci *vm.CallInfo, args int)  {
 	}
 }
 
-// 参数入栈
+// 把参数放入操作树栈
 func (v *SPADirectInterpreter) EvalArgument(ctx *parser.ArgContext) {
 	v.EvalPostExpr(ctx.GetChild(0).(*parser.Postfix_exprContext))
 }
