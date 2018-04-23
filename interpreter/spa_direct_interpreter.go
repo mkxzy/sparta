@@ -28,7 +28,20 @@ func NewDirectInterpreter(globalState *vm.MemorySpace) *SPADirectInterpreter {
 func(v *SPADirectInterpreter) Interpret(ctx parser.IProgramContext)  {
 	for i := 0; i < ctx.GetChildCount()-1; i++ {
 		stmtContext := ctx.GetChild(i).(*parser.StmtContext)
-		v.ExecStmt(stmtContext)
+		//v.ExecStmt(stmtContext)
+		rule := stmtContext.GetChild(0).(antlr.RuleContext)
+		switch rule.GetRuleIndex() {
+		case parser.SpartaParserRULE_assign_stmt:
+			v.ExecAssignStmt(rule.(*parser.Assign_stmtContext))
+		case parser.SpartaParserRULE_fundef_stmt:
+			v.ExecFunDefStmt(rule.(*parser.Fundef_stmtContext))
+		case parser.SpartaParserRULE_return_stmt:
+			v.ExecReturnStmt(rule.(*parser.Return_stmtContext))
+		case parser.SpartaParserRULE_funcall_stmt:
+			v.ExecFunCallStmt(rule.(*parser.Funcall_stmtContext))
+		default:
+			panic("不支持的语句")
+		}
 	}
 }
 
@@ -280,14 +293,48 @@ func (v *SPADirectInterpreter) CallFunc(f vm.SPAFunction, args int) {
 
 	//var ret bool
 	//去掉大括号
-	for i := 2; i < f.Body.GetChildCount()-1; i++ {
-		ret := v.ExecStmt(f.Body.GetChild(i).(*parser.StmtContext))
-		if ret {
-			return
+	bockCtx := f.Body.GetChild(1)
+	for i := 2; i < bockCtx.GetChildCount()-1; i++ {
+		stmtContext := bockCtx.GetChild(i).(*parser.StmtContext)
+		rule := stmtContext.GetChild(0).(antlr.RuleContext)
+		switch rule.GetRuleIndex() {
+		case parser.SpartaParserRULE_assign_stmt:
+			v.ExecAssignStmt(rule.(*parser.Assign_stmtContext))
+		case parser.SpartaParserRULE_fundef_stmt:
+			v.ExecFunDefStmt(rule.(*parser.Fundef_stmtContext))
+		case parser.SpartaParserRULE_return_stmt:
+			v.ExecReturnStmt(rule.(*parser.Return_stmtContext))
+			return //模拟返回
+		case parser.SpartaParserRULE_funcall_stmt:
+			v.ExecFunCallStmt(rule.(*parser.Funcall_stmtContext))
 		}
 	}
 	vm.PushNullValue() //函数体内没有返回语句，自动插入空返回值
 }
+
+//func (v *SPADirectInterpreter) ExecBlock(ctx *parser.BlockContext) bool {
+//	for i := 2; i < ctx.GetChildCount()-1; i++ {
+//		//ret := v.ExecStmt(ctx.GetChild(i).(*parser.StmtContext))
+//		stmtContext := ctx.GetChild(i).(*parser.StmtContext)
+//		rule := stmtContext.GetChild(0).(antlr.RuleContext)
+//		switch rule.GetRuleIndex() {
+//		case parser.SpartaParserRULE_assign_stmt:
+//			v.ExecAssignStmt(rule.(*parser.Assign_stmtContext))
+//			return false
+//		case parser.SpartaParserRULE_fundef_stmt:
+//			v.ExecFunDefStmt(rule.(*parser.Fundef_stmtContext))
+//			return false
+//		case parser.SpartaParserRULE_return_stmt:
+//			v.ExecReturnStmt(rule.(*parser.Return_stmtContext))
+//			return true
+//		case parser.SpartaParserRULE_funcall_stmt:
+//			v.ExecFunCallStmt(rule.(*parser.Funcall_stmtContext))
+//			return false
+//		default:
+//			return false
+//		}
+//	}
+//}
 
 func (v *SPADirectInterpreter) CallInternalFunc(f vm.SPAFunction, args int) {
 	switch f.Name {

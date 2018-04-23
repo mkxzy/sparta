@@ -39,6 +39,7 @@ stmt
     | fundef_stmt
     | return_stmt
     | funcall_stmt
+    | if_stmt
     ;
 
 assign_stmt: IDENTIFIER '=' postfix_expr;
@@ -47,7 +48,7 @@ fundef_stmt: 'fun' fun_name fun_body;
 
 fun_name: IDENTIFIER;
 
-fun_body: fun_par '{' stmt* '}';
+fun_body: fun_par block;
 
 fun_par: '(' namelist? ')';
 
@@ -67,6 +68,11 @@ arg_list: arg (',' arg)*;
 
 // 参数
 arg: postfix_expr;
+
+if_stmt
+    : 'if' postfix_expr block ('else if' postfix_expr block)* ('else' block)?;
+
+block: '{' stmt* '}';
 
 postfix_expr
     : arith_expr         //算数表达式
