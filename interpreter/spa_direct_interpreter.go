@@ -162,6 +162,9 @@ func (v *SPADirectInterpreter) ExecIfStmt(ctx *parser.If_stmtContext) bool {
  */
 func getParList(ctx *parser.Fun_parContext) []string {
 
+	if ctx.GetChildCount() == 2{
+		return []string{}
+	}
 	context := ctx.GetChild(1).(*parser.NamelistContext)
 	var parNames = make([]string, 0, 10)
 	for i := 0; i < context.GetChildCount(); i += 2{

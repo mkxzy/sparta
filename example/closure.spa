@@ -1,0 +1,12 @@
+fun foo(){
+
+    x = 3
+
+    fun bar(n){
+        print(n * 2)
+    }
+
+    return bar
+}
+
+bar(2)
