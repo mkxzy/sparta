@@ -30,42 +30,31 @@ func(v *SPADirectInterpreter) Interpret(ctx parser.IProgramContext)  {
 		stmtContext := ctx.GetChild(i).(*parser.StmtContext)
 		//v.ExecStmt(stmtContext)
 		rule := stmtContext.GetChild(0).(antlr.RuleContext)
-		switch rule.GetRuleIndex() {
-		case parser.SpartaParserRULE_assign_stmt:
-			v.ExecAssignStmt(rule.(*parser.Assign_stmtContext))
-		case parser.SpartaParserRULE_fundef_stmt:
-			v.ExecFunDefStmt(rule.(*parser.Fundef_stmtContext))
-		case parser.SpartaParserRULE_return_stmt:
-			v.ExecReturnStmt(rule.(*parser.Return_stmtContext))
-		case parser.SpartaParserRULE_funcall_stmt:
-			v.ExecFunCallStmt(rule.(*parser.Funcall_stmtContext))
-		default:
-			panic("不支持的语句")
-		}
+		v.ExecStmt(rule)
 	}
 }
 
 // 执行语句
 // 返回值： 是否是返回语句
-func (v *SPADirectInterpreter) ExecStmt(ctx *parser.StmtContext) bool {
+func (v *SPADirectInterpreter) ExecStmt(rule antlr.RuleContext) {
 	log.Debug("Visit Stmt")
 
-	rule := ctx.GetChild(0).(antlr.RuleContext)
+	//rule := ctx.GetChild(0).(antlr.RuleContext)
 	switch rule.GetRuleIndex() {
 	case parser.SpartaParserRULE_assign_stmt:
 		v.ExecAssignStmt(rule.(*parser.Assign_stmtContext))
-		return false
+		//return false
 	case parser.SpartaParserRULE_fundef_stmt:
 		v.ExecFunDefStmt(rule.(*parser.Fundef_stmtContext))
-		return false
+		//return false
 	case parser.SpartaParserRULE_return_stmt:
 		v.ExecReturnStmt(rule.(*parser.Return_stmtContext))
-		return true
+		//return true
 	case parser.SpartaParserRULE_funcall_stmt:
 		v.ExecFunCallStmt(rule.(*parser.Funcall_stmtContext))
-		return false
+		//return false
 	default:
-		return false
+		panic("不支持的语句")
 	}
 }
 
@@ -294,47 +283,18 @@ func (v *SPADirectInterpreter) CallFunc(f vm.SPAFunction, args int) {
 	//var ret bool
 	//去掉大括号
 	bockCtx := f.Body.GetChild(1)
+	// 循环执行语句
 	for i := 2; i < bockCtx.GetChildCount()-1; i++ {
 		stmtContext := bockCtx.GetChild(i).(*parser.StmtContext)
 		rule := stmtContext.GetChild(0).(antlr.RuleContext)
-		switch rule.GetRuleIndex() {
-		case parser.SpartaParserRULE_assign_stmt:
-			v.ExecAssignStmt(rule.(*parser.Assign_stmtContext))
-		case parser.SpartaParserRULE_fundef_stmt:
-			v.ExecFunDefStmt(rule.(*parser.Fundef_stmtContext))
-		case parser.SpartaParserRULE_return_stmt:
-			v.ExecReturnStmt(rule.(*parser.Return_stmtContext))
-			return //模拟返回
-		case parser.SpartaParserRULE_funcall_stmt:
-			v.ExecFunCallStmt(rule.(*parser.Funcall_stmtContext))
+		v.ExecStmt(rule)
+		//如果是返回语句的话，直接返回函数
+		if rule.GetRuleIndex() == parser.SpartaParserRULE_return_stmt {
+			return
 		}
 	}
 	vm.PushNullValue() //函数体内没有返回语句，自动插入空返回值
 }
-
-//func (v *SPADirectInterpreter) ExecBlock(ctx *parser.BlockContext) bool {
-//	for i := 2; i < ctx.GetChildCount()-1; i++ {
-//		//ret := v.ExecStmt(ctx.GetChild(i).(*parser.StmtContext))
-//		stmtContext := ctx.GetChild(i).(*parser.StmtContext)
-//		rule := stmtContext.GetChild(0).(antlr.RuleContext)
-//		switch rule.GetRuleIndex() {
-//		case parser.SpartaParserRULE_assign_stmt:
-//			v.ExecAssignStmt(rule.(*parser.Assign_stmtContext))
-//			return false
-//		case parser.SpartaParserRULE_fundef_stmt:
-//			v.ExecFunDefStmt(rule.(*parser.Fundef_stmtContext))
-//			return false
-//		case parser.SpartaParserRULE_return_stmt:
-//			v.ExecReturnStmt(rule.(*parser.Return_stmtContext))
-//			return true
-//		case parser.SpartaParserRULE_funcall_stmt:
-//			v.ExecFunCallStmt(rule.(*parser.Funcall_stmtContext))
-//			return false
-//		default:
-//			return false
-//		}
-//	}
-//}
 
 func (v *SPADirectInterpreter) CallInternalFunc(f vm.SPAFunction, args int) {
 	switch f.Name {
