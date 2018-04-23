@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-var log = logging.MustGetLogger("sparta")
+//var log = logging.MustGetLogger("sparta")
 
 func init() {
 	//var format = logging.MustStringFormatter(
@@ -19,7 +19,7 @@ func init() {
 	//formatter := logging.NewBackendFormatter(backend, format)
 	//logging.SetBackend(backend, formatter)
 	//backend1Leveled := logging.AddModuleLevel(backend)
-	logging.SetLevel(logging.ERROR, "")
+	logging.SetLevel(logging.INFO, "")
 }
 
 func main() {

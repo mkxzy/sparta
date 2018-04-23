@@ -1,5 +1,9 @@
 package vm
 
+import "github.com/op/go-logging"
+
+var log = logging.MustGetLogger("operands")
+
 /**
 标记接口
  */

@@ -6,12 +6,15 @@ var fp = -1                                 //函数栈指针
 // 函数调用信息入栈
 func PushCallInfo(ci *CallInfo)  {
 
+	log.Info(fp)
+
 	fp++
 	calls[fp] = ci
 }
 
 // 函数调用信息出栈
 func PopCallInfo()  {
+	log.Info(fp)
 
 	if HasCallInfo() {
 		calls[fp] = nil

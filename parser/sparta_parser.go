@@ -16,94 +16,105 @@ var _ = reflect.Copy
 var _ = strconv.Itoa
 
 var parserATN = []uint16{
-	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 25, 170,
+	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 34, 192,
 	4, 2, 9, 2, 4, 3, 9, 3, 4, 4, 9, 4, 4, 5, 9, 5, 4, 6, 9, 6, 4, 7, 9, 7,
 	4, 8, 9, 8, 4, 9, 9, 9, 4, 10, 9, 10, 4, 11, 9, 11, 4, 12, 9, 12, 4, 13,
 	9, 13, 4, 14, 9, 14, 4, 15, 9, 15, 4, 16, 9, 16, 4, 17, 9, 17, 4, 18, 9,
-	18, 4, 19, 9, 19, 4, 20, 9, 20, 4, 21, 9, 21, 4, 22, 9, 22, 3, 2, 7, 2,
-	46, 10, 2, 12, 2, 14, 2, 49, 11, 2, 3, 2, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 5, 3, 58, 10, 3, 3, 4, 3, 4, 3, 4, 3, 4, 3, 5, 3, 5, 3, 5, 3, 5,
-	3, 6, 3, 6, 3, 7, 3, 7, 3, 7, 3, 8, 3, 8, 5, 8, 75, 10, 8, 3, 8, 3, 8,
-	3, 9, 3, 9, 3, 9, 7, 9, 82, 10, 9, 12, 9, 14, 9, 85, 11, 9, 3, 10, 3, 10,
-	5, 10, 89, 10, 10, 3, 11, 3, 11, 3, 12, 3, 12, 3, 12, 3, 13, 3, 13, 5,
-	13, 98, 10, 13, 3, 13, 3, 13, 3, 14, 3, 14, 3, 14, 7, 14, 105, 10, 14,
-	12, 14, 14, 14, 108, 11, 14, 3, 15, 3, 15, 3, 16, 3, 16, 3, 16, 3, 16,
-	3, 16, 3, 16, 3, 16, 7, 16, 119, 10, 16, 12, 16, 14, 16, 122, 11, 16, 3,
-	16, 3, 16, 5, 16, 126, 10, 16, 3, 17, 3, 17, 7, 17, 130, 10, 17, 12, 17,
-	14, 17, 133, 11, 17, 3, 17, 3, 17, 3, 18, 3, 18, 3, 19, 3, 19, 3, 19, 7,
-	19, 142, 10, 19, 12, 19, 14, 19, 145, 11, 19, 3, 20, 3, 20, 3, 20, 7, 20,
-	150, 10, 20, 12, 20, 14, 20, 153, 11, 20, 3, 21, 5, 21, 156, 10, 21, 3,
-	21, 3, 21, 3, 22, 3, 22, 3, 22, 3, 22, 3, 22, 3, 22, 3, 22, 3, 22, 5, 22,
-	168, 10, 22, 3, 22, 2, 2, 23, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24,
-	26, 28, 30, 32, 34, 36, 38, 40, 42, 2, 4, 3, 2, 14, 15, 3, 2, 16, 18, 2,
-	168, 2, 47, 3, 2, 2, 2, 4, 57, 3, 2, 2, 2, 6, 59, 3, 2, 2, 2, 8, 63, 3,
-	2, 2, 2, 10, 67, 3, 2, 2, 2, 12, 69, 3, 2, 2, 2, 14, 72, 3, 2, 2, 2, 16,
-	78, 3, 2, 2, 2, 18, 86, 3, 2, 2, 2, 20, 90, 3, 2, 2, 2, 22, 92, 3, 2, 2,
-	2, 24, 95, 3, 2, 2, 2, 26, 101, 3, 2, 2, 2, 28, 109, 3, 2, 2, 2, 30, 111,
-	3, 2, 2, 2, 32, 127, 3, 2, 2, 2, 34, 136, 3, 2, 2, 2, 36, 138, 3, 2, 2,
-	2, 38, 146, 3, 2, 2, 2, 40, 155, 3, 2, 2, 2, 42, 167, 3, 2, 2, 2, 44, 46,
-	5, 4, 3, 2, 45, 44, 3, 2, 2, 2, 46, 49, 3, 2, 2, 2, 47, 45, 3, 2, 2, 2,
-	47, 48, 3, 2, 2, 2, 48, 50, 3, 2, 2, 2, 49, 47, 3, 2, 2, 2, 50, 51, 7,
-	2, 2, 3, 51, 3, 3, 2, 2, 2, 52, 58, 5, 6, 4, 2, 53, 58, 5, 8, 5, 2, 54,
-	58, 5, 18, 10, 2, 55, 58, 5, 20, 11, 2, 56, 58, 5, 30, 16, 2, 57, 52, 3,
-	2, 2, 2, 57, 53, 3, 2, 2, 2, 57, 54, 3, 2, 2, 2, 57, 55, 3, 2, 2, 2, 57,
-	56, 3, 2, 2, 2, 58, 5, 3, 2, 2, 2, 59, 60, 7, 21, 2, 2, 60, 61, 7, 3, 2,
-	2, 61, 62, 5, 34, 18, 2, 62, 7, 3, 2, 2, 2, 63, 64, 7, 4, 2, 2, 64, 65,
-	5, 10, 6, 2, 65, 66, 5, 12, 7, 2, 66, 9, 3, 2, 2, 2, 67, 68, 7, 21, 2,
-	2, 68, 11, 3, 2, 2, 2, 69, 70, 5, 14, 8, 2, 70, 71, 5, 32, 17, 2, 71, 13,
-	3, 2, 2, 2, 72, 74, 7, 5, 2, 2, 73, 75, 5, 16, 9, 2, 74, 73, 3, 2, 2, 2,
-	74, 75, 3, 2, 2, 2, 75, 76, 3, 2, 2, 2, 76, 77, 7, 6, 2, 2, 77, 15, 3,
-	2, 2, 2, 78, 83, 7, 21, 2, 2, 79, 80, 7, 7, 2, 2, 80, 82, 7, 21, 2, 2,
-	81, 79, 3, 2, 2, 2, 82, 85, 3, 2, 2, 2, 83, 81, 3, 2, 2, 2, 83, 84, 3,
-	2, 2, 2, 84, 17, 3, 2, 2, 2, 85, 83, 3, 2, 2, 2, 86, 88, 7, 8, 2, 2, 87,
-	89, 5, 34, 18, 2, 88, 87, 3, 2, 2, 2, 88, 89, 3, 2, 2, 2, 89, 19, 3, 2,
-	2, 2, 90, 91, 5, 22, 12, 2, 91, 21, 3, 2, 2, 2, 92, 93, 5, 10, 6, 2, 93,
-	94, 5, 24, 13, 2, 94, 23, 3, 2, 2, 2, 95, 97, 7, 5, 2, 2, 96, 98, 5, 26,
-	14, 2, 97, 96, 3, 2, 2, 2, 97, 98, 3, 2, 2, 2, 98, 99, 3, 2, 2, 2, 99,
-	100, 7, 6, 2, 2, 100, 25, 3, 2, 2, 2, 101, 106, 5, 28, 15, 2, 102, 103,
-	7, 7, 2, 2, 103, 105, 5, 28, 15, 2, 104, 102, 3, 2, 2, 2, 105, 108, 3,
-	2, 2, 2, 106, 104, 3, 2, 2, 2, 106, 107, 3, 2, 2, 2, 107, 27, 3, 2, 2,
-	2, 108, 106, 3, 2, 2, 2, 109, 110, 5, 34, 18, 2, 110, 29, 3, 2, 2, 2, 111,
-	112, 7, 9, 2, 2, 112, 113, 5, 34, 18, 2, 113, 120, 5, 32, 17, 2, 114, 115,
-	7, 10, 2, 2, 115, 116, 5, 34, 18, 2, 116, 117, 5, 32, 17, 2, 117, 119,
-	3, 2, 2, 2, 118, 114, 3, 2, 2, 2, 119, 122, 3, 2, 2, 2, 120, 118, 3, 2,
-	2, 2, 120, 121, 3, 2, 2, 2, 121, 125, 3, 2, 2, 2, 122, 120, 3, 2, 2, 2,
-	123, 124, 7, 11, 2, 2, 124, 126, 5, 32, 17, 2, 125, 123, 3, 2, 2, 2, 125,
-	126, 3, 2, 2, 2, 126, 31, 3, 2, 2, 2, 127, 131, 7, 12, 2, 2, 128, 130,
-	5, 4, 3, 2, 129, 128, 3, 2, 2, 2, 130, 133, 3, 2, 2, 2, 131, 129, 3, 2,
-	2, 2, 131, 132, 3, 2, 2, 2, 132, 134, 3, 2, 2, 2, 133, 131, 3, 2, 2, 2,
-	134, 135, 7, 13, 2, 2, 135, 33, 3, 2, 2, 2, 136, 137, 5, 36, 19, 2, 137,
-	35, 3, 2, 2, 2, 138, 143, 5, 38, 20, 2, 139, 140, 9, 2, 2, 2, 140, 142,
-	5, 38, 20, 2, 141, 139, 3, 2, 2, 2, 142, 145, 3, 2, 2, 2, 143, 141, 3,
-	2, 2, 2, 143, 144, 3, 2, 2, 2, 144, 37, 3, 2, 2, 2, 145, 143, 3, 2, 2,
-	2, 146, 151, 5, 40, 21, 2, 147, 148, 9, 3, 2, 2, 148, 150, 5, 40, 21, 2,
-	149, 147, 3, 2, 2, 2, 150, 153, 3, 2, 2, 2, 151, 149, 3, 2, 2, 2, 151,
-	152, 3, 2, 2, 2, 152, 39, 3, 2, 2, 2, 153, 151, 3, 2, 2, 2, 154, 156, 7,
-	15, 2, 2, 155, 154, 3, 2, 2, 2, 155, 156, 3, 2, 2, 2, 156, 157, 3, 2, 2,
-	2, 157, 158, 5, 42, 22, 2, 158, 41, 3, 2, 2, 2, 159, 160, 7, 5, 2, 2, 160,
-	161, 5, 34, 18, 2, 161, 162, 7, 6, 2, 2, 162, 168, 3, 2, 2, 2, 163, 168,
-	5, 22, 12, 2, 164, 168, 7, 21, 2, 2, 165, 168, 7, 20, 2, 2, 166, 168, 7,
-	19, 2, 2, 167, 159, 3, 2, 2, 2, 167, 163, 3, 2, 2, 2, 167, 164, 3, 2, 2,
-	2, 167, 165, 3, 2, 2, 2, 167, 166, 3, 2, 2, 2, 168, 43, 3, 2, 2, 2, 16,
-	47, 57, 74, 83, 88, 97, 106, 120, 125, 131, 143, 151, 155, 167,
+	18, 4, 19, 9, 19, 4, 20, 9, 20, 4, 21, 9, 21, 4, 22, 9, 22, 4, 23, 9, 23,
+	4, 24, 9, 24, 4, 25, 9, 25, 4, 26, 9, 26, 3, 2, 7, 2, 54, 10, 2, 12, 2,
+	14, 2, 57, 11, 2, 3, 2, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 3, 66, 10,
+	3, 3, 4, 3, 4, 3, 4, 3, 4, 3, 5, 3, 5, 3, 5, 3, 5, 3, 6, 3, 6, 3, 7, 3,
+	7, 3, 7, 3, 8, 3, 8, 5, 8, 83, 10, 8, 3, 8, 3, 8, 3, 9, 3, 9, 3, 9, 7,
+	9, 90, 10, 9, 12, 9, 14, 9, 93, 11, 9, 3, 10, 3, 10, 5, 10, 97, 10, 10,
+	3, 11, 3, 11, 3, 12, 3, 12, 3, 12, 3, 13, 3, 13, 5, 13, 106, 10, 13, 3,
+	13, 3, 13, 3, 14, 3, 14, 3, 14, 7, 14, 113, 10, 14, 12, 14, 14, 14, 116,
+	11, 14, 3, 15, 3, 15, 3, 16, 3, 16, 3, 16, 3, 16, 3, 16, 3, 16, 3, 16,
+	3, 16, 7, 16, 128, 10, 16, 12, 16, 14, 16, 131, 11, 16, 3, 16, 3, 16, 5,
+	16, 135, 10, 16, 3, 17, 3, 17, 7, 17, 139, 10, 17, 12, 17, 14, 17, 142,
+	11, 17, 3, 17, 3, 17, 3, 18, 3, 18, 3, 19, 3, 19, 3, 20, 3, 20, 3, 21,
+	3, 21, 3, 21, 3, 21, 5, 21, 156, 10, 21, 3, 22, 3, 22, 3, 23, 3, 23, 3,
+	23, 7, 23, 163, 10, 23, 12, 23, 14, 23, 166, 11, 23, 3, 24, 3, 24, 3, 24,
+	7, 24, 171, 10, 24, 12, 24, 14, 24, 174, 11, 24, 3, 25, 5, 25, 177, 10,
+	25, 3, 25, 3, 25, 3, 26, 3, 26, 3, 26, 3, 26, 3, 26, 3, 26, 3, 26, 3, 26,
+	3, 26, 5, 26, 190, 10, 26, 3, 26, 2, 2, 27, 2, 4, 6, 8, 10, 12, 14, 16,
+	18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 2,
+	5, 3, 2, 15, 21, 3, 2, 22, 23, 3, 2, 24, 26, 2, 188, 2, 55, 3, 2, 2, 2,
+	4, 65, 3, 2, 2, 2, 6, 67, 3, 2, 2, 2, 8, 71, 3, 2, 2, 2, 10, 75, 3, 2,
+	2, 2, 12, 77, 3, 2, 2, 2, 14, 80, 3, 2, 2, 2, 16, 86, 3, 2, 2, 2, 18, 94,
+	3, 2, 2, 2, 20, 98, 3, 2, 2, 2, 22, 100, 3, 2, 2, 2, 24, 103, 3, 2, 2,
+	2, 26, 109, 3, 2, 2, 2, 28, 117, 3, 2, 2, 2, 30, 119, 3, 2, 2, 2, 32, 136,
+	3, 2, 2, 2, 34, 145, 3, 2, 2, 2, 36, 147, 3, 2, 2, 2, 38, 149, 3, 2, 2,
+	2, 40, 151, 3, 2, 2, 2, 42, 157, 3, 2, 2, 2, 44, 159, 3, 2, 2, 2, 46, 167,
+	3, 2, 2, 2, 48, 176, 3, 2, 2, 2, 50, 189, 3, 2, 2, 2, 52, 54, 5, 4, 3,
+	2, 53, 52, 3, 2, 2, 2, 54, 57, 3, 2, 2, 2, 55, 53, 3, 2, 2, 2, 55, 56,
+	3, 2, 2, 2, 56, 58, 3, 2, 2, 2, 57, 55, 3, 2, 2, 2, 58, 59, 7, 2, 2, 3,
+	59, 3, 3, 2, 2, 2, 60, 66, 5, 6, 4, 2, 61, 66, 5, 8, 5, 2, 62, 66, 5, 18,
+	10, 2, 63, 66, 5, 20, 11, 2, 64, 66, 5, 30, 16, 2, 65, 60, 3, 2, 2, 2,
+	65, 61, 3, 2, 2, 2, 65, 62, 3, 2, 2, 2, 65, 63, 3, 2, 2, 2, 65, 64, 3,
+	2, 2, 2, 66, 5, 3, 2, 2, 2, 67, 68, 7, 30, 2, 2, 68, 69, 7, 3, 2, 2, 69,
+	70, 5, 38, 20, 2, 70, 7, 3, 2, 2, 2, 71, 72, 7, 4, 2, 2, 72, 73, 5, 10,
+	6, 2, 73, 74, 5, 12, 7, 2, 74, 9, 3, 2, 2, 2, 75, 76, 7, 30, 2, 2, 76,
+	11, 3, 2, 2, 2, 77, 78, 5, 14, 8, 2, 78, 79, 5, 32, 17, 2, 79, 13, 3, 2,
+	2, 2, 80, 82, 7, 5, 2, 2, 81, 83, 5, 16, 9, 2, 82, 81, 3, 2, 2, 2, 82,
+	83, 3, 2, 2, 2, 83, 84, 3, 2, 2, 2, 84, 85, 7, 6, 2, 2, 85, 15, 3, 2, 2,
+	2, 86, 91, 7, 30, 2, 2, 87, 88, 7, 7, 2, 2, 88, 90, 7, 30, 2, 2, 89, 87,
+	3, 2, 2, 2, 90, 93, 3, 2, 2, 2, 91, 89, 3, 2, 2, 2, 91, 92, 3, 2, 2, 2,
+	92, 17, 3, 2, 2, 2, 93, 91, 3, 2, 2, 2, 94, 96, 7, 8, 2, 2, 95, 97, 5,
+	38, 20, 2, 96, 95, 3, 2, 2, 2, 96, 97, 3, 2, 2, 2, 97, 19, 3, 2, 2, 2,
+	98, 99, 5, 22, 12, 2, 99, 21, 3, 2, 2, 2, 100, 101, 5, 10, 6, 2, 101, 102,
+	5, 24, 13, 2, 102, 23, 3, 2, 2, 2, 103, 105, 7, 5, 2, 2, 104, 106, 5, 26,
+	14, 2, 105, 104, 3, 2, 2, 2, 105, 106, 3, 2, 2, 2, 106, 107, 3, 2, 2, 2,
+	107, 108, 7, 6, 2, 2, 108, 25, 3, 2, 2, 2, 109, 114, 5, 28, 15, 2, 110,
+	111, 7, 7, 2, 2, 111, 113, 5, 28, 15, 2, 112, 110, 3, 2, 2, 2, 113, 116,
+	3, 2, 2, 2, 114, 112, 3, 2, 2, 2, 114, 115, 3, 2, 2, 2, 115, 27, 3, 2,
+	2, 2, 116, 114, 3, 2, 2, 2, 117, 118, 5, 38, 20, 2, 118, 29, 3, 2, 2, 2,
+	119, 120, 7, 9, 2, 2, 120, 121, 5, 38, 20, 2, 121, 129, 5, 32, 17, 2, 122,
+	123, 7, 10, 2, 2, 123, 124, 7, 9, 2, 2, 124, 125, 5, 38, 20, 2, 125, 126,
+	5, 32, 17, 2, 126, 128, 3, 2, 2, 2, 127, 122, 3, 2, 2, 2, 128, 131, 3,
+	2, 2, 2, 129, 127, 3, 2, 2, 2, 129, 130, 3, 2, 2, 2, 130, 134, 3, 2, 2,
+	2, 131, 129, 3, 2, 2, 2, 132, 133, 7, 10, 2, 2, 133, 135, 5, 32, 17, 2,
+	134, 132, 3, 2, 2, 2, 134, 135, 3, 2, 2, 2, 135, 31, 3, 2, 2, 2, 136, 140,
+	7, 11, 2, 2, 137, 139, 5, 4, 3, 2, 138, 137, 3, 2, 2, 2, 139, 142, 3, 2,
+	2, 2, 140, 138, 3, 2, 2, 2, 140, 141, 3, 2, 2, 2, 141, 143, 3, 2, 2, 2,
+	142, 140, 3, 2, 2, 2, 143, 144, 7, 12, 2, 2, 144, 33, 3, 2, 2, 2, 145,
+	146, 7, 13, 2, 2, 146, 35, 3, 2, 2, 2, 147, 148, 7, 14, 2, 2, 148, 37,
+	3, 2, 2, 2, 149, 150, 5, 40, 21, 2, 150, 39, 3, 2, 2, 2, 151, 155, 5, 44,
+	23, 2, 152, 153, 5, 42, 22, 2, 153, 154, 5, 44, 23, 2, 154, 156, 3, 2,
+	2, 2, 155, 152, 3, 2, 2, 2, 155, 156, 3, 2, 2, 2, 156, 41, 3, 2, 2, 2,
+	157, 158, 9, 2, 2, 2, 158, 43, 3, 2, 2, 2, 159, 164, 5, 46, 24, 2, 160,
+	161, 9, 3, 2, 2, 161, 163, 5, 46, 24, 2, 162, 160, 3, 2, 2, 2, 163, 166,
+	3, 2, 2, 2, 164, 162, 3, 2, 2, 2, 164, 165, 3, 2, 2, 2, 165, 45, 3, 2,
+	2, 2, 166, 164, 3, 2, 2, 2, 167, 172, 5, 48, 25, 2, 168, 169, 9, 4, 2,
+	2, 169, 171, 5, 48, 25, 2, 170, 168, 3, 2, 2, 2, 171, 174, 3, 2, 2, 2,
+	172, 170, 3, 2, 2, 2, 172, 173, 3, 2, 2, 2, 173, 47, 3, 2, 2, 2, 174, 172,
+	3, 2, 2, 2, 175, 177, 7, 23, 2, 2, 176, 175, 3, 2, 2, 2, 176, 177, 3, 2,
+	2, 2, 177, 178, 3, 2, 2, 2, 178, 179, 5, 50, 26, 2, 179, 49, 3, 2, 2, 2,
+	180, 181, 7, 5, 2, 2, 181, 182, 5, 38, 20, 2, 182, 183, 7, 6, 2, 2, 183,
+	190, 3, 2, 2, 2, 184, 190, 5, 22, 12, 2, 185, 190, 7, 30, 2, 2, 186, 190,
+	7, 28, 2, 2, 187, 190, 7, 29, 2, 2, 188, 190, 7, 27, 2, 2, 189, 180, 3,
+	2, 2, 2, 189, 184, 3, 2, 2, 2, 189, 185, 3, 2, 2, 2, 189, 186, 3, 2, 2,
+	2, 189, 187, 3, 2, 2, 2, 189, 188, 3, 2, 2, 2, 190, 51, 3, 2, 2, 2, 17,
+	55, 65, 82, 91, 96, 105, 114, 129, 134, 140, 155, 164, 172, 176, 189,
 }
 var deserializer = antlr.NewATNDeserializer(nil)
 var deserializedATN = deserializer.DeserializeFromUInt16(parserATN)
 
 var literalNames = []string{
-	"", "'='", "'fun'", "'('", "')'", "','", "'return'", "'if'", "'else if'",
-	"'else'", "'{'", "'}'", "'+'", "'-'", "'*'", "'/'", "'%'",
+	"", "'='", "'fun'", "'('", "')'", "','", "'return'", "'if'", "'else'",
+	"'{'", "'}'", "'break'", "'continue'", "'<'", "'>'", "'=='", "'>='", "'<='",
+	"'<>'", "'!='", "'+'", "'-'", "'*'", "'/'", "'%'",
 }
 var symbolicNames = []string{
-	"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "STRING",
-	"NUMBER_LITERAL", "IDENTIFIER", "COMMENT", "LINE_COMMENT", "WS", "SHEBANG",
+	"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+	"", "", "", "", "", "", "", "STRING", "INTEGER_LITERAL", "NUMBER_LITERAL",
+	"IDENTIFIER", "COMMENT", "LINE_COMMENT", "WS", "SHEBANG",
 }
 
 var ruleNames = []string{
 	"program", "stmt", "assign_stmt", "fundef_stmt", "fun_name", "fun_body",
 	"fun_par", "namelist", "return_stmt", "funcall_stmt", "funcall_expr", "arg_expr",
-	"arg_list", "arg", "if_stmt", "block", "postfix_expr", "arith_expr", "term",
-	"factor", "atom_expr",
+	"arg_list", "arg", "if_stmt", "block", "break_stmt", "continue_stmt", "test",
+	"compare_expr", "comp_op", "arith_expr", "term", "factor", "atom_expr",
 }
 var decisionToDFA = make([]*antlr.DFA, len(deserializedATN.DecisionToState))
 
@@ -133,55 +144,68 @@ func NewSpartaParser(input antlr.TokenStream) *SpartaParser {
 
 // SpartaParser tokens.
 const (
-	SpartaParserEOF            = antlr.TokenEOF
-	SpartaParserT__0           = 1
-	SpartaParserT__1           = 2
-	SpartaParserT__2           = 3
-	SpartaParserT__3           = 4
-	SpartaParserT__4           = 5
-	SpartaParserT__5           = 6
-	SpartaParserT__6           = 7
-	SpartaParserT__7           = 8
-	SpartaParserT__8           = 9
-	SpartaParserT__9           = 10
-	SpartaParserT__10          = 11
-	SpartaParserT__11          = 12
-	SpartaParserT__12          = 13
-	SpartaParserT__13          = 14
-	SpartaParserT__14          = 15
-	SpartaParserT__15          = 16
-	SpartaParserSTRING         = 17
-	SpartaParserNUMBER_LITERAL = 18
-	SpartaParserIDENTIFIER     = 19
-	SpartaParserCOMMENT        = 20
-	SpartaParserLINE_COMMENT   = 21
-	SpartaParserWS             = 22
-	SpartaParserSHEBANG        = 23
+	SpartaParserEOF             = antlr.TokenEOF
+	SpartaParserT__0            = 1
+	SpartaParserT__1            = 2
+	SpartaParserT__2            = 3
+	SpartaParserT__3            = 4
+	SpartaParserT__4            = 5
+	SpartaParserT__5            = 6
+	SpartaParserT__6            = 7
+	SpartaParserT__7            = 8
+	SpartaParserT__8            = 9
+	SpartaParserT__9            = 10
+	SpartaParserT__10           = 11
+	SpartaParserT__11           = 12
+	SpartaParserT__12           = 13
+	SpartaParserT__13           = 14
+	SpartaParserT__14           = 15
+	SpartaParserT__15           = 16
+	SpartaParserT__16           = 17
+	SpartaParserT__17           = 18
+	SpartaParserT__18           = 19
+	SpartaParserT__19           = 20
+	SpartaParserT__20           = 21
+	SpartaParserT__21           = 22
+	SpartaParserT__22           = 23
+	SpartaParserT__23           = 24
+	SpartaParserSTRING          = 25
+	SpartaParserINTEGER_LITERAL = 26
+	SpartaParserNUMBER_LITERAL  = 27
+	SpartaParserIDENTIFIER      = 28
+	SpartaParserCOMMENT         = 29
+	SpartaParserLINE_COMMENT    = 30
+	SpartaParserWS              = 31
+	SpartaParserSHEBANG         = 32
 )
 
 // SpartaParser rules.
 const (
-	SpartaParserRULE_program      = 0
-	SpartaParserRULE_stmt         = 1
-	SpartaParserRULE_assign_stmt  = 2
-	SpartaParserRULE_fundef_stmt  = 3
-	SpartaParserRULE_fun_name     = 4
-	SpartaParserRULE_fun_body     = 5
-	SpartaParserRULE_fun_par      = 6
-	SpartaParserRULE_namelist     = 7
-	SpartaParserRULE_return_stmt  = 8
-	SpartaParserRULE_funcall_stmt = 9
-	SpartaParserRULE_funcall_expr = 10
-	SpartaParserRULE_arg_expr     = 11
-	SpartaParserRULE_arg_list     = 12
-	SpartaParserRULE_arg          = 13
-	SpartaParserRULE_if_stmt      = 14
-	SpartaParserRULE_block        = 15
-	SpartaParserRULE_postfix_expr = 16
-	SpartaParserRULE_arith_expr   = 17
-	SpartaParserRULE_term         = 18
-	SpartaParserRULE_factor       = 19
-	SpartaParserRULE_atom_expr    = 20
+	SpartaParserRULE_program       = 0
+	SpartaParserRULE_stmt          = 1
+	SpartaParserRULE_assign_stmt   = 2
+	SpartaParserRULE_fundef_stmt   = 3
+	SpartaParserRULE_fun_name      = 4
+	SpartaParserRULE_fun_body      = 5
+	SpartaParserRULE_fun_par       = 6
+	SpartaParserRULE_namelist      = 7
+	SpartaParserRULE_return_stmt   = 8
+	SpartaParserRULE_funcall_stmt  = 9
+	SpartaParserRULE_funcall_expr  = 10
+	SpartaParserRULE_arg_expr      = 11
+	SpartaParserRULE_arg_list      = 12
+	SpartaParserRULE_arg           = 13
+	SpartaParserRULE_if_stmt       = 14
+	SpartaParserRULE_block         = 15
+	SpartaParserRULE_break_stmt    = 16
+	SpartaParserRULE_continue_stmt = 17
+	SpartaParserRULE_test          = 18
+	SpartaParserRULE_compare_expr  = 19
+	SpartaParserRULE_comp_op       = 20
+	SpartaParserRULE_arith_expr    = 21
+	SpartaParserRULE_term          = 22
+	SpartaParserRULE_factor        = 23
+	SpartaParserRULE_atom_expr     = 24
 )
 
 // IProgramContext is an interface to support dynamic dispatch.
@@ -279,22 +303,22 @@ func (p *SpartaParser) Program() (localctx IProgramContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(45)
+	p.SetState(53)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<SpartaParserT__1)|(1<<SpartaParserT__5)|(1<<SpartaParserT__6)|(1<<SpartaParserIDENTIFIER))) != 0 {
 		{
-			p.SetState(42)
+			p.SetState(50)
 			p.Stmt()
 		}
 
-		p.SetState(47)
+		p.SetState(55)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(48)
+		p.SetState(56)
 		p.Match(SpartaParserEOF)
 	}
 
@@ -417,41 +441,41 @@ func (p *SpartaParser) Stmt() (localctx IStmtContext) {
 		}
 	}()
 
-	p.SetState(55)
+	p.SetState(63)
 	p.GetErrorHandler().Sync(p)
 	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 1, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(50)
+			p.SetState(58)
 			p.Assign_stmt()
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(51)
+			p.SetState(59)
 			p.Fundef_stmt()
 		}
 
 	case 3:
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(52)
+			p.SetState(60)
 			p.Return_stmt()
 		}
 
 	case 4:
 		p.EnterOuterAlt(localctx, 4)
 		{
-			p.SetState(53)
+			p.SetState(61)
 			p.Funcall_stmt()
 		}
 
 	case 5:
 		p.EnterOuterAlt(localctx, 5)
 		{
-			p.SetState(54)
+			p.SetState(62)
 			p.If_stmt()
 		}
 
@@ -502,14 +526,14 @@ func (s *Assign_stmtContext) IDENTIFIER() antlr.TerminalNode {
 	return s.GetToken(SpartaParserIDENTIFIER, 0)
 }
 
-func (s *Assign_stmtContext) Postfix_expr() IPostfix_exprContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IPostfix_exprContext)(nil)).Elem(), 0)
+func (s *Assign_stmtContext) Test() ITestContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*ITestContext)(nil)).Elem(), 0)
 
 	if t == nil {
 		return nil
 	}
 
-	return t.(IPostfix_exprContext)
+	return t.(ITestContext)
 }
 
 func (s *Assign_stmtContext) GetRuleContext() antlr.RuleContext {
@@ -542,16 +566,16 @@ func (p *SpartaParser) Assign_stmt() (localctx IAssign_stmtContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(57)
+		p.SetState(65)
 		p.Match(SpartaParserIDENTIFIER)
 	}
 	{
-		p.SetState(58)
+		p.SetState(66)
 		p.Match(SpartaParserT__0)
 	}
 	{
-		p.SetState(59)
-		p.Postfix_expr()
+		p.SetState(67)
+		p.Test()
 	}
 
 	return localctx
@@ -645,15 +669,15 @@ func (p *SpartaParser) Fundef_stmt() (localctx IFundef_stmtContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(61)
+		p.SetState(69)
 		p.Match(SpartaParserT__1)
 	}
 	{
-		p.SetState(62)
+		p.SetState(70)
 		p.Fun_name()
 	}
 	{
-		p.SetState(63)
+		p.SetState(71)
 		p.Fun_body()
 	}
 
@@ -732,7 +756,7 @@ func (p *SpartaParser) Fun_name() (localctx IFun_nameContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(65)
+		p.SetState(73)
 		p.Match(SpartaParserIDENTIFIER)
 	}
 
@@ -827,11 +851,11 @@ func (p *SpartaParser) Fun_body() (localctx IFun_bodyContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(67)
+		p.SetState(75)
 		p.Fun_par()
 	}
 	{
-		p.SetState(68)
+		p.SetState(76)
 		p.Block()
 	}
 
@@ -917,22 +941,22 @@ func (p *SpartaParser) Fun_par() (localctx IFun_parContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(70)
+		p.SetState(78)
 		p.Match(SpartaParserT__2)
 	}
-	p.SetState(72)
+	p.SetState(80)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == SpartaParserIDENTIFIER {
 		{
-			p.SetState(71)
+			p.SetState(79)
 			p.Namelist()
 		}
 
 	}
 	{
-		p.SetState(74)
+		p.SetState(82)
 		p.Match(SpartaParserT__3)
 	}
 
@@ -1016,24 +1040,24 @@ func (p *SpartaParser) Namelist() (localctx INamelistContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(76)
+		p.SetState(84)
 		p.Match(SpartaParserIDENTIFIER)
 	}
-	p.SetState(81)
+	p.SetState(89)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for _la == SpartaParserT__4 {
 		{
-			p.SetState(77)
+			p.SetState(85)
 			p.Match(SpartaParserT__4)
 		}
 		{
-			p.SetState(78)
+			p.SetState(86)
 			p.Match(SpartaParserIDENTIFIER)
 		}
 
-		p.SetState(83)
+		p.SetState(91)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
@@ -1079,14 +1103,14 @@ func NewReturn_stmtContext(parser antlr.Parser, parent antlr.ParserRuleContext, 
 
 func (s *Return_stmtContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *Return_stmtContext) Postfix_expr() IPostfix_exprContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IPostfix_exprContext)(nil)).Elem(), 0)
+func (s *Return_stmtContext) Test() ITestContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*ITestContext)(nil)).Elem(), 0)
 
 	if t == nil {
 		return nil
 	}
 
-	return t.(IPostfix_exprContext)
+	return t.(ITestContext)
 }
 
 func (s *Return_stmtContext) GetRuleContext() antlr.RuleContext {
@@ -1119,16 +1143,16 @@ func (p *SpartaParser) Return_stmt() (localctx IReturn_stmtContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(84)
+		p.SetState(92)
 		p.Match(SpartaParserT__5)
 	}
-	p.SetState(86)
+	p.SetState(94)
 	p.GetErrorHandler().Sync(p)
 
 	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 4, p.GetParserRuleContext()) == 1 {
 		{
-			p.SetState(85)
-			p.Postfix_expr()
+			p.SetState(93)
+			p.Test()
 		}
 
 	}
@@ -1214,7 +1238,7 @@ func (p *SpartaParser) Funcall_stmt() (localctx IFuncall_stmtContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(88)
+		p.SetState(96)
 		p.Funcall_expr()
 	}
 
@@ -1309,11 +1333,11 @@ func (p *SpartaParser) Funcall_expr() (localctx IFuncall_exprContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(90)
+		p.SetState(98)
 		p.Fun_name()
 	}
 	{
-		p.SetState(91)
+		p.SetState(99)
 		p.Arg_expr()
 	}
 
@@ -1399,22 +1423,22 @@ func (p *SpartaParser) Arg_expr() (localctx IArg_exprContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(93)
+		p.SetState(101)
 		p.Match(SpartaParserT__2)
 	}
-	p.SetState(95)
+	p.SetState(103)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	if ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<SpartaParserT__2)|(1<<SpartaParserT__12)|(1<<SpartaParserSTRING)|(1<<SpartaParserNUMBER_LITERAL)|(1<<SpartaParserIDENTIFIER))) != 0 {
+	if ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<SpartaParserT__2)|(1<<SpartaParserT__20)|(1<<SpartaParserSTRING)|(1<<SpartaParserINTEGER_LITERAL)|(1<<SpartaParserNUMBER_LITERAL)|(1<<SpartaParserIDENTIFIER))) != 0 {
 		{
-			p.SetState(94)
+			p.SetState(102)
 			p.Arg_list()
 		}
 
 	}
 	{
-		p.SetState(97)
+		p.SetState(105)
 		p.Match(SpartaParserT__3)
 	}
 
@@ -1513,24 +1537,24 @@ func (p *SpartaParser) Arg_list() (localctx IArg_listContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(99)
+		p.SetState(107)
 		p.Arg()
 	}
-	p.SetState(104)
+	p.SetState(112)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for _la == SpartaParserT__4 {
 		{
-			p.SetState(100)
+			p.SetState(108)
 			p.Match(SpartaParserT__4)
 		}
 		{
-			p.SetState(101)
+			p.SetState(109)
 			p.Arg()
 		}
 
-		p.SetState(106)
+		p.SetState(114)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
@@ -1576,14 +1600,14 @@ func NewArgContext(parser antlr.Parser, parent antlr.ParserRuleContext, invoking
 
 func (s *ArgContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *ArgContext) Postfix_expr() IPostfix_exprContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IPostfix_exprContext)(nil)).Elem(), 0)
+func (s *ArgContext) Test() ITestContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*ITestContext)(nil)).Elem(), 0)
 
 	if t == nil {
 		return nil
 	}
 
-	return t.(IPostfix_exprContext)
+	return t.(ITestContext)
 }
 
 func (s *ArgContext) GetRuleContext() antlr.RuleContext {
@@ -1616,8 +1640,8 @@ func (p *SpartaParser) Arg() (localctx IArgContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(107)
-		p.Postfix_expr()
+		p.SetState(115)
+		p.Test()
 	}
 
 	return localctx
@@ -1661,27 +1685,27 @@ func NewIf_stmtContext(parser antlr.Parser, parent antlr.ParserRuleContext, invo
 
 func (s *If_stmtContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *If_stmtContext) AllPostfix_expr() []IPostfix_exprContext {
-	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IPostfix_exprContext)(nil)).Elem())
-	var tst = make([]IPostfix_exprContext, len(ts))
+func (s *If_stmtContext) AllTest() []ITestContext {
+	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*ITestContext)(nil)).Elem())
+	var tst = make([]ITestContext, len(ts))
 
 	for i, t := range ts {
 		if t != nil {
-			tst[i] = t.(IPostfix_exprContext)
+			tst[i] = t.(ITestContext)
 		}
 	}
 
 	return tst
 }
 
-func (s *If_stmtContext) Postfix_expr(i int) IPostfix_exprContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IPostfix_exprContext)(nil)).Elem(), i)
+func (s *If_stmtContext) Test(i int) ITestContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*ITestContext)(nil)).Elem(), i)
 
 	if t == nil {
 		return nil
 	}
 
-	return t.(IPostfix_exprContext)
+	return t.(ITestContext)
 }
 
 func (s *If_stmtContext) AllBlock() []IBlockContext {
@@ -1736,52 +1760,60 @@ func (p *SpartaParser) If_stmt() (localctx IIf_stmtContext) {
 		}
 	}()
 
+	var _alt int
+
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(109)
+		p.SetState(117)
 		p.Match(SpartaParserT__6)
 	}
 	{
-		p.SetState(110)
-		p.Postfix_expr()
+		p.SetState(118)
+		p.Test()
 	}
 	{
-		p.SetState(111)
+		p.SetState(119)
 		p.Block()
 	}
-	p.SetState(118)
+	p.SetState(127)
+	p.GetErrorHandler().Sync(p)
+	_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 7, p.GetParserRuleContext())
+
+	for _alt != 2 && _alt != antlr.ATNInvalidAltNumber {
+		if _alt == 1 {
+			{
+				p.SetState(120)
+				p.Match(SpartaParserT__7)
+			}
+			{
+				p.SetState(121)
+				p.Match(SpartaParserT__6)
+			}
+			{
+				p.SetState(122)
+				p.Test()
+			}
+			{
+				p.SetState(123)
+				p.Block()
+			}
+
+		}
+		p.SetState(129)
+		p.GetErrorHandler().Sync(p)
+		_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 7, p.GetParserRuleContext())
+	}
+	p.SetState(132)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	for _la == SpartaParserT__7 {
+	if _la == SpartaParserT__7 {
 		{
-			p.SetState(112)
+			p.SetState(130)
 			p.Match(SpartaParserT__7)
 		}
 		{
-			p.SetState(113)
-			p.Postfix_expr()
-		}
-		{
-			p.SetState(114)
-			p.Block()
-		}
-
-		p.SetState(120)
-		p.GetErrorHandler().Sync(p)
-		_la = p.GetTokenStream().LA(1)
-	}
-	p.SetState(123)
-	p.GetErrorHandler().Sync(p)
-	_la = p.GetTokenStream().LA(1)
-
-	if _la == SpartaParserT__8 {
-		{
-			p.SetState(121)
-			p.Match(SpartaParserT__8)
-		}
-		{
-			p.SetState(122)
+			p.SetState(131)
 			p.Block()
 		}
 
@@ -1882,90 +1914,79 @@ func (p *SpartaParser) Block() (localctx IBlockContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(125)
-		p.Match(SpartaParserT__9)
+		p.SetState(134)
+		p.Match(SpartaParserT__8)
 	}
-	p.SetState(129)
+	p.SetState(138)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<SpartaParserT__1)|(1<<SpartaParserT__5)|(1<<SpartaParserT__6)|(1<<SpartaParserIDENTIFIER))) != 0 {
 		{
-			p.SetState(126)
+			p.SetState(135)
 			p.Stmt()
 		}
 
-		p.SetState(131)
+		p.SetState(140)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(132)
-		p.Match(SpartaParserT__10)
+		p.SetState(141)
+		p.Match(SpartaParserT__9)
 	}
 
 	return localctx
 }
 
-// IPostfix_exprContext is an interface to support dynamic dispatch.
-type IPostfix_exprContext interface {
+// IBreak_stmtContext is an interface to support dynamic dispatch.
+type IBreak_stmtContext interface {
 	antlr.ParserRuleContext
 
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
-	// IsPostfix_exprContext differentiates from other interfaces.
-	IsPostfix_exprContext()
+	// IsBreak_stmtContext differentiates from other interfaces.
+	IsBreak_stmtContext()
 }
 
-type Postfix_exprContext struct {
+type Break_stmtContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
 }
 
-func NewEmptyPostfix_exprContext() *Postfix_exprContext {
-	var p = new(Postfix_exprContext)
+func NewEmptyBreak_stmtContext() *Break_stmtContext {
+	var p = new(Break_stmtContext)
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = SpartaParserRULE_postfix_expr
+	p.RuleIndex = SpartaParserRULE_break_stmt
 	return p
 }
 
-func (*Postfix_exprContext) IsPostfix_exprContext() {}
+func (*Break_stmtContext) IsBreak_stmtContext() {}
 
-func NewPostfix_exprContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *Postfix_exprContext {
-	var p = new(Postfix_exprContext)
+func NewBreak_stmtContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *Break_stmtContext {
+	var p = new(Break_stmtContext)
 
 	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = SpartaParserRULE_postfix_expr
+	p.RuleIndex = SpartaParserRULE_break_stmt
 
 	return p
 }
 
-func (s *Postfix_exprContext) GetParser() antlr.Parser { return s.parser }
-
-func (s *Postfix_exprContext) Arith_expr() IArith_exprContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IArith_exprContext)(nil)).Elem(), 0)
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IArith_exprContext)
-}
-
-func (s *Postfix_exprContext) GetRuleContext() antlr.RuleContext {
+func (s *Break_stmtContext) GetParser() antlr.Parser { return s.parser }
+func (s *Break_stmtContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *Postfix_exprContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+func (s *Break_stmtContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (p *SpartaParser) Postfix_expr() (localctx IPostfix_exprContext) {
-	localctx = NewPostfix_exprContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 32, SpartaParserRULE_postfix_expr)
+func (p *SpartaParser) Break_stmt() (localctx IBreak_stmtContext) {
+	localctx = NewBreak_stmtContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 32, SpartaParserRULE_break_stmt)
 
 	defer func() {
 		p.ExitRule()
@@ -1985,8 +2006,373 @@ func (p *SpartaParser) Postfix_expr() (localctx IPostfix_exprContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(134)
+		p.SetState(143)
+		p.Match(SpartaParserT__10)
+	}
+
+	return localctx
+}
+
+// IContinue_stmtContext is an interface to support dynamic dispatch.
+type IContinue_stmtContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// IsContinue_stmtContext differentiates from other interfaces.
+	IsContinue_stmtContext()
+}
+
+type Continue_stmtContext struct {
+	*antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptyContinue_stmtContext() *Continue_stmtContext {
+	var p = new(Continue_stmtContext)
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
+	p.RuleIndex = SpartaParserRULE_continue_stmt
+	return p
+}
+
+func (*Continue_stmtContext) IsContinue_stmtContext() {}
+
+func NewContinue_stmtContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *Continue_stmtContext {
+	var p = new(Continue_stmtContext)
+
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = SpartaParserRULE_continue_stmt
+
+	return p
+}
+
+func (s *Continue_stmtContext) GetParser() antlr.Parser { return s.parser }
+func (s *Continue_stmtContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *Continue_stmtContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (p *SpartaParser) Continue_stmt() (localctx IContinue_stmtContext) {
+	localctx = NewContinue_stmtContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 34, SpartaParserRULE_continue_stmt)
+
+	defer func() {
+		p.ExitRule()
+	}()
+
+	defer func() {
+		if err := recover(); err != nil {
+			if v, ok := err.(antlr.RecognitionException); ok {
+				localctx.SetException(v)
+				p.GetErrorHandler().ReportError(p, v)
+				p.GetErrorHandler().Recover(p, v)
+			} else {
+				panic(err)
+			}
+		}
+	}()
+
+	p.EnterOuterAlt(localctx, 1)
+	{
+		p.SetState(145)
+		p.Match(SpartaParserT__11)
+	}
+
+	return localctx
+}
+
+// ITestContext is an interface to support dynamic dispatch.
+type ITestContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// IsTestContext differentiates from other interfaces.
+	IsTestContext()
+}
+
+type TestContext struct {
+	*antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptyTestContext() *TestContext {
+	var p = new(TestContext)
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
+	p.RuleIndex = SpartaParserRULE_test
+	return p
+}
+
+func (*TestContext) IsTestContext() {}
+
+func NewTestContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *TestContext {
+	var p = new(TestContext)
+
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = SpartaParserRULE_test
+
+	return p
+}
+
+func (s *TestContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *TestContext) Compare_expr() ICompare_exprContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*ICompare_exprContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(ICompare_exprContext)
+}
+
+func (s *TestContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *TestContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (p *SpartaParser) Test() (localctx ITestContext) {
+	localctx = NewTestContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 36, SpartaParserRULE_test)
+
+	defer func() {
+		p.ExitRule()
+	}()
+
+	defer func() {
+		if err := recover(); err != nil {
+			if v, ok := err.(antlr.RecognitionException); ok {
+				localctx.SetException(v)
+				p.GetErrorHandler().ReportError(p, v)
+				p.GetErrorHandler().Recover(p, v)
+			} else {
+				panic(err)
+			}
+		}
+	}()
+
+	p.EnterOuterAlt(localctx, 1)
+	{
+		p.SetState(147)
+		p.Compare_expr()
+	}
+
+	return localctx
+}
+
+// ICompare_exprContext is an interface to support dynamic dispatch.
+type ICompare_exprContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// IsCompare_exprContext differentiates from other interfaces.
+	IsCompare_exprContext()
+}
+
+type Compare_exprContext struct {
+	*antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptyCompare_exprContext() *Compare_exprContext {
+	var p = new(Compare_exprContext)
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
+	p.RuleIndex = SpartaParserRULE_compare_expr
+	return p
+}
+
+func (*Compare_exprContext) IsCompare_exprContext() {}
+
+func NewCompare_exprContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *Compare_exprContext {
+	var p = new(Compare_exprContext)
+
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = SpartaParserRULE_compare_expr
+
+	return p
+}
+
+func (s *Compare_exprContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *Compare_exprContext) AllArith_expr() []IArith_exprContext {
+	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IArith_exprContext)(nil)).Elem())
+	var tst = make([]IArith_exprContext, len(ts))
+
+	for i, t := range ts {
+		if t != nil {
+			tst[i] = t.(IArith_exprContext)
+		}
+	}
+
+	return tst
+}
+
+func (s *Compare_exprContext) Arith_expr(i int) IArith_exprContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IArith_exprContext)(nil)).Elem(), i)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IArith_exprContext)
+}
+
+func (s *Compare_exprContext) Comp_op() IComp_opContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IComp_opContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IComp_opContext)
+}
+
+func (s *Compare_exprContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *Compare_exprContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (p *SpartaParser) Compare_expr() (localctx ICompare_exprContext) {
+	localctx = NewCompare_exprContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 38, SpartaParserRULE_compare_expr)
+	var _la int
+
+	defer func() {
+		p.ExitRule()
+	}()
+
+	defer func() {
+		if err := recover(); err != nil {
+			if v, ok := err.(antlr.RecognitionException); ok {
+				localctx.SetException(v)
+				p.GetErrorHandler().ReportError(p, v)
+				p.GetErrorHandler().Recover(p, v)
+			} else {
+				panic(err)
+			}
+		}
+	}()
+
+	p.EnterOuterAlt(localctx, 1)
+	{
+		p.SetState(149)
 		p.Arith_expr()
+	}
+	p.SetState(153)
+	p.GetErrorHandler().Sync(p)
+	_la = p.GetTokenStream().LA(1)
+
+	if ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<SpartaParserT__12)|(1<<SpartaParserT__13)|(1<<SpartaParserT__14)|(1<<SpartaParserT__15)|(1<<SpartaParserT__16)|(1<<SpartaParserT__17)|(1<<SpartaParserT__18))) != 0 {
+		{
+			p.SetState(150)
+			p.Comp_op()
+		}
+		{
+			p.SetState(151)
+			p.Arith_expr()
+		}
+
+	}
+
+	return localctx
+}
+
+// IComp_opContext is an interface to support dynamic dispatch.
+type IComp_opContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// IsComp_opContext differentiates from other interfaces.
+	IsComp_opContext()
+}
+
+type Comp_opContext struct {
+	*antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptyComp_opContext() *Comp_opContext {
+	var p = new(Comp_opContext)
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
+	p.RuleIndex = SpartaParserRULE_comp_op
+	return p
+}
+
+func (*Comp_opContext) IsComp_opContext() {}
+
+func NewComp_opContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *Comp_opContext {
+	var p = new(Comp_opContext)
+
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = SpartaParserRULE_comp_op
+
+	return p
+}
+
+func (s *Comp_opContext) GetParser() antlr.Parser { return s.parser }
+func (s *Comp_opContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *Comp_opContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (p *SpartaParser) Comp_op() (localctx IComp_opContext) {
+	localctx = NewComp_opContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 40, SpartaParserRULE_comp_op)
+	var _la int
+
+	defer func() {
+		p.ExitRule()
+	}()
+
+	defer func() {
+		if err := recover(); err != nil {
+			if v, ok := err.(antlr.RecognitionException); ok {
+				localctx.SetException(v)
+				p.GetErrorHandler().ReportError(p, v)
+				p.GetErrorHandler().Recover(p, v)
+			} else {
+				panic(err)
+			}
+		}
+	}()
+
+	p.EnterOuterAlt(localctx, 1)
+	{
+		p.SetState(155)
+		_la = p.GetTokenStream().LA(1)
+
+		if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<SpartaParserT__12)|(1<<SpartaParserT__13)|(1<<SpartaParserT__14)|(1<<SpartaParserT__15)|(1<<SpartaParserT__16)|(1<<SpartaParserT__17)|(1<<SpartaParserT__18))) != 0) {
+			p.GetErrorHandler().RecoverInline(p)
+		} else {
+			p.GetErrorHandler().ReportMatch(p)
+			p.Consume()
+		}
 	}
 
 	return localctx
@@ -2063,7 +2449,7 @@ func (s *Arith_exprContext) ToStringTree(ruleNames []string, recog antlr.Recogni
 
 func (p *SpartaParser) Arith_expr() (localctx IArith_exprContext) {
 	localctx = NewArith_exprContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 34, SpartaParserRULE_arith_expr)
+	p.EnterRule(localctx, 42, SpartaParserRULE_arith_expr)
 	var _la int
 
 	defer func() {
@@ -2084,19 +2470,19 @@ func (p *SpartaParser) Arith_expr() (localctx IArith_exprContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(136)
+		p.SetState(157)
 		p.Term()
 	}
-	p.SetState(141)
+	p.SetState(162)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	for _la == SpartaParserT__11 || _la == SpartaParserT__12 {
+	for _la == SpartaParserT__19 || _la == SpartaParserT__20 {
 		{
-			p.SetState(137)
+			p.SetState(158)
 			_la = p.GetTokenStream().LA(1)
 
-			if !(_la == SpartaParserT__11 || _la == SpartaParserT__12) {
+			if !(_la == SpartaParserT__19 || _la == SpartaParserT__20) {
 				p.GetErrorHandler().RecoverInline(p)
 			} else {
 				p.GetErrorHandler().ReportMatch(p)
@@ -2104,11 +2490,11 @@ func (p *SpartaParser) Arith_expr() (localctx IArith_exprContext) {
 			}
 		}
 		{
-			p.SetState(138)
+			p.SetState(159)
 			p.Term()
 		}
 
-		p.SetState(143)
+		p.SetState(164)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
@@ -2187,7 +2573,7 @@ func (s *TermContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) s
 
 func (p *SpartaParser) Term() (localctx ITermContext) {
 	localctx = NewTermContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 36, SpartaParserRULE_term)
+	p.EnterRule(localctx, 44, SpartaParserRULE_term)
 	var _la int
 
 	defer func() {
@@ -2208,19 +2594,19 @@ func (p *SpartaParser) Term() (localctx ITermContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(144)
+		p.SetState(165)
 		p.Factor()
 	}
-	p.SetState(149)
+	p.SetState(170)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	for ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<SpartaParserT__13)|(1<<SpartaParserT__14)|(1<<SpartaParserT__15))) != 0 {
+	for ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<SpartaParserT__21)|(1<<SpartaParserT__22)|(1<<SpartaParserT__23))) != 0 {
 		{
-			p.SetState(145)
+			p.SetState(166)
 			_la = p.GetTokenStream().LA(1)
 
-			if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<SpartaParserT__13)|(1<<SpartaParserT__14)|(1<<SpartaParserT__15))) != 0) {
+			if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<SpartaParserT__21)|(1<<SpartaParserT__22)|(1<<SpartaParserT__23))) != 0) {
 				p.GetErrorHandler().RecoverInline(p)
 			} else {
 				p.GetErrorHandler().ReportMatch(p)
@@ -2228,11 +2614,11 @@ func (p *SpartaParser) Term() (localctx ITermContext) {
 			}
 		}
 		{
-			p.SetState(146)
+			p.SetState(167)
 			p.Factor()
 		}
 
-		p.SetState(151)
+		p.SetState(172)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
@@ -2298,7 +2684,7 @@ func (s *FactorContext) ToStringTree(ruleNames []string, recog antlr.Recognizer)
 
 func (p *SpartaParser) Factor() (localctx IFactorContext) {
 	localctx = NewFactorContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 38, SpartaParserRULE_factor)
+	p.EnterRule(localctx, 46, SpartaParserRULE_factor)
 	var _la int
 
 	defer func() {
@@ -2318,19 +2704,19 @@ func (p *SpartaParser) Factor() (localctx IFactorContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(153)
+	p.SetState(174)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	if _la == SpartaParserT__12 {
+	if _la == SpartaParserT__20 {
 		{
-			p.SetState(152)
-			p.Match(SpartaParserT__12)
+			p.SetState(173)
+			p.Match(SpartaParserT__20)
 		}
 
 	}
 	{
-		p.SetState(155)
+		p.SetState(176)
 		p.Atom_expr()
 	}
 
@@ -2375,14 +2761,14 @@ func NewAtom_exprContext(parser antlr.Parser, parent antlr.ParserRuleContext, in
 
 func (s *Atom_exprContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *Atom_exprContext) Postfix_expr() IPostfix_exprContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IPostfix_exprContext)(nil)).Elem(), 0)
+func (s *Atom_exprContext) Test() ITestContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*ITestContext)(nil)).Elem(), 0)
 
 	if t == nil {
 		return nil
 	}
 
-	return t.(IPostfix_exprContext)
+	return t.(ITestContext)
 }
 
 func (s *Atom_exprContext) Funcall_expr() IFuncall_exprContext {
@@ -2397,6 +2783,10 @@ func (s *Atom_exprContext) Funcall_expr() IFuncall_exprContext {
 
 func (s *Atom_exprContext) IDENTIFIER() antlr.TerminalNode {
 	return s.GetToken(SpartaParserIDENTIFIER, 0)
+}
+
+func (s *Atom_exprContext) INTEGER_LITERAL() antlr.TerminalNode {
+	return s.GetToken(SpartaParserINTEGER_LITERAL, 0)
 }
 
 func (s *Atom_exprContext) NUMBER_LITERAL() antlr.TerminalNode {
@@ -2417,7 +2807,7 @@ func (s *Atom_exprContext) ToStringTree(ruleNames []string, recog antlr.Recogniz
 
 func (p *SpartaParser) Atom_expr() (localctx IAtom_exprContext) {
 	localctx = NewAtom_exprContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 40, SpartaParserRULE_atom_expr)
+	p.EnterRule(localctx, 48, SpartaParserRULE_atom_expr)
 
 	defer func() {
 		p.ExitRule()
@@ -2435,49 +2825,56 @@ func (p *SpartaParser) Atom_expr() (localctx IAtom_exprContext) {
 		}
 	}()
 
-	p.SetState(165)
+	p.SetState(187)
 	p.GetErrorHandler().Sync(p)
-	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 13, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 14, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(157)
+			p.SetState(178)
 			p.Match(SpartaParserT__2)
 		}
 		{
-			p.SetState(158)
-			p.Postfix_expr()
+			p.SetState(179)
+			p.Test()
 		}
 		{
-			p.SetState(159)
+			p.SetState(180)
 			p.Match(SpartaParserT__3)
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(161)
+			p.SetState(182)
 			p.Funcall_expr()
 		}
 
 	case 3:
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(162)
+			p.SetState(183)
 			p.Match(SpartaParserIDENTIFIER)
 		}
 
 	case 4:
 		p.EnterOuterAlt(localctx, 4)
 		{
-			p.SetState(163)
-			p.Match(SpartaParserNUMBER_LITERAL)
+			p.SetState(184)
+			p.Match(SpartaParserINTEGER_LITERAL)
 		}
 
 	case 5:
 		p.EnterOuterAlt(localctx, 5)
 		{
-			p.SetState(164)
+			p.SetState(185)
+			p.Match(SpartaParserNUMBER_LITERAL)
+		}
+
+	case 6:
+		p.EnterOuterAlt(localctx, 6)
+		{
+			p.SetState(186)
 			p.Match(SpartaParserSTRING)
 		}
 

@@ -25,3 +25,7 @@ func IsNull(value SPAValue) bool {
 func(s *spaNull) IsTrue() bool  {
 	return false
 }
+
+func(s *spaNull) String() string {
+	return "null"
+}

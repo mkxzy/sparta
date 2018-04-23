@@ -42,7 +42,7 @@ stmt
     | if_stmt
     ;
 
-assign_stmt: IDENTIFIER '=' postfix_expr;
+assign_stmt: IDENTIFIER '=' test;
 
 fundef_stmt: 'fun' fun_name fun_body;
 
@@ -54,7 +54,7 @@ fun_par: '(' namelist? ')';
 
 namelist: IDENTIFIER (',' IDENTIFIER)*;
 
-return_stmt: 'return' postfix_expr?;
+return_stmt: 'return' test?;
 
 funcall_stmt: funcall_expr;
 
@@ -67,15 +67,18 @@ arg_expr: '(' arg_list? ')';
 arg_list: arg (',' arg)*;
 
 // 参数
-arg: postfix_expr;
+arg: test;
 
 if_stmt
-    : 'if' postfix_expr block ('else if' postfix_expr block)* ('else' block)?;
+    : 'if' test block ('else' 'if' test block)* ('else' block)?;
 
 block: '{' stmt* '}';
 
-postfix_expr
-    : arith_expr         //算数表达式
+break_stmt: 'break';
+continue_stmt: 'continue';
+
+test
+    : compare_expr
     ;
 
 //or_test: and_test ('or' and_test)*;
@@ -84,21 +87,17 @@ postfix_expr
 //
 //not_test: 'not' not_test | compare_expr;
 //
-//compare_expr: arith_expr (comp_op arith_expr)?;
-//
-//comp_op
-//    : '<'
-//    | '>'
-//    | '=='
-//    | '>='
-//    | '<='
-//    | '<>'
-//    | '!='
-//    |'in'
-//    |'not' 'in'
-//    |'is'
-//    |'is' 'not'
-//    ;
+compare_expr: arith_expr (comp_op arith_expr)?;
+
+comp_op
+    : '<'
+    | '>'
+    | '=='
+    | '>='
+    | '<='
+    | '<>'
+    | '!='
+    ;
 
 //expr: arith_expr;
 
@@ -122,9 +121,10 @@ factor: '-'? atom_expr;
 
 //不可分割表达式
 atom_expr
-    : '(' postfix_expr ')'  //括号优先表达式
+    : '(' test ')'  //括号优先表达式
     | funcall_expr          //函数调用
     | IDENTIFIER
+    | INTEGER_LITERAL
     | NUMBER_LITERAL
     | STRING
     ;
@@ -148,10 +148,9 @@ EscapeSequence
 //fragment
 //UNICODE_CHAR   : ~[\u000A] ;
 
-NUMBER_LITERAL
-    : DecimalIntegerLiteral '.' [0-9]+
-    | DecimalIntegerLiteral
-    ;
+INTEGER_LITERAL: DecimalIntegerLiteral;
+
+NUMBER_LITERAL: DecimalIntegerLiteral '.' [0-9]+ ;
 
 IDENTIFIER: Letter LetterOrDigit*;
 

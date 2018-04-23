@@ -1,9 +1,5 @@
 package vm
 
-import "github.com/op/go-logging"
-
-var log = logging.MustGetLogger("operands")
-
 var operands [100]SPAValue
 var sp = -1
 
