@@ -392,17 +392,19 @@ func arithmetic(op string) {
 	switch op {
 	case "+":
 		result, _ := add(first, second)
-		log.Info(result)
 		vm.PushValue(result)
-	//case "-":
-	//	result := first - second
-	//	vm.PushValue(result)
-	//case "*":
-	//	result := first * second
-	//	vm.PushValue(result)
-	//case "/":
-	//	result := first / second
-	//	vm.PushValue(result)
+	case "-":
+		result, _ := sub(first, second)
+		vm.PushValue(result)
+	case "*":
+		result, _ := mul(first, second)
+		vm.PushValue(result)
+	case "/":
+		result, _ := div(first, second)
+		vm.PushValue(result)
+	case "%":
+		result, _ := mod(first, second)
+		vm.PushValue(result)
 	default:
 		panic("不支持的操作")
 	}
