@@ -6,6 +6,18 @@ import (
 	"bytes"
 )
 
+//操作符和操作关联
+var operations = make(map[string]func(left, right vm.SPAValue) (result vm.SPAValue, ok bool))
+
+//初始化
+func init()  {
+	operations["+"] = add
+	operations["-"] = sub
+	operations["*"] = mul
+	operations["/"] = div
+	operations["%"] = mod
+}
+
 /**
 +号运算
  */
@@ -218,6 +230,9 @@ func mul(left, right vm.SPAValue) (result vm.SPAValue, ok bool)  {
 	return
 }
 
+/**
+除法操作
+ */
 func div(left, right vm.SPAValue) (result vm.SPAValue, ok bool)  {
 	switch left.(type) {
 	case vm.SPANumber:
@@ -254,6 +269,9 @@ func div(left, right vm.SPAValue) (result vm.SPAValue, ok bool)  {
 	return
 }
 
+/**
+取模操作
+ */
 func mod(left, right vm.SPAValue) (result vm.SPAValue, ok bool)  {
 	switch left.(type) {
 	case vm.SPAInteger:

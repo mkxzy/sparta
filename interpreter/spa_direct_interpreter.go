@@ -250,7 +250,10 @@ func (v *SPADirectInterpreter) EvalFactor(ctx *parser.FactorContext) {
 		v.EvalAtomExpr(ctx.GetChild(0).(*parser.Atom_exprContext))
 	} else{
 		v.EvalAtomExpr(ctx.GetChild(1).(*parser.Atom_exprContext))
-		minusValue() //取反
+		//取反
+		first := vm.PopValue()
+		result, _ := minus(first)
+		vm.PushValue(result)
 	}
 }
 
@@ -367,9 +370,7 @@ func (v *SPADirectInterpreter) CallInternalFunc(f vm.SPAFunction, args int) {
 // 参数压栈的时候是顺序的，因此遍历要倒序
 func passArgs(ci *vm.CallInfo, args int)  {
 
-	// 后序遍历
 	for i := args - 1; i >= 0; i-- {
-
 		v := vm.PopValue()
 		//参数对齐，多余参数丢弃
 		if i < len(ci.Args) {
@@ -386,35 +387,14 @@ func (v *SPADirectInterpreter) EvalArgument(ctx *parser.ArgContext) {
 /**
 算数运算
  */
-func arithmetic(op string) {
+func arithmetic(opSymbol string) {
+
 	second := vm.PopValue()
 	first := vm.PopValue()
-	switch op {
-	case "+":
-		result, _ := add(first, second)
-		vm.PushValue(result)
-	case "-":
-		result, _ := sub(first, second)
-		vm.PushValue(result)
-	case "*":
-		result, _ := mul(first, second)
-		vm.PushValue(result)
-	case "/":
-		result, _ := div(first, second)
-		vm.PushValue(result)
-	case "%":
-		result, _ := mod(first, second)
-		vm.PushValue(result)
-	default:
+	operation := operations[opSymbol]
+	if operation == nil{
 		panic("不支持的操作")
 	}
-}
-
-/**
-取反
- */
-func minusValue()  {
-	first := vm.PopValue().(vm.SPAInteger)
-	first = -first
-	vm.PushValue(first)
+	result, _ := operation(first, second)
+	vm.PushValue(result)
 }
