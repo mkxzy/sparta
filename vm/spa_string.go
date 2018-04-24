@@ -4,10 +4,6 @@ type SPAString struct {
 	str string
 }
 
-func(s SPAString) Original() interface{}{
-	return s.str
-}
-
 func(s SPAString) String() string {
 	return s.str
 }

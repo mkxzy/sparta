@@ -1,5 +1,6 @@
 fun sum(n){
     print(n)
-    return n * n
+    return n + 2
 }
-print(sum(5, 15))
+
+print(sum(5.0, 2))

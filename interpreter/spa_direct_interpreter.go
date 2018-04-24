@@ -364,12 +364,14 @@ func (v *SPADirectInterpreter) CallInternalFunc(f vm.SPAFunction, args int) {
 	}
 }
 
-// 传递参数到函数调用栈
+// 参数压栈的时候是顺序的，因此遍历要倒序
 func passArgs(ci *vm.CallInfo, args int)  {
-	for i := 0; i < args; i++ {
+
+	// 后序遍历
+	for i := args - 1; i >= 0; i-- {
 
 		v := vm.PopValue()
-		//多余参数丢弃
+		//参数对齐，多余参数丢弃
 		if i < len(ci.Args) {
 			ci.Define(vm.NewVariable(ci.Args[i], v))
 		}
@@ -385,21 +387,22 @@ func (v *SPADirectInterpreter) EvalArgument(ctx *parser.ArgContext) {
 算数运算
  */
 func arithmetic(op string) {
-	second := vm.PopValue().(vm.SPAInteger)
-	first := vm.PopValue().(vm.SPAInteger)
+	second := vm.PopValue()
+	first := vm.PopValue()
 	switch op {
 	case "+":
-		result := first + second
+		result, _ := add(first, second)
+		log.Info(result)
 		vm.PushValue(result)
-	case "-":
-		result := first - second
-		vm.PushValue(result)
-	case "*":
-		result := first * second
-		vm.PushValue(result)
-	case "/":
-		result := first / second
-		vm.PushValue(result)
+	//case "-":
+	//	result := first - second
+	//	vm.PushValue(result)
+	//case "*":
+	//	result := first * second
+	//	vm.PushValue(result)
+	//case "/":
+	//	result := first / second
+	//	vm.PushValue(result)
 	default:
 		panic("不支持的操作")
 	}

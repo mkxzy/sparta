@@ -1,6 +1,8 @@
 package vm
 
-var operands [100]SPAValue
+const MaxOperandStack = 10
+
+var operands [MaxOperandStack]SPAValue
 var sp = -1
 
 func PushValue(v SPAValue)  {
