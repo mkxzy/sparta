@@ -370,11 +370,26 @@ func (v *SPADirectInterpreter) CallInternalFunc(f vm.SPAFunction, args int) {
 // 参数压栈的时候是顺序的，因此遍历要倒序
 func passArgs(ci *vm.CallInfo, args int)  {
 
-	for i := args - 1; i >= 0; i-- {
-		v := vm.PopValue()
-		//参数对齐，多余参数丢弃
-		if i < len(ci.Args) {
-			ci.Define(vm.NewVariable(ci.Args[i], v))
+	// 实参多于或等于形参
+	if args >= len(ci.Args){
+		for i := args - 1; i >= 0; i-- {
+			v := vm.PopValue()
+			//参数对齐，多余参数丢弃
+			if i < len(ci.Args) {
+				ci.Define(vm.NewVariable(ci.Args[i], v))
+			}
+		}
+	} else {
+		// 实参少于形参 args > len(ci.Args)
+		for i := len(ci.Args) - 1; i >= 0; i-- {
+
+			if i < args {
+				v := vm.PopValue()
+				ci.Define(vm.NewVariable(ci.Args[i], v))
+			} else {
+				v := vm.Null()
+				ci.Define(vm.NewVariable(ci.Args[i], v))
+			}
 		}
 	}
 }
