@@ -40,6 +40,9 @@ stmt
     | return_stmt
     | funcall_stmt
     | if_stmt
+    | for_stmt
+    | break_stmt
+    | continue_stmt
     ;
 
 assign_stmt: IDENTIFIER '=' test;
@@ -72,9 +75,14 @@ arg: test;
 if_stmt
     : 'if' test block ('else' 'if' test block)* ('else' block)?;
 
+for_stmt: 'for' IDENTIFIER 'in' test 'to' test for_body;
+
+for_body: block;
+
 block: '{' stmt* '}';
 
 break_stmt: 'break';
+
 continue_stmt: 'continue';
 
 test

@@ -1,0 +1,7 @@
+fun foo(n){
+    for x in 1 to n {
+        print(x)
+    }
+}
+
+foo(5)
