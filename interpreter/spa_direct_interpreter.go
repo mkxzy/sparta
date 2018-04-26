@@ -27,9 +27,9 @@ func NewDirectInterpreter(globalState *vm.MemorySpace) *SPADirectInterpreter {
 // 实现解释接口
 func(v *SPADirectInterpreter) Interpret(ctx parser.IProgramContext)  {
 	for i := 0; i < ctx.GetChildCount()-1; i++ {
-		//stmtContext := ctx.GetChild(i).(*parser.StmtContext)
-		rule := ctx.GetChild(i).GetChild(0).(antlr.RuleContext)
-		v.ExecStmt(rule)
+		stmtContext := ctx.GetChild(i).(*parser.StmtContext)
+		//rule := ctx.GetChild(i).GetChild(0).(antlr.RuleContext)
+		v.ExecStmt(stmtContext, &ProgramState{})
 	}
 }
 
@@ -37,43 +37,38 @@ func(v *SPADirectInterpreter) Interpret(ctx parser.IProgramContext)  {
 执行语句块
 返回值： 是否被return中断
  */
-func (v *SPADirectInterpreter) ExecBlock(ctx *parser.BlockContext) (returned bool) {
-	returned = false
+func (v *SPADirectInterpreter) ExecBlock(ctx *parser.BlockContext, ff FlowState) {
+	//returned = false
 	for i := 1; i < ctx.GetChildCount()-1; i++ {
 		stmtContext := ctx.GetChild(i).(*parser.StmtContext)
-		rule := stmtContext.GetChild(0).(antlr.RuleContext)
-		returned = v.ExecStmt(rule)
+		//rule := stmtContext.GetChild(0).(antlr.RuleContext)
+		v.ExecStmt(stmtContext, ff)
 		//价值百万的代码
-		if returned {
-			break
-		}
+		//if ff.GetState() == RETURN {
+		//	break
+		//}
 	}
-	return
 }
 
 // 执行语句
 // 返回值： 是否有返回值
-func (v *SPADirectInterpreter) ExecStmt(rule antlr.RuleContext) bool {
+func (v *SPADirectInterpreter) ExecStmt(ctx *parser.StmtContext, ff FlowState) {
 	log.Debug("Visit Stmt")
 
-	//rule := ctx.GetChild(0).(antlr.RuleContext)
+	rule := ctx.GetChild(0).(antlr.RuleContext)
 	switch rule.GetRuleIndex() {
 	case parser.SpartaParserRULE_assign_stmt:
 		v.ExecAssignStmt(rule.(*parser.Assign_stmtContext))
-		return false
 	case parser.SpartaParserRULE_fundef_stmt:
 		v.ExecFunDefStmt(rule.(*parser.Fundef_stmtContext))
-		return false
 	case parser.SpartaParserRULE_return_stmt:
 		v.ExecReturnStmt(rule.(*parser.Return_stmtContext))
-		return true
 	case parser.SpartaParserRULE_funcall_stmt:
 		v.ExecFunCallStmt(rule.(*parser.Funcall_stmtContext))
-		return false
 	case parser.SpartaParserRULE_if_stmt:
-		return v.ExecIfStmt(rule.(*parser.If_stmtContext))
+		v.ExecIfStmt(rule.(*parser.If_stmtContext), ff)
 	case parser.SpartaParserRULE_for_stmt:
-		return v.ExecForStmt(rule.(*parser.For_stmtContext))
+		v.ExecForStmt(rule.(*parser.For_stmtContext), ff)
 	default:
 		panic("不支持的语句")
 	}
@@ -102,24 +97,38 @@ func (v *SPADirectInterpreter) ExecAssignStmt(ctx *parser.Assign_stmtContext)  {
 定义函数表达式
  */
 func (v *SPADirectInterpreter) ExecFunDefStmt(ctx *parser.Fundef_stmtContext)  {
-	name := ctx.GetChild(1).GetChild(0).(*antlr.TerminalNodeImpl).GetText()
-	body := ctx.GetChild(2).(*parser.Fun_bodyContext)
-	parNames := getParList(body.GetChild(0).(*parser.Fun_parContext))
-	log.Infof("参数： %v", parNames)
-	f := vm.NewFunction(name, parNames, body)
+	f := vm.SPAFunction{}
+	f.Name = ctx.GetChild(1).GetChild(0).(*antlr.TerminalNodeImpl).GetText()
+	f.Body = ctx.GetChild(2).(*parser.Fun_bodyContext)
+	v.EvalParList(f.Body.GetChild(0).(*parser.Fun_parContext), &f)
 	f.Outer = v.GlobalState
-	sym := vm.NewVariable(name, f)
+	sym := vm.NewFunVariable(f)
 	v.GlobalState.Define(sym) //函数定义
 	log.Infof("函数定义: %v", v.GlobalState)
+}
+
+/**
+获取形参列表
+ */
+func (v *SPADirectInterpreter) EvalParList(ctx *parser.Fun_parContext, f *vm.SPAFunction) {
+
+	f.Args = []string{}
+	if ctx.GetChildCount() == 2{
+		return
+	}
+	context := ctx.GetChild(1).(*parser.NamelistContext)
+	//var parNames = make([]string, 0, 10)
+	for i := 0; i < context.GetChildCount(); i += 2{
+		name := context.GetChild(i).(*antlr.TerminalNodeImpl).GetText()
+		f.Args = append(f.Args, name)
+	}
 }
 
 /**
 函数返回表达式
  */
 func (v *SPADirectInterpreter) ExecReturnStmt(ctx *parser.Return_stmtContext) {
-	if !vm.HasCallInfo(){
-		panic("未执行函数不能用返回语句")
-	}
+
 	if ctx.GetChildCount() == 2 {
 		v.EvalTest(ctx.GetChild(1).(*parser.TestContext))
 	} else{
@@ -138,42 +147,24 @@ func (v *SPADirectInterpreter) ExecFunCallStmt(ctx *parser.Funcall_stmtContext) 
 /**
 if语句
  */
-func (v *SPADirectInterpreter) ExecIfStmt(ctx *parser.If_stmtContext) bool {
+func (v *SPADirectInterpreter) ExecIfStmt(ctx *parser.If_stmtContext, ff FlowState) {
 	v.EvalTest(ctx.GetChild(1).(*parser.TestContext))
 	testResult := vm.PopValue()
 	if testResult.IsTrue() {
-		return v.ExecBlock(ctx.GetChild(2).(*parser.BlockContext))
+		v.ExecBlock(ctx.GetChild(2).(*parser.BlockContext), ff)
 	}
 	pos := 3
 	for pos + 4 < ctx.GetChildCount() {
 		v.EvalTest(ctx.GetChild(pos + 2).(*parser.TestContext))
 		testResult = vm.PopValue()
 		if testResult.IsTrue() {
-			return v.ExecBlock(ctx.GetChild(pos + 3).(*parser.BlockContext))
+			v.ExecBlock(ctx.GetChild(pos + 3).(*parser.BlockContext), ff)
 		}
 		pos += 4
 	}
 	if pos < ctx.GetChildCount() {
-		return v.ExecBlock(ctx.GetChild(pos + 1).(*parser.BlockContext))
+		v.ExecBlock(ctx.GetChild(pos + 1).(*parser.BlockContext), ff)
 	}
-	return false
-}
-
-/**
-获取形参列表
- */
-func getParList(ctx *parser.Fun_parContext) []string {
-
-	if ctx.GetChildCount() == 2{
-		return []string{}
-	}
-	context := ctx.GetChild(1).(*parser.NamelistContext)
-	var parNames = make([]string, 0, 10)
-	for i := 0; i < context.GetChildCount(); i += 2{
-		name := context.GetChild(i).(*antlr.TerminalNodeImpl).GetText()
-		parNames = append(parNames, name)
-	}
-	return parNames
 }
 
 /**
@@ -303,9 +294,10 @@ func (v *SPADirectInterpreter) EvalAtomExpr(ctx *parser.Atom_exprContext) {
 执行函数调用表达式
  */
 func(v *SPADirectInterpreter) EvalFunCallExpr(funCallExpr *parser.Funcall_exprContext)  {
-	name := v.EvalFunName(funCallExpr.GetChild(0).(*parser.Fun_nameContext))     //获取函数名
-	argCount := v.EvalFunArgs(funCallExpr.GetChild(1).(*parser.Arg_exprContext)) //参数入栈
-	va, ok := v.GlobalState.Resolve(name).(*vm.VariableSymbol)                   //获取函数定义
+	fs := &FunState{}
+	v.EvalFunName(funCallExpr.GetChild(0).(*parser.Fun_nameContext), fs) //获取函数名
+	v.EvalFunArgs(funCallExpr.GetChild(1).(*parser.Arg_exprContext), fs) //参数入栈
+	va, ok := v.GlobalState.Resolve(fs.FunName).(*vm.VariableSymbol)     //获取函数定义
 	if !ok {
 		panic("未找到函数定义")
 	}
@@ -313,86 +305,25 @@ func(v *SPADirectInterpreter) EvalFunCallExpr(funCallExpr *parser.Funcall_exprCo
 	if !ok {
 		panic("未找到函数定义")
 	}
-	if f.Internal{
-		v.CallInternalFunc(f, argCount)
-	} else{
-		v.CallFunc(f, argCount) //调用函数
-	}
+	fs.Function = f
+	v.CallFunc(fs)
 }
 
 // 获取函数名
-func(v *SPADirectInterpreter) EvalFunName(ctx *parser.Fun_nameContext) string {
-	return ctx.GetChild(0).(antlr.TerminalNode).GetText()
+func(v *SPADirectInterpreter) EvalFunName(ctx *parser.Fun_nameContext, state *FunState) {
+	state.FunName = ctx.GetChild(0).(antlr.TerminalNode).GetText()
 }
 
-// 保存参数到操作数栈
-func(v *SPADirectInterpreter) EvalFunArgs(ctx *parser.Arg_exprContext) int {
+// 保存参数到操作数栈（顺序）
+func(v *SPADirectInterpreter) EvalFunArgs(ctx *parser.Arg_exprContext, state *FunState) {
+	state.ArgCount = 0
 	if ctx.GetChildCount() == 2{
-		return 0
+		return
 	}
-	args := 0
 	argListContext := ctx.GetChild(1).(*parser.Arg_listContext)
 	for i := 0; i < argListContext.GetChildCount(); i += 2 {
 		v.EvalArgument(argListContext.GetChild(i).(*parser.ArgContext))
-		args++
-	}
-	return args
-}
-
-// 调用函数
-func (v *SPADirectInterpreter) CallFunc(f vm.SPAFunction, args int) {
-
-	ci := vm.NewCallInfo(f) //创建函数调用信息
-	passArgs(ci, args)		//传递参数
-	vm.PushCallInfo(ci)    	//保存到函数调用栈
-
-	defer vm.PopCallInfo() //函数退出时弹出调用栈
-
-	//var ret bool
-	//去掉大括号
-	bockCtx := f.Body.GetChild(1)
-	// 循环执行语句
-	if !v.ExecBlock(bockCtx.(*parser.BlockContext)){
-		vm.PushNullValue() //函数体内没有返回语句，自动插入空返回值
-	}
-}
-
-func (v *SPADirectInterpreter) CallInternalFunc(f vm.SPAFunction, args int) {
-	switch f.Name {
-	case "print":
-		var arg vm.SPAValue
-		for i := args; i > 0; i--{
-			arg = vm.PopValue()
-		}
-		fmt.Println(arg)
-		vm.PushNullValue() //函数体内没有返回语句，自动插入空返回值
-	}
-}
-
-// 参数压栈的时候是顺序的，因此遍历要倒序
-func passArgs(ci *vm.CallInfo, args int)  {
-
-	// 实参多于或等于形参
-	if args >= len(ci.Args){
-		for i := args - 1; i >= 0; i-- {
-			v := vm.PopValue()
-			//参数对齐，多余参数丢弃
-			if i < len(ci.Args) {
-				ci.Define(vm.NewVariable(ci.Args[i], v))
-			}
-		}
-	} else {
-		// 实参少于形参 args > len(ci.Args)
-		for i := len(ci.Args) - 1; i >= 0; i-- {
-
-			if i < args {
-				v := vm.PopValue()
-				ci.Define(vm.NewVariable(ci.Args[i], v))
-			} else {
-				v := vm.Null()
-				ci.Define(vm.NewVariable(ci.Args[i], v))
-			}
-		}
+		state.ArgCount++
 	}
 }
 
@@ -401,10 +332,80 @@ func (v *SPADirectInterpreter) EvalArgument(ctx *parser.ArgContext) {
 	v.EvalTest(ctx.GetChild(0).(*parser.TestContext))
 }
 
+// 调用函数
+func (v *SPADirectInterpreter) CallFunc(fs *FunState) {
+
+	// 内置函数
+	if fs.Function.Internal {
+		switch fs.FunName {
+		case "print":
+			var arg vm.SPAValue
+			for i := fs.ArgCount; i > 0; i--{
+				arg = vm.PopValue()
+			}
+			fmt.Println(arg)
+			vm.PushNullValue() //函数体内没有返回语句，自动插入空返回值
+		}
+	} else {
+		argList := FetchArgs(fs.ArgCount)
+		ci := vm.NewCallInfo(fs.Function, argList) //创建函数调用信息
+		//passArgs(ci, fs.ArgCount)		//传递参数
+		vm.PushCallInfo(ci)    	//保存到函数调用栈
+
+		defer vm.PopCallInfo() //函数退出时弹出调用栈
+
+		//var ret bool
+		//去掉大括号
+		bockCtx := fs.Function.Body.GetChild(1)
+		v.ExecBlock(bockCtx.(*parser.BlockContext), fs)
+		if fs.State != RETURN {
+			vm.PushNullValue()
+		}
+	}
+}
+
+func FetchArgs(argCount int) []vm.SPAValue {
+	argList := make([]vm.SPAValue, argCount, argCount)
+	for i := argCount - 1; i >= 0; i-- {
+		v := vm.PopValue()
+		argList[i] = v
+	}
+	return argList
+}
+
+//// 参数压栈的时候是顺序的，因此遍历要倒序
+//func passArgs(ci *vm.CallInfo, args int)  {
+//
+//	// 实参多于或等于形参
+//	if args >= len(ci.Args){
+//		for i := args - 1; i >= 0; i-- {
+//			v := vm.PopValue()
+//			//参数对齐，多余参数丢弃
+//			if i < len(ci.Args) {
+//				ci.Define(vm.NewVariable(ci.Args[i], v))
+//			}
+//		}
+//	} else {
+//		// 实参少于形参 args > len(ci.ArgCount)
+//		for i := len(ci.Args) - 1; i >= 0; i-- {
+//
+//			if i < args {
+//				v := vm.PopValue()
+//				ci.Define(vm.NewVariable(ci.Args[i], v))
+//			} else {
+//				v := vm.Null()
+//				ci.Define(vm.NewVariable(ci.Args[i], v))
+//			}
+//		}
+//	}
+//}
+
 // 循环体
-func (v *SPADirectInterpreter) ExecForStmt(ctx *parser.For_stmtContext) bool {
-	itemVar := ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
-	sym := vm.NewVariable(itemVar, vm.Null())
+func (v *SPADirectInterpreter) ExecForStmt(ctx *parser.For_stmtContext, ff FlowState) {
+
+	forState := &ForState{}
+	forState.ItemName = ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
+	sym := vm.NewVariable(forState.ItemName, vm.Null())
 
 	if vm.HasCallInfo(){
 		vm.GetTopCallInfo().Define(sym) //局部变量定义
@@ -429,9 +430,18 @@ func (v *SPADirectInterpreter) ExecForStmt(ctx *parser.For_stmtContext) bool {
 
 	for i := fromNumber; i <= toNumber; i++ {
 		sym.Value = vm.SPAInteger(i)
-		v.ExecBlock(ctx.GetChild(6).GetChild(0).(*parser.BlockContext))
+		v.ExecBlock(ctx.GetChild(6).(*parser.BlockContext), forState)
+		if forState.State == BREAK {
+			break
+		}
+		if forState.State == CONTINUE {
+			continue
+		}
+		if forState.State == RETURN {
+			ff.SetState(RETURN)
+			return
+		}
 	}
-	return false
 }
 
 /**

@@ -15,6 +15,13 @@ func NewVariable(name string, value SPAValue) *VariableSymbol {
 	}
 }
 
+func NewNullVariable(name string) *VariableSymbol {
+	return &VariableSymbol{
+		Name: name,
+		Value: Null(),
+	}
+}
+
 func NewFunVariable(f SPAFunction) *VariableSymbol {
 	return &VariableSymbol{
 		Name: f.Name,

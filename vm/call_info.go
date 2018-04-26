@@ -13,11 +13,19 @@ type CallInfo struct {
 	*MemorySpace //函数内存空间
 }
 
-func NewCallInfo(f SPAFunction)  *CallInfo {
-	return &CallInfo{
+func NewCallInfo(f SPAFunction, args []SPAValue)  *CallInfo {
+	ci := &CallInfo{
 		SPAFunction: f,
 		MemorySpace: NewMemorySpace(""),
 	}
+	for i := 0; i < len(f.Args); i++{
+		if i < len(args){
+			ci.Define(NewVariable(f.Args[i], args[i]))
+		} else {
+			ci.Define(NewNullVariable(f.Args[i]))
+		}
+	}
+	return ci
 }
 
 func (ci *CallInfo) Resolve(name string) Symbol {

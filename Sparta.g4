@@ -75,9 +75,7 @@ arg: test;
 if_stmt
     : 'if' test block ('else' 'if' test block)* ('else' block)?;
 
-for_stmt: 'for' IDENTIFIER 'in' test 'to' test for_body;
-
-for_body: block;
+for_stmt: 'for' IDENTIFIER 'in' test 'to' test block;
 
 block: '{' stmt* '}';
 
