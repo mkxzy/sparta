@@ -1,18 +1,17 @@
 package vm
 
-type SPAString struct {
-	str string
-}
+/**
+字符串类型
+ */
+type SPAString string
 
 func(s SPAString) String() string {
-	return s.str
+	return string(s)
 }
 
-func NewString(literal string) *SPAString {
-	spa := SPAString{
-		str: escapeString(literal),
-	}
-	return &spa
+func NewString(literal string) SPAString {
+	str := escapeString(literal)
+	return SPAString(str)
 }
 
 /**
@@ -59,5 +58,5 @@ func escapeMapping(c rune) rune {
 }
 
 func(s SPAString) IsTrue() bool  {
-	return len(s.str) > 0
+	return len(s) > 0
 }

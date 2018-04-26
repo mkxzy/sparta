@@ -25,10 +25,10 @@ func(s SPABool) IsTrue() bool  {
 	return bool(s)
 }
 
-func toNumber(spaBool SPABool) SPANumber {
-	if spaBool.IsTrue(){
-		return SPANumber(1)
+func(spaBool SPABool) ToInt() SPAInteger {
+	if spaBool == true{
+		return SPAInteger(1)
 	} else{
-		return SPANumber(0)
+		return SPAInteger(0)
 	}
 }

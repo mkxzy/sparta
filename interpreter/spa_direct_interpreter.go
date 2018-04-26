@@ -72,6 +72,8 @@ func (v *SPADirectInterpreter) ExecStmt(rule antlr.RuleContext) bool {
 		return false
 	case parser.SpartaParserRULE_if_stmt:
 		return v.ExecIfStmt(rule.(*parser.If_stmtContext))
+	case parser.SpartaParserRULE_for_stmt:
+		return v.ExecForStmt(rule.(*parser.For_stmtContext))
 	default:
 		panic("不支持的语句")
 	}
@@ -250,7 +252,10 @@ func (v *SPADirectInterpreter) EvalFactor(ctx *parser.FactorContext) {
 		v.EvalAtomExpr(ctx.GetChild(0).(*parser.Atom_exprContext))
 	} else{
 		v.EvalAtomExpr(ctx.GetChild(1).(*parser.Atom_exprContext))
-		minusValue() //取反
+		//取反
+		first := vm.PopValue()
+		result, _ := minus(first)
+		vm.PushValue(result)
 	}
 }
 
@@ -367,13 +372,26 @@ func (v *SPADirectInterpreter) CallInternalFunc(f vm.SPAFunction, args int) {
 // 参数压栈的时候是顺序的，因此遍历要倒序
 func passArgs(ci *vm.CallInfo, args int)  {
 
-	// 后序遍历
-	for i := args - 1; i >= 0; i-- {
+	// 实参多于或等于形参
+	if args >= len(ci.Args){
+		for i := args - 1; i >= 0; i-- {
+			v := vm.PopValue()
+			//参数对齐，多余参数丢弃
+			if i < len(ci.Args) {
+				ci.Define(vm.NewVariable(ci.Args[i], v))
+			}
+		}
+	} else {
+		// 实参少于形参 args > len(ci.Args)
+		for i := len(ci.Args) - 1; i >= 0; i-- {
 
-		v := vm.PopValue()
-		//参数对齐，多余参数丢弃
-		if i < len(ci.Args) {
-			ci.Define(vm.NewVariable(ci.Args[i], v))
+			if i < args {
+				v := vm.PopValue()
+				ci.Define(vm.NewVariable(ci.Args[i], v))
+			} else {
+				v := vm.Null()
+				ci.Define(vm.NewVariable(ci.Args[i], v))
+			}
 		}
 	}
 }
@@ -383,36 +401,49 @@ func (v *SPADirectInterpreter) EvalArgument(ctx *parser.ArgContext) {
 	v.EvalTest(ctx.GetChild(0).(*parser.TestContext))
 }
 
+// 循环体
+func (v *SPADirectInterpreter) ExecForStmt(ctx *parser.For_stmtContext) bool {
+	itemVar := ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
+	sym := vm.NewVariable(itemVar, vm.Null())
+
+	if vm.HasCallInfo(){
+		vm.GetTopCallInfo().Define(sym) //局部变量定义
+		//log.Infof("局部变量定义： %v", vm.GetTopCallInfo())
+	}else{
+		v.GlobalState.Define(sym) 		//全局变量定义
+		//log.Infof("全局变量定义: %v", v.GlobalState)
+	}
+	v.EvalTest(ctx.GetChild(3).(*parser.TestContext))
+	v.EvalTest(ctx.GetChild(5).(*parser.TestContext))
+	toNumber, ok := vm.PopValue().(vm.SPAInteger)
+	if !ok {
+		panic("类型不正确")
+	}
+	fromNumber, ok := vm.PopValue().(vm.SPAInteger)
+	if !ok {
+		panic("类型不正确")
+	}
+	if fromNumber > toNumber{
+		panic("起始数字不能大于结束数字")
+	}
+
+	for i := fromNumber; i <= toNumber; i++ {
+		sym.Value = vm.SPAInteger(i)
+		v.ExecBlock(ctx.GetChild(6).GetChild(0).(*parser.BlockContext))
+	}
+	return false
+}
+
 /**
 算数运算
  */
 func arithmetic(op string) {
 	second := vm.PopValue()
 	first := vm.PopValue()
-	switch op {
-	case "+":
-		result, _ := addOp(first, second)
-		log.Info(result)
-		vm.PushValue(result)
-	//case "-":
-	//	result := first - second
-	//	vm.PushValue(result)
-	//case "*":
-	//	result := first * second
-	//	vm.PushValue(result)
-	//case "/":
-	//	result := first / second
-	//	vm.PushValue(result)
-	default:
+	operation := operations[op]
+	if operation == nil{
 		panic("不支持的操作")
 	}
-}
-
-/**
-取反
- */
-func minusValue()  {
-	first := vm.PopValue().(vm.SPAInteger)
-	first = -first
-	vm.PushValue(first)
+	result, _ := operation(first, second)
+	vm.PushValue(result)
 }
