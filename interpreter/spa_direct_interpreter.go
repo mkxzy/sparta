@@ -28,8 +28,7 @@ func NewDirectInterpreter(globalState *vm.MemorySpace) *SPADirectInterpreter {
 func(v *SPADirectInterpreter) Interpret(ctx parser.IProgramContext)  {
 	for i := 0; i < ctx.GetChildCount()-1; i++ {
 		stmtContext := ctx.GetChild(i).(*parser.StmtContext)
-		//rule := ctx.GetChild(i).GetChild(0).(antlr.RuleContext)
-		v.ExecStmt(stmtContext, &ProgramState{})
+		v.ExecStmt(stmtContext, &ProgramState{State:NORMAL})
 	}
 }
 
@@ -38,15 +37,13 @@ func(v *SPADirectInterpreter) Interpret(ctx parser.IProgramContext)  {
 返回值： 是否被return中断
  */
 func (v *SPADirectInterpreter) ExecBlock(ctx *parser.BlockContext, ff FlowState) {
-	//returned = false
 	for i := 1; i < ctx.GetChildCount()-1; i++ {
 		stmtContext := ctx.GetChild(i).(*parser.StmtContext)
-		//rule := stmtContext.GetChild(0).(antlr.RuleContext)
 		v.ExecStmt(stmtContext, ff)
-		//价值百万的代码
-		//if ff.GetState() == RETURN {
-		//	break
-		//}
+		// return，continue,break都要中断执行块
+		if ff.GetState() > NORMAL {
+			break
+		}
 	}
 }
 
@@ -61,14 +58,18 @@ func (v *SPADirectInterpreter) ExecStmt(ctx *parser.StmtContext, ff FlowState) {
 		v.ExecAssignStmt(rule.(*parser.Assign_stmtContext))
 	case parser.SpartaParserRULE_fundef_stmt:
 		v.ExecFunDefStmt(rule.(*parser.Fundef_stmtContext))
-	case parser.SpartaParserRULE_return_stmt:
-		v.ExecReturnStmt(rule.(*parser.Return_stmtContext))
 	case parser.SpartaParserRULE_funcall_stmt:
 		v.ExecFunCallStmt(rule.(*parser.Funcall_stmtContext))
+	case parser.SpartaParserRULE_return_stmt:
+		v.ExecReturnStmt(rule.(*parser.Return_stmtContext), ff)
 	case parser.SpartaParserRULE_if_stmt:
 		v.ExecIfStmt(rule.(*parser.If_stmtContext), ff)
 	case parser.SpartaParserRULE_for_stmt:
 		v.ExecForStmt(rule.(*parser.For_stmtContext), ff)
+	case parser.SpartaParserRULE_continue_stmt:
+		v.ExecContinueStmt(rule.(*parser.Continue_stmtContext), ff)
+	case parser.SpartaParserRULE_break_stmt:
+		v.ExecBreakStmt(rule.(*parser.Break_stmtContext), ff)
 	default:
 		panic("不支持的语句")
 	}
@@ -127,8 +128,9 @@ func (v *SPADirectInterpreter) EvalParList(ctx *parser.Fun_parContext, f *vm.SPA
 /**
 函数返回表达式
  */
-func (v *SPADirectInterpreter) ExecReturnStmt(ctx *parser.Return_stmtContext) {
+func (v *SPADirectInterpreter) ExecReturnStmt(ctx *parser.Return_stmtContext, ff FlowState) {
 
+	ff.SetState(RETURN)
 	if ctx.GetChildCount() == 2 {
 		v.EvalTest(ctx.GetChild(1).(*parser.TestContext))
 	} else{
@@ -403,7 +405,7 @@ func FetchArgs(argCount int) []vm.SPAValue {
 // 循环体
 func (v *SPADirectInterpreter) ExecForStmt(ctx *parser.For_stmtContext, ff FlowState) {
 
-	forState := &ForState{}
+	forState := &ForState{State:NORMAL}
 	forState.ItemName = ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
 	sym := vm.NewVariable(forState.ItemName, vm.Null())
 
@@ -438,10 +440,22 @@ func (v *SPADirectInterpreter) ExecForStmt(ctx *parser.For_stmtContext, ff FlowS
 			continue
 		}
 		if forState.State == RETURN {
-			ff.SetState(RETURN)
+			ff.SetState(RETURN) 		//传递给调用者
 			return
 		}
 	}
+}
+
+/**
+循环继续
+ */
+func (v *SPADirectInterpreter) ExecContinueStmt(ctx *parser.Continue_stmtContext, state FlowState) {
+	state.SetState(CONTINUE)
+}
+
+
+func (v *SPADirectInterpreter) ExecBreakStmt(ctx *parser.Break_stmtContext, state FlowState) {
+	state.SetState(BREAK)
 }
 
 /**

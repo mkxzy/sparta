@@ -4,4 +4,7 @@ fun sum(n){
     }
     return n + sum(n - 1)
 }
-print(sum(5))
+
+for x in 1 to 5 {
+    print(sum(x))
+}
