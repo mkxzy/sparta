@@ -5,7 +5,7 @@ import "github.com/mkxzy/sparta/vm"
 /**
 +号运算
  */
-func add(left, right vm.SPAValue) (result vm.SPAValue, ok bool) {
+func addOp(left, right vm.SPAValue) (result vm.SPAValue, ok bool) {
 	switch left.(type) {
 	case vm.SPANumber:
 		realLeft := left.(vm.SPANumber)

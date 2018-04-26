@@ -391,7 +391,7 @@ func arithmetic(op string) {
 	first := vm.PopValue()
 	switch op {
 	case "+":
-		result, _ := add(first, second)
+		result, _ := addOp(first, second)
 		log.Info(result)
 		vm.PushValue(result)
 	//case "-":
