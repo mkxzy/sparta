@@ -45,7 +45,12 @@ stmt
     | continue_stmt
     ;
 
-assign_stmt: IDENTIFIER '=' test;
+assign_stmt: left_side '=' test;
+
+left_side
+    : IDENTIFIER
+    | IDENTIFIER '[' test ']'
+    ;
 
 fundef_stmt: 'fun' fun_name fun_body;
 
@@ -127,13 +132,17 @@ factor: '-'? atom_expr;
 
 //不可分割表达式
 atom_expr
-    : '(' test ')'  //括号优先表达式
-    | funcall_expr          //函数调用
+    : '(' test ')'          //括号优先表达式
+    | '[' test_list ']'     //列表表达式
+    | funcall_expr  //函数调用
     | IDENTIFIER
+    | IDENTIFIER ('[' test ']')
     | INTEGER_LITERAL
     | NUMBER_LITERAL
     | STRING
     ;
+
+test_list: test (',' test)*;
 
 // 字符串
 STRING

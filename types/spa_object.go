@@ -1,6 +1,9 @@
 package types
 
-import "github.com/op/go-logging"
+import (
+	"github.com/op/go-logging"
+	"fmt"
+)
 
 var log = logging.MustGetLogger("operands")
 
@@ -9,6 +12,7 @@ var log = logging.MustGetLogger("operands")
  */
 type SPAValue interface {
 	Booler
+	fmt.Stringer
 }
 
 /**

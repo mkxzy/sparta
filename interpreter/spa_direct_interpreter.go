@@ -83,7 +83,7 @@ func (v *SPADirectInterpreter) ExecStmt(ctx *parser.StmtContext, ff FlowState) {
 func (v *SPADirectInterpreter) ExecAssignStmt(ctx *parser.Assign_stmtContext)  {
 
 	v.EvalTest(ctx.GetChild(2).(*parser.TestContext))
-	name := ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
+	name := ctx.GetChild(0).(*parser.Left_sideContext).GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
 	value := PopValue()
 	sym := symbol.NewVariable(name, value)
 
@@ -264,8 +264,14 @@ func (v *SPADirectInterpreter) EvalAtomExpr(ctx *parser.Atom_exprContext) {
 	log.Debug("Visit Atom_Expr")
 
 	if ctx.GetChildCount() == 3 {
-		// 括号优先表达式
-		v.EvalTest(ctx.GetChild(1).(*parser.TestContext))
+		firstChild := ctx.GetChild(0).(antlr.TerminalNode)
+		switch firstChild.GetText() {
+		case "(":
+			// 括号优先表达式
+			v.EvalTest(ctx.GetChild(1).(*parser.TestContext))
+		case "[":
+			v.EvalTestList(ctx.GetChild(1).(*parser.Test_listContext))
+		}
 	} else {
 		funCallExpr, ok := ctx.GetChild(0).(*parser.Funcall_exprContext)
 		// 函数调用
@@ -431,9 +437,23 @@ func (v *SPADirectInterpreter) ExecContinueStmt(ctx *parser.Continue_stmtContext
 	state.SetState(CONTINUE)
 }
 
-
+/**
+中断循环
+ */
 func (v *SPADirectInterpreter) ExecBreakStmt(ctx *parser.Break_stmtContext, state FlowState) {
 	state.SetState(BREAK)
+}
+
+func (v *SPADirectInterpreter) EvalTestList(ctx *parser.Test_listContext) {
+	elementCount := (ctx.GetChildCount() + 1) / 2
+	list := types.NewList(elementCount)
+	for i := 0; i < ctx.GetChildCount(); i += 2{
+		v.EvalTest(ctx.GetChild(i).(*parser.TestContext))
+		value := PopValue()
+		list.Append(value)
+	}
+	PushValue(list)
+	log.Info(list)
 }
 
 /**

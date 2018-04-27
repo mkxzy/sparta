@@ -11,8 +11,8 @@ import (
 变量存储空间
  */
 type MemorySpace struct {
-	Name string //符号名
-	Symbols map[string]Symbol //符号
+	Name string 				//符号名
+	Symbols map[string]Symbol 	//符号
 }
 
 func NewMemorySpace(name string) *MemorySpace {

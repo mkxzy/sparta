@@ -32,3 +32,11 @@ func(spaBool SPABool) ToInt() SPAInteger {
 		return SPAInteger(0)
 	}
 }
+
+func(n SPABool) String() string  {
+	if n.IsTrue(){
+		return "true"
+	} else {
+		return "false"
+	}
+}

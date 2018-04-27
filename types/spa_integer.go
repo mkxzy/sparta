@@ -15,3 +15,7 @@ func NewInteger(literal string) SPAInteger {
 func(n SPAInteger) IsTrue() bool {
 	return n > 0
 }
+
+func(n SPAInteger) String() string  {
+	return strconv.FormatInt(int64(n),10)
+}
