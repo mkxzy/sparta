@@ -1,24 +1,24 @@
 package interpreter
 
-import "github.com/mkxzy/sparta/vm"
+import "github.com/mkxzy/sparta/types"
 
 /**
 取负数
  */
-func minus(v vm.SPAValue) (result vm.SPAValue, ok bool) {
+func minus(v types.SPAValue) (result types.SPAValue, ok bool) {
 	switch v.(type) {
-	case vm.SPANumber:
-		real := v.(vm.SPANumber)
+	case types.SPANumber:
+		real := v.(types.SPANumber)
 		result = -real
 		ok = true
 		return
-	case vm.SPAInteger:
-		real := v.(vm.SPAInteger)
+	case types.SPAInteger:
+		real := v.(types.SPAInteger)
 		result = -real
 		ok = true
 		return
 	}
-	result = vm.Null()
+	result = types.Null()
 	ok = false
 	return
 }

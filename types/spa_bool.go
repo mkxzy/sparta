@@ -1,4 +1,4 @@
-package vm
+package types
 
 /**
 表示语言的bool类型

@@ -1,4 +1,4 @@
-package vm
+package types
 
 /**
 表示空类型，受保护类型，外部只能通过IsNull判断是否是空类型

@@ -1,13 +1,13 @@
 package interpreter
 
 import (
-	"github.com/mkxzy/sparta/vm"
+	"github.com/mkxzy/sparta/types"
 	"fmt"
 	"bytes"
 )
 
 //操作符和操作关联
-var operations = make(map[string]func(left, right vm.SPAValue) (result vm.SPAValue, ok bool))
+var operations = make(map[string]func(left, right types.SPAValue) (result types.SPAValue, ok bool))
 
 //初始化
 func init()  {
@@ -21,62 +21,62 @@ func init()  {
 /**
 +号运算
  */
-func add(left, right vm.SPAValue) (result vm.SPAValue, ok bool) {
+func add(left, right types.SPAValue) (result types.SPAValue, ok bool) {
 	switch left.(type) {
-	case vm.SPANumber:
-		realLeft := left.(vm.SPANumber)
+	case types.SPANumber:
+		realLeft := left.(types.SPANumber)
 		switch right.(type) {
-		case vm.SPANumber:
-			realRight := right.(vm.SPANumber)
+		case types.SPANumber:
+			realRight := right.(types.SPANumber)
 			result = realLeft + realRight
 			ok = true
 			return
-		case vm.SPAInteger:
-			realRight := right.(vm.SPAInteger)
-			result = realLeft + vm.SPANumber(realRight)
+		case types.SPAInteger:
+			realRight := right.(types.SPAInteger)
+			result = realLeft + types.SPANumber(realRight)
 			ok = true
 			return
-		case vm.SPABool:
-			realRight := right.(vm.SPABool)
-			result = realLeft + vm.SPANumber(realRight.ToInt())
+		case types.SPABool:
+			realRight := right.(types.SPABool)
+			result = realLeft + types.SPANumber(realRight.ToInt())
 			ok = true
 			return
 		}
-	case vm.SPAInteger:
-		realLeft := left.(vm.SPAInteger)
+	case types.SPAInteger:
+		realLeft := left.(types.SPAInteger)
 		switch right.(type) {
-		case vm.SPANumber:
-			realRight := right.(vm.SPANumber)
-			result = vm.SPANumber(realLeft) + realRight
+		case types.SPANumber:
+			realRight := right.(types.SPANumber)
+			result = types.SPANumber(realLeft) + realRight
 			ok = true
 			return
-		case vm.SPAInteger:
-			realRight := right.(vm.SPAInteger)
+		case types.SPAInteger:
+			realRight := right.(types.SPAInteger)
 			result = realLeft + realRight
 			ok = true
 			return
-		case vm.SPABool:
-			realRight := right.(vm.SPABool)
+		case types.SPABool:
+			realRight := right.(types.SPABool)
 			result = realLeft + realRight.ToInt()
 			ok = true
 			return
 		}
-	case vm.SPAString:
-		realLeft := left.(vm.SPAString)
+	case types.SPAString:
+		realLeft := left.(types.SPAString)
 		switch right.(type) {
-		case vm.SPANumber:
-			realRight := right.(vm.SPANumber)
-			result = vm.SPAString(fmt.Sprintf("%s%f", realLeft, realRight))
+		case types.SPANumber:
+			realRight := right.(types.SPANumber)
+			result = types.SPAString(fmt.Sprintf("%s%f", realLeft, realRight))
 			ok = true
 			return
-		case vm.SPAInteger:
-			realRight := right.(vm.SPAInteger)
-			result = vm.SPAString(fmt.Sprintf("%s%d", realLeft, realRight))
+		case types.SPAInteger:
+			realRight := right.(types.SPAInteger)
+			result = types.SPAString(fmt.Sprintf("%s%d", realLeft, realRight))
 			ok = true
 			return
 		}
 	}
-	result = vm.Null()
+	result = types.Null()
 	ok = false
 	return
 }
@@ -84,67 +84,67 @@ func add(left, right vm.SPAValue) (result vm.SPAValue, ok bool) {
 /**
 减号操作
  */
-func sub(left, right vm.SPAValue) (result vm.SPAValue, ok bool) {
+func sub(left, right types.SPAValue) (result types.SPAValue, ok bool) {
 	switch left.(type) {
-	case vm.SPANumber:
-		realLeft := left.(vm.SPANumber)
+	case types.SPANumber:
+		realLeft := left.(types.SPANumber)
 		switch right.(type) {
-		case vm.SPANumber:
-			realRight := right.(vm.SPANumber)
+		case types.SPANumber:
+			realRight := right.(types.SPANumber)
 			result = realLeft - realRight
 			ok = true
 			return
-		case vm.SPAInteger:
-			realRight := right.(vm.SPAInteger)
-			result = realLeft - vm.SPANumber(realRight)
+		case types.SPAInteger:
+			realRight := right.(types.SPAInteger)
+			result = realLeft - types.SPANumber(realRight)
 			ok = true
 			return
-		case vm.SPABool:
-			realRight := right.(vm.SPABool)
-			result = realLeft - vm.SPANumber(realRight.ToInt())
+		case types.SPABool:
+			realRight := right.(types.SPABool)
+			result = realLeft - types.SPANumber(realRight.ToInt())
 			ok = true
 			return
 		}
-	case vm.SPAInteger:
-		realLeft := left.(vm.SPAInteger)
+	case types.SPAInteger:
+		realLeft := left.(types.SPAInteger)
 		switch right.(type) {
-		case vm.SPANumber:
-			realRight := right.(vm.SPANumber)
-			result = vm.SPANumber(realLeft) - realRight
+		case types.SPANumber:
+			realRight := right.(types.SPANumber)
+			result = types.SPANumber(realLeft) - realRight
 			ok = true
 			return
-		case vm.SPAInteger:
-			realRight := right.(vm.SPAInteger)
+		case types.SPAInteger:
+			realRight := right.(types.SPAInteger)
 			result = realLeft - realRight
 			ok = true
 			return
-		case vm.SPABool:
-			realRight := right.(vm.SPABool)
+		case types.SPABool:
+			realRight := right.(types.SPABool)
 			result = realLeft - realRight.ToInt()
 			ok = true
 			return
 		}
-	case vm.SPABool:
-		realLeft := left.(vm.SPABool)
+	case types.SPABool:
+		realLeft := left.(types.SPABool)
 		switch right.(type) {
-		case vm.SPANumber:
-			realRight := right.(vm.SPANumber)
-			result = vm.SPANumber(realLeft.ToInt()) - realRight
+		case types.SPANumber:
+			realRight := right.(types.SPANumber)
+			result = types.SPANumber(realLeft.ToInt()) - realRight
 			ok = true
 			return
-		case vm.SPAInteger:
-			realRight := right.(vm.SPAInteger)
+		case types.SPAInteger:
+			realRight := right.(types.SPAInteger)
 			result = realLeft.ToInt() - realRight
 			ok = true
 			return
-		case vm.SPABool:
-			realRight := right.(vm.SPABool)
+		case types.SPABool:
+			realRight := right.(types.SPABool)
 			result = realLeft.ToInt() - realRight.ToInt()
 			ok = true
 			return
 		}
 	}
-	result = vm.Null()
+	result = types.Null()
 	ok = false
 	return
 }
@@ -152,80 +152,80 @@ func sub(left, right vm.SPAValue) (result vm.SPAValue, ok bool) {
 /**
 乘法操作
  */
-func mul(left, right vm.SPAValue) (result vm.SPAValue, ok bool)  {
+func mul(left, right types.SPAValue) (result types.SPAValue, ok bool)  {
 	switch left.(type) {
-	case vm.SPANumber:
-		realLeft := left.(vm.SPANumber)
+	case types.SPANumber:
+		realLeft := left.(types.SPANumber)
 		switch right.(type) {
-		case vm.SPANumber:
-			realRight := right.(vm.SPANumber)
+		case types.SPANumber:
+			realRight := right.(types.SPANumber)
 			result = realLeft * realRight
 			ok = true
 			return
-		case vm.SPAInteger:
-			realRight := right.(vm.SPAInteger)
-			result = realLeft * vm.SPANumber(realRight)
+		case types.SPAInteger:
+			realRight := right.(types.SPAInteger)
+			result = realLeft * types.SPANumber(realRight)
 			ok = true
 			return
-		case vm.SPABool:
-			realRight := right.(vm.SPABool)
-			result = realLeft * vm.SPANumber(realRight.ToInt())
+		case types.SPABool:
+			realRight := right.(types.SPABool)
+			result = realLeft * types.SPANumber(realRight.ToInt())
 			ok = true
 			return
 		}
-	case vm.SPAInteger:
-		realLeft := left.(vm.SPAInteger)
+	case types.SPAInteger:
+		realLeft := left.(types.SPAInteger)
 		switch right.(type) {
-		case vm.SPANumber:
-			realRight := right.(vm.SPANumber)
-			result = vm.SPANumber(realLeft) * realRight
+		case types.SPANumber:
+			realRight := right.(types.SPANumber)
+			result = types.SPANumber(realLeft) * realRight
 			ok = true
 			return
-		case vm.SPAInteger:
-			realRight := right.(vm.SPAInteger)
+		case types.SPAInteger:
+			realRight := right.(types.SPAInteger)
 			result = realLeft * realRight
 			ok = true
 			return
-		case vm.SPABool:
-			realRight := right.(vm.SPABool)
+		case types.SPABool:
+			realRight := right.(types.SPABool)
 			result = realLeft * realRight.ToInt()
 			ok = true
 			return
 		}
-	case vm.SPABool:
-		realLeft := left.(vm.SPABool)
+	case types.SPABool:
+		realLeft := left.(types.SPABool)
 		switch right.(type) {
-		case vm.SPANumber:
-			realRight := right.(vm.SPANumber)
-			result = vm.SPANumber(realLeft.ToInt()) * realRight
+		case types.SPANumber:
+			realRight := right.(types.SPANumber)
+			result = types.SPANumber(realLeft.ToInt()) * realRight
 			ok = true
 			return
-		case vm.SPAInteger:
-			realRight := right.(vm.SPAInteger)
+		case types.SPAInteger:
+			realRight := right.(types.SPAInteger)
 			result = realLeft.ToInt() * realRight
 			ok = true
 			return
-		case vm.SPABool:
-			realRight := right.(vm.SPABool)
+		case types.SPABool:
+			realRight := right.(types.SPABool)
 			result = realLeft.ToInt() * realRight.ToInt()
 			ok = true
 			return
 		}
-	case vm.SPAString:
-		realLeft := left.(vm.SPAString)
+	case types.SPAString:
+		realLeft := left.(types.SPAString)
 		switch right.(type) {
-		case vm.SPAInteger:
-			realRight := right.(vm.SPAInteger)
+		case types.SPAInteger:
+			realRight := right.(types.SPAInteger)
 			var buffer bytes.Buffer
 			for i := 0; i < int(realRight); i++ {
 				buffer.WriteString(string(realLeft))
 			}
-			result = vm.SPAString(buffer.String())
+			result = types.SPAString(buffer.String())
 			ok = true
 			return
 		}
 	}
-	result = vm.Null()
+	result = types.Null()
 	ok = false
 	return
 }
@@ -233,38 +233,38 @@ func mul(left, right vm.SPAValue) (result vm.SPAValue, ok bool)  {
 /**
 除法操作
  */
-func div(left, right vm.SPAValue) (result vm.SPAValue, ok bool)  {
+func div(left, right types.SPAValue) (result types.SPAValue, ok bool)  {
 	switch left.(type) {
-	case vm.SPANumber:
-		realLeft := left.(vm.SPANumber)
+	case types.SPANumber:
+		realLeft := left.(types.SPANumber)
 		switch right.(type) {
-		case vm.SPANumber:
-			realRight := right.(vm.SPANumber)
+		case types.SPANumber:
+			realRight := right.(types.SPANumber)
 			result = realLeft + realRight
 			ok = true
 			return
-		case vm.SPAInteger:
-			realRight := right.(vm.SPAInteger)
-			result = realLeft + vm.SPANumber(realRight)
+		case types.SPAInteger:
+			realRight := right.(types.SPAInteger)
+			result = realLeft + types.SPANumber(realRight)
 			ok = true
 			return
 		}
-	case vm.SPAInteger:
-		realLeft := left.(vm.SPAInteger)
+	case types.SPAInteger:
+		realLeft := left.(types.SPAInteger)
 		switch right.(type) {
-		case vm.SPANumber:
-			realRight := right.(vm.SPANumber)
-			result = vm.SPANumber(realLeft) + realRight
+		case types.SPANumber:
+			realRight := right.(types.SPANumber)
+			result = types.SPANumber(realLeft) + realRight
 			ok = true
 			return
-		case vm.SPAInteger:
-			realRight := right.(vm.SPAInteger)
+		case types.SPAInteger:
+			realRight := right.(types.SPAInteger)
 			result = realLeft + realRight
 			ok = true
 			return
 		}
 	}
-	result = vm.Null()
+	result = types.Null()
 	ok = false
 	return
 }
@@ -272,19 +272,19 @@ func div(left, right vm.SPAValue) (result vm.SPAValue, ok bool)  {
 /**
 取模操作
  */
-func mod(left, right vm.SPAValue) (result vm.SPAValue, ok bool)  {
+func mod(left, right types.SPAValue) (result types.SPAValue, ok bool)  {
 	switch left.(type) {
-	case vm.SPAInteger:
-		realLeft := left.(vm.SPAInteger)
+	case types.SPAInteger:
+		realLeft := left.(types.SPAInteger)
 		switch right.(type) {
-		case vm.SPAInteger:
-			realRight := right.(vm.SPAInteger)
+		case types.SPAInteger:
+			realRight := right.(types.SPAInteger)
 			result = realLeft % realRight
 			ok = true
 			return
 		}
 	}
-	result = vm.Null()
+	result = types.Null()
 	ok = false
 	return
 }

@@ -7,6 +7,9 @@ const (
 	CONTINUE
 )
 
+/**
+控制流接口
+ */
 type FlowState interface {
 
 	SetState(s int)

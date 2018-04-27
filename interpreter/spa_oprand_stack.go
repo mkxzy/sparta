@@ -1,11 +1,13 @@
-package vm
+package interpreter
+
+import "github.com/mkxzy/sparta/types"
 
 const MaxOperandStack = 10
 
-var operands [MaxOperandStack]SPAValue
+var operands [MaxOperandStack]types.SPAValue
 var sp = -1
 
-func PushValue(v SPAValue)  {
+func PushValue(v types.SPAValue)  {
 	if sp >= len(operands) - 1{
 		panic("操作树栈溢出")
 	}
@@ -16,10 +18,10 @@ func PushValue(v SPAValue)  {
 }
 
 func PushNullValue()  {
-	PushValue(Null())
+	PushValue(types.Null())
 }
 
-func PopValue() SPAValue  {
+func PopValue() types.SPAValue  {
 	if sp > -1 {
 		v := operands[sp]
 		operands[sp] = nil
@@ -31,7 +33,7 @@ func PopValue() SPAValue  {
 	panic("操作树栈为空")
 }
 
-func PeekValue() SPAValue {
+func PeekValue() types.SPAValue {
 	if sp > -1 {
 		return operands[sp]
 	}

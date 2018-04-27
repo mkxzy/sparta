@@ -1,4 +1,4 @@
-package vm
+package symbol
 
 /**
 作用域接口
@@ -12,11 +12,4 @@ type Scope interface {
 	Define(symbol Symbol)
 
 	Resolve(name string) Symbol
-}
-
-/**
-符号
- */
-type Symbol interface {
-	GetName() string
 }

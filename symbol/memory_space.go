@@ -1,6 +1,6 @@
 // 符号表， 管理程序符号实体
 
-package vm
+package symbol
 
 import (
 	"bytes"

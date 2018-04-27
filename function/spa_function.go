@@ -1,8 +1,9 @@
-package vm
+package function
 
 import (
 	"github.com/mkxzy/sparta/parser"
 	"strings"
+	"github.com/mkxzy/sparta/symbol"
 )
 
 /**
@@ -13,7 +14,7 @@ type SPAFunction struct {
 	Internal bool	//是否内置函数
 	Name string 	//函数名
 	Args []string 	//参数名
-	Outer Scope 	//外部作用域
+	Outer symbol.Scope 	//外部作用域
 	Body *parser.Fun_bodyContext //函数体（解析树）
 }
 
@@ -34,6 +35,13 @@ func NewInternalFunction(name string, args []string) SPAFunction  {
 	}
 }
 
+func NewFunVariable(f SPAFunction) *symbol.SPAVariable {
+	return &symbol.SPAVariable{
+		Name: f.Name,
+		Value: f,
+	}
+}
+
 // Booler接口
 func(s SPAFunction) IsTrue() bool  {
 	return true
@@ -42,4 +50,9 @@ func(s SPAFunction) IsTrue() bool  {
 //Stringer接口实现
 func(f SPAFunction) String() string {
 	return f.Name + "(" + strings.Join(f.Args, ", ") + ")"
+}
+
+// Symbol接口实现
+func (ms  SPAFunction) GetName() string {
+	return ms.Name
 }

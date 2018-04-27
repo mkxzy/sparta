@@ -1,12 +1,16 @@
 package interpreter
 
-import "github.com/mkxzy/sparta/vm"
+import (
+	"github.com/mkxzy/sparta/types"
+	"github.com/mkxzy/sparta/function"
+)
 
 type FunState struct {
 	FunName  string
-	ArgCount int
+	ArgCount int		//实际传递参数数量
 	State    int
-	Function vm.SPAFunction
+	Function function.SPAFunction
+	Args []types.SPAValue //实际传递参数
 }
 
 func (fs *FunState) GetState() int {

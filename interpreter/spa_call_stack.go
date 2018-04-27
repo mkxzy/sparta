@@ -1,4 +1,4 @@
-package vm
+package interpreter
 
 var calls [10000]*CallInfo            //栈空间最多10000
 var fp = -1                                 //函数栈指针

@@ -1,7 +1,7 @@
 fun foo(n){
     for x in 1 to n {
-        if x == 5{
-            return
+        if x == 3 {
+            continue
         }
         print(x)
     }

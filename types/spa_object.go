@@ -1,4 +1,4 @@
-package vm
+package types
 
 import "github.com/op/go-logging"
 
