@@ -83,17 +83,57 @@ func (v *SPADirectInterpreter) ExecStmt(ctx *parser.StmtContext, ff FlowState) {
 func (v *SPADirectInterpreter) ExecAssignStmt(ctx *parser.Assign_stmtContext)  {
 
 	v.EvalTest(ctx.GetChild(2).(*parser.TestContext))
-	name := ctx.GetChild(0).(*parser.Left_sideContext).GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
-	value := PopValue()
-	sym := symbol.NewVariable(name, value)
+	//name := ctx.GetChild(0).(*parser.Left_sideContext).GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
 
-	if HasCallInfo(){
-		GetTopCallInfo().Define(sym) //局部变量定义
-		//log.Infof("局部变量定义： %v", vm.GetTopCallInfo())
-	}else{
-		v.GlobalState.Define(sym) 		//全局变量定义
-		//log.Infof("全局变量定义: %v", v.GlobalState)
+	as := &AssignState{}
+	v.EvalLeftSide(ctx.GetChild(0).(*parser.Left_sideContext), as)
+
+	if as.State == NewVariable {
+		value := PopValue()
+		sym := symbol.NewVariable(as.Name, value)
+		if HasCallInfo(){
+			GetTopCallInfo().Define(sym) //局部变量定义
+			//log.Infof("局部变量定义： %v", vm.GetTopCallInfo())
+		}else{
+			v.GlobalState.Define(sym) 		//全局变量定义
+			//log.Infof("全局变量定义: %v", v.GlobalState)
+		}
+	} else {
+		var sym symbol.Symbol
+		if HasCallInfo(){
+			sym = GetTopCallInfo().Resolve(as.Name) 	//局部变量定义
+		}else{
+			sym = v.GlobalState.Resolve(as.Name) 		//全局变量定义
+		}
+		if sym == nil {
+			panic("")
+		}
+		list := sym.(*symbol.SPAVariable).Value.(*types.SPAList)
+		index, ok := PopValue().(types.SPAInteger)
+		if !ok {
+			panic("index必须是整数")
+		}
+		v := PopValue()
+		list.Set(index, v)
 	}
+}
+
+func(v *SPADirectInterpreter) EvalLeftSide(ctx *parser.Left_sideContext, as *AssignState)  {
+	name := ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
+	if ctx.GetChildCount() == 1 {
+		as.Name = name
+		as.State = NewVariable
+	} else {
+		as.Name = name
+		as.State = ListAccess
+		v.EvalTest(ctx.GetChild(2).(*parser.TestContext))
+	}
+}
+
+func isListAccess(ctx *parser.Assign_stmtContext) bool {
+	leftSide := ctx.GetChild(0).(*parser.Left_sideContext)
+	return leftSide.GetChildCount() == 4 &&
+		leftSide.GetChild(1).(antlr.TerminalNode).GetText() == "["
 }
 
 /**

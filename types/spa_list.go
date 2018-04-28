@@ -16,6 +16,10 @@ func (list *SPAList) Append(v SPAValue)  {
 	list.arr = append(list.arr, v)
 }
 
+func (list *SPAList) Set(index SPAInteger, v SPAValue)  {
+	list.arr[index] = v
+}
+
 func(s *SPAList) IsTrue() bool  {
 	return len(s.arr) > 0
 }

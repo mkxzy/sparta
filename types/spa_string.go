@@ -1,12 +1,14 @@
 package types
 
+import "fmt"
+
 /**
 字符串类型
  */
 type SPAString string
 
 func(s SPAString) String() string {
-	return string(s)
+	return fmt.Sprintf("%q", string(s))
 }
 
 func NewString(literal string) SPAString {
