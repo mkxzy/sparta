@@ -20,6 +20,10 @@ func (list *SPAList) Set(index SPAInteger, v SPAValue)  {
 	list.arr[index] = v
 }
 
+func (list *SPAList) Get(index SPAInteger) SPAValue {
+	return list.arr[index]
+}
+
 func(s *SPAList) IsTrue() bool  {
 	return len(s.arr) > 0
 }

@@ -130,12 +130,6 @@ func(v *SPADirectInterpreter) EvalLeftSide(ctx *parser.Left_sideContext, as *Ass
 	}
 }
 
-func isListAccess(ctx *parser.Assign_stmtContext) bool {
-	leftSide := ctx.GetChild(0).(*parser.Left_sideContext)
-	return leftSide.GetChildCount() == 4 &&
-		leftSide.GetChild(1).(antlr.TerminalNode).GetText() == "["
-}
-
 /**
 定义函数表达式
  */
@@ -312,6 +306,18 @@ func (v *SPADirectInterpreter) EvalAtomExpr(ctx *parser.Atom_exprContext) {
 		case "[":
 			v.EvalTestList(ctx.GetChild(1).(*parser.Test_listContext))
 		}
+	} else if ctx.GetChildCount() == 4 {
+		v.EvalTest(ctx.GetChild(2).(*parser.TestContext))
+		name := ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
+		var sym *symbol.SPAVariable
+		if HasCallInfo(){
+			sym = GetTopCallInfo().Resolve(name).(*symbol.SPAVariable)
+		} else {
+			sym = v.GlobalState.Resolve(name).(*symbol.SPAVariable)
+		}
+		value := sym.Value.(*types.SPAList)
+		index := PopValue().(types.SPAInteger)
+		PushValue(value.Get(index))
 	} else {
 		funCallExpr, ok := ctx.GetChild(0).(*parser.Funcall_exprContext)
 		// 函数调用

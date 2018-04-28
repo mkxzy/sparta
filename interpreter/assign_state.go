@@ -4,7 +4,7 @@ package interpreter
 const (
 	NewVariable = iota
 	ListAccess
-	MapAccess
+	//MapAccess
 )
 
 type AssignState struct {
