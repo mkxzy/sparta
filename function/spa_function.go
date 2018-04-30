@@ -11,11 +11,11 @@ import (
  */
 type SPAFunction struct {
 
-	Internal bool	//是否内置函数
-	Name string 	//函数名
-	Args []string 	//参数名
-	Outer symbol.Scope 	//外部作用域
-	Body *parser.Fun_bodyContext //函数体（解析树）
+	Internal bool					//是否内置函数
+	Name string 					//函数名
+	Args []string 					//参数名
+	Outer symbol.Scope 				//外部作用域
+	Body *parser.Fun_bodyContext 	//函数体（解析树）
 }
 
 func NewFunction(name string, args []string, body *parser.Fun_bodyContext) SPAFunction {

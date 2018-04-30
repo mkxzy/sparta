@@ -8,17 +8,19 @@ import (
 )
 
 /**
-函数调用状态
+函数调用信息
  */
 type CallInfo struct {
-	function.SPAFunction //函数定义
-	*symbol.MemorySpace //函数内存空间
+	function.SPAFunction 				//函数定义
+	locals  map[string]symbol.Symbol 	//局部变量
+	upvals  map[string]symbol.Symbol	//自由变量（闭包）
 }
 
 func NewCallInfo(fs *FunState)  *CallInfo {
 	ci := &CallInfo{
 		SPAFunction: fs.Function,
-		MemorySpace: symbol.NewMemorySpace(""),
+		locals: make(map[string]symbol.Symbol),
+		upvals: make(map[string]symbol.Symbol),
 	}
 	for i := 0; i < len(fs.Function.Args); i++{
 		if i < len(fs.Args){
@@ -30,14 +32,33 @@ func NewCallInfo(fs *FunState)  *CallInfo {
 	return ci
 }
 
+// begein Scope接口实现
+func (ms *CallInfo) GetScopeName() string  {
+	return ms.Name
+}
+
+func (ms *CallInfo) GetEnclosingScope() symbol.Scope {
+	return ms.Outer
+}
+
+func (ms *CallInfo) Define(symbol symbol.Symbol) {
+	ms.locals[symbol.GetName()] = symbol
+}
+
+// end Scope接口实现
+
 func (ci *CallInfo) Resolve(name string) symbol.Symbol {
 
-	sym := ci.MemorySpace.Resolve(name)
+	sym := ci.locals[name]
 	if sym != nil {
 		return sym
 	}
-	if ci.Outer != nil {
-		sym := ci.Outer.Resolve(name)
+	sym = ci.upvals[name]
+	if sym != nil {
+		return sym
+	}
+	if ci.Outer != nil{
+		sym = ci.Outer.Resolve(name)
 		if sym != nil{
 			return sym
 		}
@@ -48,7 +69,7 @@ func (ci *CallInfo) Resolve(name string) symbol.Symbol {
 
 func(ci *CallInfo) String() string  {
 	var buffer bytes.Buffer
-	for k, v := range ci.Symbols {
+	for k, v := range ci.locals {
 		s := fmt.Sprintf("%s: %v, ", k, v)
 		buffer.WriteString(s)
 	}

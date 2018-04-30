@@ -1,5 +1,14 @@
 package function
 
+var internals =  make(map[string]InternalFunction)
+
+func init()  {
+	internals["print"] = InternalFunction{
+		Name: "print",
+		Args: []string{"s"},
+	}
+}
+
 /**
 内置函数
  */

@@ -1,10 +1,18 @@
+a = 5
+
 fun foo(){
 
     x = 3
 
     fun bar(n){
-        print(n + 2)
+        if n == 1 {
+            return 1
+        }
+        return a + x + bar(n-1)
     }
 
     return bar
 }
+
+f = foo()
+print(f(5))
