@@ -6,8 +6,6 @@ import (
 	"github.com/mkxzy/sparta/parser"
 	"github.com/op/go-logging"
 	"os"
-	"github.com/mkxzy/sparta/symbol"
-	"github.com/mkxzy/sparta/function"
 )
 
 //var log = logging.MustGetLogger("sparta")
@@ -20,7 +18,7 @@ func init() {
 	//formatter := logging.NewBackendFormatter(backend, format)
 	//logging.SetBackend(backend, formatter)
 	//backend1Leveled := logging.AddModuleLevel(backend)
-	logging.SetLevel(logging.ERROR, "")
+	logging.SetLevel(logging.DEBUG, "")
 }
 
 func main() {
@@ -29,19 +27,12 @@ func main() {
 	stream := antlr.NewCommonTokenStream(lexer, 0)
 	p := parser.NewSpartaParser(stream)
 	p.BuildParseTrees = true
-	ctx := p.Program()        // 生成解析树
-	inter := getInterpreter() // 创建解释器
-	inter.Interpret(ctx)
+	ast := p.Program()        						// 生成解析树
+	inter := interpreter.NewDirectInterpreter(ast) 	// 创建解释器
+	inter.Interpret()
 
 	//tree.Accept(inter) 	  // 解释执行
 	//listener := interpreter.NewInterpreter()
 	//antlr.ParseTreeWalkerDefault.Walk(listener, tree)
 	//fmt.Println(tree)
-}
-
-func getInterpreter() interpreter.SPAInterpreter {
-	globalState := symbol.NewMemorySpace("global")                  //全局内存空间
-	printFunc := function.NewInternalFunction("print", []string{"s"}) //print内置函数
-	globalState.Define(function.NewFunVariable(printFunc))
-	return interpreter.NewDirectInterpreter(globalState)
 }

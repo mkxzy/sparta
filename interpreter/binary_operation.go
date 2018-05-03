@@ -19,6 +19,20 @@ func init()  {
 }
 
 /**
+算数运算
+ */
+func arithmetic(op string) {
+	second := PopValue()
+	first := PopValue()
+	operation := operations[op]
+	if operation == nil{
+		panic("不支持的操作")
+	}
+	result, _ := operation(first, second)
+	PushValue(result)
+}
+
+/**
 +号运算
  */
 func add(left, right types.SPAValue) (result types.SPAValue, ok bool) {
