@@ -16,16 +16,16 @@ import (
 var log = logging.MustGetLogger("SPADirectInterpreter")
 
 type SPADirectInterpreter struct {
-	//*parser.BaseSpartaVisitor
-	GlobalState *symbol.MemorySpace //全局变量空间
-	currentScope symbol.Scope		//当前作用域
-	lastScope symbol.Scope			//保存作用域
+	GlobalState  *symbol.MemorySpace //全局变量空间
+	currentScope symbol.Scope        //当前作用域
+	savedScope   symbol.Scope        //保存作用域
 }
 
 func NewDirectInterpreter(globalState *symbol.MemorySpace) *SPADirectInterpreter {
 	return &SPADirectInterpreter{
 		GlobalState: globalState,
 		currentScope: globalState,
+		savedScope: nil,
 	}
 }
 
@@ -95,21 +95,9 @@ func (v *SPADirectInterpreter) ExecAssignStmt(ctx *parser.Assign_stmtContext)  {
 		value := PopValue()
 		sym := symbol.NewVariable(as.Name, value)
 		v.currentScope.Define(sym)
-		//if HasCallInfo(){
-		//	GetTopCallInfo().Define(sym) //局部变量定义
-		//	//log.Infof("局部变量定义： %v", vm.GetTopCallInfo())
-		//}else{
-		//	v.GlobalState.Define(sym) 		//全局变量定义
-		//	//log.Infof("全局变量定义: %v", v.GlobalState)
-		//}
 	} else {
 		var sym symbol.Symbol
 		sym = v.currentScope.Resolve(as.Name)
-		//if HasCallInfo(){
-		//	sym = GetTopCallInfo().Resolve(as.Name) 	//局部变量定义
-		//}else{
-		//	sym = v.GlobalState.Resolve(as.Name) 		//全局变量定义
-		//}
 		if sym == nil {
 			panic("")
 		}
@@ -314,13 +302,8 @@ func (v *SPADirectInterpreter) EvalAtomExpr(ctx *parser.Atom_exprContext) {
 	} else if ctx.GetChildCount() == 4 {
 		v.EvalTest(ctx.GetChild(2).(*parser.TestContext))
 		name := ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
-		var sym *symbol.SPAVariable
-		sym = v.currentScope.Resolve(name).(*symbol.SPAVariable)
-		//if HasCallInfo(){
-		//	sym = GetTopCallInfo().Resolve(name).(*symbol.SPAVariable)
-		//} else {
-		//	sym = v.GlobalState.Resolve(name).(*symbol.SPAVariable)
-		//}
+		//var sym *symbol.SPAVariable
+		sym := v.currentScope.Resolve(name).(*symbol.SPAVariable)
 		value := sym.Value.(*types.SPAList)
 		index := PopValue().(types.SPAInteger)
 		PushValue(value.Get(index))
@@ -335,15 +318,8 @@ func (v *SPADirectInterpreter) EvalAtomExpr(ctx *parser.Atom_exprContext) {
 			tt := terminalNode.GetSymbol().GetTokenType()
 			switch tt {
 			case parser.SpartaLexerIDENTIFIER:
-				//var value types.SPAValue
-				//name := terminalNode.GetText()
-				log.Debug(terminalNode.GetText())
+				//log.Debug(terminalNode.GetText())
 				value := v.currentScope.Resolve(terminalNode.GetText()).(*symbol.SPAVariable).Value
-				//if HasCallInfo(){
-				//	value = GetTopCallInfo().Resolve(terminalNode.GetText()).(*symbol.SPAVariable).Value
-				//} else {
-				//	value = v.GlobalState.Resolve(terminalNode.GetText()).(*symbol.SPAVariable).Value
-				//}
 				PushValue(value)
 			case parser.SpartaLexerNUMBER_LITERAL:
 				PushValue(types.NewNumber(terminalNode.GetText()))
@@ -432,17 +408,12 @@ func (v *SPADirectInterpreter) CallFunc(fs *FunState) {
 }
 
 func (v *SPADirectInterpreter) SaveFuncState(ci *CallInfo)  {
-	v.lastScope = v.currentScope
-	//v.currentScope = ci
-	//passArgs(ci, fs.ArgCount)		//传递参数
-	//PushCallInfo(ci)    	//保存到函数调用栈
-	//ci.env = v.currentScope
+	v.savedScope = v.currentScope
 	v.currentScope = ci
 }
 
 func(v *SPADirectInterpreter) RestoreFuncState()  {
-	v.currentScope = v.lastScope
-	//PopCallInfo()
+	v.currentScope = v.savedScope
 }
 
 func PassArgs(fs *FunState) {
@@ -459,15 +430,8 @@ func (v *SPADirectInterpreter) ExecForStmt(ctx *parser.For_stmtContext, ff FlowS
 	forState := &ForState{State:NORMAL}
 	forState.ItemName = ctx.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
 	sym := symbol.NewVariable(forState.ItemName, types.Null())
-
 	v.currentScope.Define(sym)
-	//if HasCallInfo(){
-	//	GetTopCallInfo().Define(sym) //局部变量定义
-	//	//log.Infof("局部变量定义： %v", vm.GetTopCallInfo())
-	//}else{
-	//	v.GlobalState.Define(sym) 		//全局变量定义
-	//	//log.Infof("全局变量定义: %v", v.GlobalState)
-	//}
+
 	v.EvalTest(ctx.GetChild(3).(*parser.TestContext))
 	v.EvalTest(ctx.GetChild(5).(*parser.TestContext))
 	toNumber, ok := PopValue().(types.SPAInteger)
