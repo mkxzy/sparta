@@ -12,17 +12,15 @@ type SPAAssignStmtInterpreter struct {
 
 // 实现解释接口
 func(v *SPAAssignStmtInterpreter) Interpret()  {
+
+	// 解析表达式
 	testInter := &SPATestInterpreter{v.ast.GetChild(2).(*parser.TestContext)}
 	testInter.Interpret()
-	//v.EvalTest(ctx.GetChild(2).(*parser.TestContext))
-	//varName := ctx.GetChild(0).(*parser.Left_sideContext).GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
 
 	leftSideInter := &SPALeftSideInterpreter{
 		ast: v.ast.GetChild(0).(*parser.Left_sideContext),
 	}
 	leftSideInter.Interpret()
-	//as := &AssignState{}
-	//v.EvalLeftSide(ctx.GetChild(0).(*parser.Left_sideContext), as)
 
 	if leftSideInter.varType == Scalar {
 		value := PopValue()

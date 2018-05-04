@@ -20,16 +20,15 @@ func(v *SPAAtomExprInterpreter) Interpret()  {
 		switch firstChild.GetText() {
 		case "(":
 			// 括号优先表达式
-			//v.EvalTest(ctx.GetChild(1).(*parser.TestContext))
 			testInter := &SPATestInterpreter{v.ast.GetChild(1).(*parser.TestContext)}
 			testInter.Interpret()
 		case "[":
+			// 列表字面量
 			testListInter := &SPATestListInterpreter{v.ast.GetChild(1).(*parser.Test_listContext)}
 			testListInter.Interpret()
-			//v.EvalTestList(ctx.GetChild(1).(*parser.Test_listContext))
 		}
 	} else if v.ast.GetChildCount() == 4 {
-		//v.EvalTest(v.ast.GetChild(2).(*parser.TestContext))
+		//列表访问
 		testInter := &SPATestInterpreter{v.ast.GetChild(2).(*parser.TestContext)}
 		testInter.Interpret()
 		name := v.ast.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
@@ -45,14 +44,16 @@ func(v *SPAAtomExprInterpreter) Interpret()  {
 				ast:funCallContext,
 			}
 			funCallInter.Interpret()
-			//v.EvalFunCallExpr(funCallContext)
 		} else {
 			//变量或常量
 			terminalNode := v.ast.GetChild(0).(antlr.TerminalNode)
 			tt := terminalNode.GetSymbol().GetTokenType()
 			switch tt {
 			case parser.SpartaLexerIDENTIFIER:
-				value := state.currentScope.Resolve(terminalNode.GetText()).(*symbol.SPAVariable).Value
+				varName := terminalNode.GetText()
+				log.Infof("变量名称：%s", varName)
+				log.Debug(state.currentScope)
+				value := state.currentScope.Resolve(varName).(*symbol.SPAVariable).Value
 				PushValue(value)
 			case parser.SpartaLexerNUMBER_LITERAL:
 				PushValue(types.NewNumber(terminalNode.GetText()))
