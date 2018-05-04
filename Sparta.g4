@@ -130,17 +130,30 @@ factor: '-'? atom_expr;
 //// N次方
 //power: atom_expr ('**' factor)?;
 
-//不可分割表达式
+//原子表达式
 atom_expr
-    : '(' test ')'          //括号优先表达式
-    | '[' test_list ']'     //列表表达式
-    | funcall_expr  //函数调用
-    | IDENTIFIER
-    | IDENTIFIER ('[' test ']')
-    | INTEGER_LITERAL
-    | NUMBER_LITERAL
-    | STRING
+    : bracket_expr                  //括号优先表达式
+    | list_literal                  //列表字面量
+    | map_literal                   //字典字面量
+    | funcall_expr                  //函数调用
+    | table_index                   //数组访问
+    | IDENTIFIER                    //变量访问
+    | INTEGER_LITERAL               //整数字面量
+    | NUMBER_LITERAL                //浮点数字面量
+    | STRING                        //字符串字面量
     ;
+
+bracket_expr: '(' test ')';
+
+list_literal: '[' test_list? ']';
+
+map_literal: '{' entry_list? '}';
+
+entry_list: entry (',' entry)*;
+
+entry: test ':' test;
+
+table_index: IDENTIFIER '[' test ']';
 
 test_list: test (',' test)*;
 
@@ -148,6 +161,20 @@ test_list: test (',' test)*;
 STRING
     : '"' StringCharacter* '"'
     ;
+
+INTEGER_LITERAL: DecimalIntegerLiteral;
+
+NUMBER_LITERAL: DecimalIntegerLiteral '.' [0-9]+ ;
+
+IDENTIFIER: Letter LetterOrDigit*;
+
+COMMENT:'/*' .*? '*/' -> skip;
+
+LINE_COMMENT:'//' ~[\r\n]* -> skip;
+
+WS: [ \t\u000C\r\n]+ -> skip;
+
+SHEBANG: '#' '!' ~('\n'|'\r')* -> channel(HIDDEN);
 
 fragment
 StringCharacter
@@ -159,23 +186,6 @@ fragment
 EscapeSequence
 	: '\\' [btnfr"'\\]
 	;
-
-//fragment
-//UNICODE_CHAR   : ~[\u000A] ;
-
-INTEGER_LITERAL: DecimalIntegerLiteral;
-
-NUMBER_LITERAL: DecimalIntegerLiteral '.' [0-9]+ ;
-
-IDENTIFIER: Letter LetterOrDigit*;
-
-COMMENT:'/*' .*? '*/' -> skip;
-
-LINE_COMMENT:'//' ~[\r\n]* -> skip;
-    
-WS: [ \t\u000C\r\n]+ -> skip;
-
-SHEBANG: '#' '!' ~('\n'|'\r')* -> channel(HIDDEN);
 
 fragment LetterOrDigit
     : Letter
