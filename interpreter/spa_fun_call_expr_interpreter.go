@@ -17,7 +17,9 @@ type SPAFuncallExprInterpreter struct {
 // 实现解释接口
 func(v *SPAFuncallExprInterpreter) Interpret()  {
 	//fs := &FunState{}
-	v.fs = &FunState{}
+	v.fs = &FunState{
+		locals: make(map[string]symbol.Symbol),
+	}
 	v.EvalFunName(v.ast.GetChild(0).(*parser.Fun_nameContext)) 		//获取函数名
 	v.EvalFunArgs(v.ast.GetChild(1).(*parser.Arg_exprContext)) 		//参数入栈
 	va, ok := state.currentScope.Resolve(v.fs.FunName).(*symbol.SPAVariable)  //获取函数定义
@@ -76,9 +78,21 @@ func (v *SPAFuncallExprInterpreter) CallFunc() {
 			PushNullValue() //函数体内没有返回语句，自动插入空返回值
 		}
 	} else {
-		v.loadArgs()
-		ci := NewCallInfo(v.fs) //创建函数调用信息
-		state.ChangeScope(ci)
+		//v.loadArgs()
+		v.fs.Args = make([]types.SPAValue, v.fs.ArgCount, v.fs.ArgCount)
+		for i := v.fs.ArgCount - 1; i >= 0; i-- {
+			value := PopValue()
+			v.fs.Args[i] = value
+		}
+		//ci := NewCallInfo(v.fs) //创建函数调用信息
+		for i := 0; i < len(v.fs.Function.Args); i++{
+			if i < len(v.fs.Args){
+				v.fs.Define(symbol.NewVariable(v.fs.Function.Args[i], v.fs.Args[i]))
+			} else {
+				v.fs.Define(symbol.NewNullVariable(v.fs.Function.Args[i]))
+			}
+		}
+		state.ChangeScope(v.fs)
 
 		defer state.RestoreScope()
 
