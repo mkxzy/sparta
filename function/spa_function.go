@@ -10,7 +10,6 @@ import (
 函数定义
  */
 type SPAFunction struct {
-
 	Internal bool					//是否内置函数
 	Name string 					//函数名
 	Args []string 					//参数名

@@ -9,7 +9,6 @@ import (
 const (
 	Scalar      = iota
 	Array
-	//MapAccess
 )
 
 type SPALeftSideInterpreter struct {

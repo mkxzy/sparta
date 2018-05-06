@@ -12,14 +12,11 @@ import (
 
 var log = logging.MustGetLogger("SPAProgramInterpreter")
 
-//var currentScope symbol.Scope
-//var savedScope symbol.Scope
-
 var state *ProgramState
 
 func init()  {
-	var currentScope = symbol.NewMemorySpace("global")                  //全局内存空间
-	printFunc := function.NewInternalFunction("print", []string{"s"}) //print内置函数
+	var currentScope = symbol.NewMemorySpace("global")                 	//全局内存空间
+	printFunc := function.NewInternalFunction("print", []string{"s"}) 	//print内置函数
 	currentScope.Define(function.NewFunVariable(printFunc))
 	state = & ProgramState{
 		State: 0,

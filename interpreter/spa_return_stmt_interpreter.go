@@ -14,7 +14,6 @@ type SPAReturnStmtInterpreter struct {
 func(v *SPAReturnStmtInterpreter) Interpret()  {
 	v.ff.SetState(RETURN)
 	if v.ast.GetChildCount() == 2 {
-		//v.EvalTest(ctx.GetChild(1).(*parser.TestContext))
 		testInter := &SPATestInterpreter{v.ast.GetChild(1).(*parser.TestContext)}
 		testInter.Interpret()
 	} else{
