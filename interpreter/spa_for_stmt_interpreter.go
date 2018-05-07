@@ -16,7 +16,7 @@ func(v *SPAForStmtInterpreter) Interpret()  {
 	forState := &ForState{State:NORMAL}
 	forState.ItemName = v.ast.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
 	sym := symbol.NewVariable(forState.ItemName, types.Null())
-	state.currentScope.Define(sym)
+	state.Define(sym)
 
 	//v.EvalTest(ctx.GetChild(3).(*parser.TestContext))
 	//v.EvalTest(ctx.GetChild(5).(*parser.TestContext))

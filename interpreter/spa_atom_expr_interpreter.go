@@ -45,7 +45,9 @@ func(v *SPAAtomExprInterpreter) Interpret()  {
 		}
 		switch terminalNode.GetSymbol().GetTokenType() {
 		case parser.SpartaLexerIDENTIFIER:
-			value := state.currentScope.Resolve(terminalNode.GetText()).(*symbol.SPAVariable).Value
+			log.Notice(*state)
+			log.Notice(terminalNode.GetText())
+			value := state.Resolve(terminalNode.GetText()).(*symbol.SPAVariable).Value
 			PushValue(value)
 		case parser.SpartaLexerNUMBER_LITERAL:
 			PushValue(types.NewNumber(terminalNode.GetText()))

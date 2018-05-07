@@ -14,9 +14,11 @@ type SPAReturnStmtInterpreter struct {
 func(v *SPAReturnStmtInterpreter) Interpret()  {
 	v.ff.SetState(RETURN)
 	if v.ast.GetChildCount() == 2 {
+		//计算返回值
 		testInter := &SPATestInterpreter{v.ast.GetChild(1).(*parser.TestContext)}
 		testInter.Interpret()
 	} else{
-		PushValue(types.Null()) //如果return没有参数，那么插入一个空的返回值
+		//如果return没有参数，那么插入一个空的返回值
+		PushValue(types.Null())
 	}
 }

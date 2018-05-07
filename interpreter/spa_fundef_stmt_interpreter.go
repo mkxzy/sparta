@@ -25,8 +25,9 @@ func(v *SPAFundefStmtInterpreter) Interpret()  {
 			v.f.Args = append(v.f.Args, name)
 		}
 	}
-	v.f.Outer = state.currentScope
+	//保存函数调用链
+	v.f.FunList = state.funList
 	sym := function.NewFunVariable(*v.f)
-	state.currentScope.Define(sym) 		//函数定义
-	log.Infof("函数定义: %v", state.currentScope)
+	state.Define(sym) 		//函数定义
+	log.Infof("函数定义: %v", state)
 }

@@ -16,7 +16,7 @@ func(v *SPATableIndexInterpreter) Interpret()  {
 	testInter := &SPATestInterpreter{v.ast.GetChild(2).(*parser.TestContext)}
 	testInter.Interpret()
 	name := v.ast.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
-	value := state.currentScope.Resolve(name).(*symbol.SPAVariable).Value
+	value := state.Resolve(name).(*symbol.SPAVariable).Value
 	switch value.(type) {
 	case *types.SPAList:
 		index := PopValue().(types.SPAInteger)

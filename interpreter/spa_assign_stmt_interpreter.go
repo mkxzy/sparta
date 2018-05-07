@@ -25,10 +25,10 @@ func(v *SPAAssignStmtInterpreter) Interpret()  {
 	if leftSideInter.varType == Scalar {
 		value := PopValue()
 		sym := symbol.NewVariable(leftSideInter.varName, value)
-		state.currentScope.Define(sym)
+		state.Define(sym)
 	} else {
 		var sym symbol.Symbol
-		sym = state.currentScope.Resolve(leftSideInter.varName)
+		sym = state.Resolve(leftSideInter.varName)
 		if sym == nil {
 			panic("")
 		}
