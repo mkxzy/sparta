@@ -2,7 +2,7 @@ package interpreter
 
 const (
 	NORMAL = iota
-	RETURN
+	//RETURN
 	BREAK
 	CONTINUE
 )

@@ -7,7 +7,7 @@ import (
 
 type SPAStmtInterpreter struct {
 	ast parser.IStmtContext
-	ff FlowState
+	ff *ForState
 }
 
 // 实现解释接口

@@ -4,7 +4,7 @@ import "github.com/mkxzy/sparta/parser"
 
 type SPABlockInterpreter struct {
 	ast parser.IBlockContext
-	ff FlowState
+	ff *ForState
 }
 
 // 实现解释接口
@@ -14,9 +14,11 @@ func(v *SPABlockInterpreter) Interpret(state *ProgramState)  {
 		stmtInter := &SPAStmtInterpreter{stmtContext, v.ff}
 		stmtInter.Interpret(state)
 
-		// return，continue,break都要中断执行块
-		if v.ff.GetState() > NORMAL {
-			break
+		if v.ff != nil{
+			// return，continue,break都要中断执行块
+			if v.ff.GetState() > NORMAL {
+				break
+			}
 		}
 	}
 }

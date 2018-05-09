@@ -4,7 +4,7 @@ import "github.com/mkxzy/sparta/parser"
 
 type SPAIfStmtInterpreter struct {
 	ast *parser.If_stmtContext
-	ff FlowState
+	ff *ForState
 }
 
 // 实现解释接口

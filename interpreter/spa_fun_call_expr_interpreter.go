@@ -123,7 +123,6 @@ func call(state *ProgramState) {
 		blockCtx := fs.Function.Body.GetChild(1)
 		blockInter := &SPABlockInterpreter{
 			ast: blockCtx.(*parser.BlockContext),
-			ff: fs,
 		}
 		blockInter.Interpret(state)
 	}

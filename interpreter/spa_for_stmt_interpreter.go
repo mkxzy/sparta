@@ -39,7 +39,6 @@ func(v *SPAForStmtInterpreter) Interpret(state *ProgramState)  {
 
 	for i := fromNumber; i <= toNumber; i++ {
 		sym.Value = types.SPAInteger(i)
-		//v.ExecBlock(ctx.GetChild(6).(*parser.BlockContext), forState)
 		blockInter := &SPABlockInterpreter{
 			ast: v.ast.GetChild(6).(*parser.BlockContext),
 			ff: forState,
@@ -51,9 +50,9 @@ func(v *SPAForStmtInterpreter) Interpret(state *ProgramState)  {
 		if forState.State == CONTINUE {
 			forState.SetState(NORMAL) //恢复状态
 		}
-		if forState.State == RETURN {
-			forState.SetState(NORMAL) //恢复状态
-			v.ff.SetState(RETURN) 	  //传递给调用者
-		}
+		//if forState.State == RETURN {
+		//	forState.SetState(NORMAL) //恢复状态
+		//	v.ff.SetState(RETURN) 	  //传递给调用者
+		//}
 	}
 }
