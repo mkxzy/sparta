@@ -10,11 +10,11 @@ import (
 函数定义
  */
 type SPAFunction struct {
-	Internal 	bool						//是否内置函数
-	Name 		string 						//函数名
-	Args 		[]string 					//参数名
-	FunList 	*FunState					//函数调用链
-	Body 		*parser.Fun_bodyContext 	//函数体（解析树）
+	Internal bool                    //是否内置函数
+	Name     string                  //函数名
+	Args     []string                //参数名
+	FS       *FunState               //函数调用链
+	Body     *parser.Fun_bodyContext //函数体（解析树）
 }
 
 func NewFunction(name string, args []string, body *parser.Fun_bodyContext) SPAFunction {

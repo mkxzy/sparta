@@ -13,7 +13,7 @@ func(v *SPABlockInterpreter) Interpret(state *ProgramState)  {
 		stmtContext := v.ast.GetChild(i).(*parser.StmtContext)
 		stmtInter := &SPAStmtInterpreter{stmtContext, v.ff}
 		stmtInter.Interpret(state)
-		//v.ExecStmt(stmtContext, v.ff)
+
 		// return，continue,break都要中断执行块
 		if v.ff.GetState() > NORMAL {
 			break

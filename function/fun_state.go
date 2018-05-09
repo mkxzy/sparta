@@ -9,12 +9,12 @@ import (
 函数调用状态
  */
 type FunState struct {
-	FunVar    string                   //函数变量名
-	ArgCount  int                      //实际传递参数数量
-	State     int                      //函数调用状态
-	Function  *SPAFunction             //函数定义
-	Args      []types.SPAValue         //实际传递参数
-	Locals    map[string]symbol.Symbol //局部变量
+	FunVar    	string                   //函数变量名
+	ArgCount  	int                      //实际传递参数数量
+	State     	int                      //函数调用状态
+	Function  	*SPAFunction             //函数定义
+	Args      	[]types.SPAValue         //实际传递参数
+	Locals    	map[string]symbol.Symbol //局部变量
 }
 
 func (fs *FunState) GetState() int {
@@ -31,7 +31,7 @@ func (fs *FunState) GetScopeName() string  {
 }
 
 func (fs *FunState) GetEnclosingScope() symbol.Scope {
-	return fs.Function.FunList
+	return fs.Function.FS
 }
 
 func (ms *FunState) Define(s symbol.Symbol) {
@@ -40,7 +40,7 @@ func (ms *FunState) Define(s symbol.Symbol) {
 
 //解析变量
 func (fs *FunState) Resolve(name string) (s symbol.Symbol) {
-	for x := fs; x != nil; x = x.Function.FunList {
+	for x := fs; x != nil; x = x.Function.FS {
 		s = x.Locals[name]
 		if s != nil {
 			break
@@ -49,3 +49,8 @@ func (fs *FunState) Resolve(name string) (s symbol.Symbol) {
 	return
 }
 // Scope接口实现 end
+
+func (fs *FunState) Return()  {
+	err := &FunReturn{}
+	panic(err)
+}

@@ -18,7 +18,7 @@ func init() {
 	//formatter := logging.NewBackendFormatter(backend, format)
 	//logging.SetBackend(backend, formatter)
 	//backend1Leveled := logging.AddModuleLevel(backend)
-	logging.SetLevel(logging.NOTICE, "")
+	logging.SetLevel(logging.DEBUG, "")
 }
 
 func main() {

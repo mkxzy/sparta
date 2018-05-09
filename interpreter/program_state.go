@@ -17,7 +17,7 @@ func NewProgramState() *ProgramState {
 	globals := symbol.NewMemorySpace("global")                        //全局内存空间
 	printFunc := function.NewInternalFunction("print", []string{"s"}) //print内置函数
 	globals.Define(function.NewFunVariable(printFunc))
-	state := & ProgramState{
+	state := &ProgramState{
 
 		globals:     globals,
 		currentFunc: nil,
@@ -39,4 +39,12 @@ func (ps *ProgramState) Resolve(name string) (s symbol.Symbol) {
 		s = ps.globals.Resolve(name)
 	}
 	return
+}
+
+func (ps *ProgramState) CurrentState() *function.FunState {
+	return ps.currentFunc
+}
+
+func (ps *ProgramState) LoadState(fs *function.FunState) {
+	ps.currentFunc = fs
 }

@@ -11,19 +11,21 @@ import (
 
 type SPAFuncallExprInterpreter struct {
 	ast *parser.Funcall_exprContext
-	fs 	*function.FunState
 }
 
 // 实现解释接口
 func(v *SPAFuncallExprInterpreter) Interpret(state *ProgramState)  {
 
-	v.fs = &function.FunState{
+	fs := &function.FunState{
 		Locals: make(map[string]symbol.Symbol),
 	}
-	v.EvalFunName(v.ast.GetChild(0).(*parser.Fun_nameContext)) 				//获取函数名
-	v.EvalFunArgs(v.ast.GetChild(1).(*parser.Arg_exprContext), state) 		//参数入栈
-	log.Notice(v.fs.FunVar)
-	va, ok := state.Resolve(v.fs.FunVar).(*symbol.SPAVariable) //获取函数定义
+
+	evalFunName(v.ast.GetChild(0).(*parser.Fun_nameContext), fs) 			//获取函数名
+	log.Notice(fs.FunVar)
+
+	evalFunArgs(v.ast.GetChild(1).(*parser.Arg_exprContext), state, fs) 	//参数入栈
+
+	va, ok := state.Resolve(fs.FunVar).(*symbol.SPAVariable) 				//获取函数定义
 	if !ok {
 		panic("未找到函数定义")
 	}
@@ -31,90 +33,98 @@ func(v *SPAFuncallExprInterpreter) Interpret(state *ProgramState)  {
 	if !ok {
 		panic("未找到函数定义")
 	}
-	v.fs.Function = &f
-	v.CallFunc(state)
+	fs.Function = &f
+
+	savedState := state.CurrentState()
+	state.LoadState(fs)
+
+	defer callReturn(savedState, state)
+
+	call(state)
+	noReturn(savedState, state)
+}
+
+//函数有返回值的情况处理
+func callReturn(savedState * function.FunState, state *ProgramState) {
+	if err := recover(); err != nil{
+		switch err.(type) {
+		case *function.FunReturn:
+			state.LoadState(savedState)		//交还控制权给调用者
+		default:
+			panic(err)
+		}
+	}
+}
+
+//函数没有返回值的情况处理
+func noReturn(savedState * function.FunState, state *ProgramState)  {
+	PushNullValue()					//没有返回值的情况下插入空值
+	state.LoadState(savedState)		//交还控制权给调用者
 }
 
 // 获取函数名
-func(v *SPAFuncallExprInterpreter) EvalFunName(ctx *parser.Fun_nameContext) {
-	v.fs.FunVar = ctx.GetChild(0).(antlr.TerminalNode).GetText()
+func evalFunName(ctx *parser.Fun_nameContext, fs *function.FunState) {
+	funVar := ctx.GetChild(0).(antlr.TerminalNode).GetText()
+	//log.Debugf("name: %s", funVar)
+	fs.FunVar = funVar
 }
 
 // 加载参数到操作数栈（顺序）
-func(v *SPAFuncallExprInterpreter) EvalFunArgs(ctx *parser.Arg_exprContext, state *ProgramState) {
-	v.fs.ArgCount = 0
+func evalFunArgs(ctx *parser.Arg_exprContext, state *ProgramState, fs *function.FunState) {
+	fs.ArgCount = 0
 	if ctx.GetChildCount() == 2{
 		return
 	}
 	argListContext := ctx.GetChild(1).(*parser.Arg_listContext)
 	for i := 0; i < argListContext.GetChildCount(); i += 2 {
-		v.EvalArgument(argListContext.GetChild(i).(*parser.ArgContext), state)
-		v.fs.ArgCount++
+		evalArgument(argListContext.GetChild(i).(*parser.ArgContext), state)
+		fs.ArgCount++
 	}
 }
 
 // 把参数放入操作树栈
-func (v *SPAFuncallExprInterpreter) EvalArgument(ctx *parser.ArgContext, state *ProgramState) {
-	//v.EvalTest(ctx.GetChild(0).(*parser.TestContext))
+func evalArgument(ctx *parser.ArgContext, state *ProgramState) {
+
 	testInter := &SPATestInterpreter{ctx.GetChild(0).(*parser.TestContext)}
 	testInter.Interpret(state)
 }
 
 // 调用函数
-func (v *SPAFuncallExprInterpreter) CallFunc(state *ProgramState) {
+func call(state *ProgramState) {
 
+	fs := state.CurrentState()
 	// 内置函数
-	if v.fs.Function.Internal {
-		switch v.fs.FunVar {
+	if fs.Function.Internal {
+		switch fs.FunVar {
 		case "print":
 			var arg types.SPAValue
-			for i := v.fs.ArgCount; i > 0; i--{
+			for i := fs.ArgCount; i > 0; i--{
 				arg = PopValue()
 			}
 			fmt.Println(arg)
-			PushNullValue() //函数体内没有返回语句，自动插入空返回值
 		}
 	} else {
 
 		// 传递参数
-		v.fs.Args = make([]types.SPAValue, v.fs.ArgCount, v.fs.ArgCount)
-		for i := v.fs.ArgCount - 1; i >= 0; i-- {
+		fs.Args = make([]types.SPAValue, fs.ArgCount, fs.ArgCount)
+		for i := fs.ArgCount - 1; i >= 0; i-- {
 			value := PopValue()
-			v.fs.Args[i] = value
+			fs.Args[i] = value
 		}
-		for i := 0; i < len(v.fs.Function.Args); i++{
-			if i < len(v.fs.Args){
-				v.fs.Define(symbol.NewVariable(v.fs.Function.Args[i], v.fs.Args[i]))
+		for i := 0; i < len(fs.Function.Args); i++{
+			if i < len(fs.Args){
+				fs.Define(symbol.NewVariable(fs.Function.Args[i], fs.Args[i]))
 			} else {
-				v.fs.Define(symbol.NewNullVariable(v.fs.Function.Args[i]))
+				fs.Define(symbol.NewNullVariable(fs.Function.Args[i]))
 			}
 		}
 
-		//v.fs.PrevState = state.currentFunc
-		savedState := state.currentFunc //保护函数调用现场
-		state.currentFunc = v.fs        //更新函数调用状态
-
 		//去掉大括号
-		blockCtx := v.fs.Function.Body.GetChild(1)
+		blockCtx := fs.Function.Body.GetChild(1)
 		blockInter := &SPABlockInterpreter{
 			ast: blockCtx.(*parser.BlockContext),
-			ff: v.fs,
+			ff: fs,
 		}
 		blockInter.Interpret(state)
-		if v.fs.State != RETURN {
-			PushNullValue()
-		}
-
-		//current := state.currentFunc
-		state.currentFunc = savedState
-		//current.PrevState = nil
-	}
-}
-
-func (v *SPAFuncallExprInterpreter) loadArgs() {
-	v.fs.Args = make([]types.SPAValue, v.fs.ArgCount, v.fs.ArgCount)
-	for i := v.fs.ArgCount - 1; i >= 0; i-- {
-		value := PopValue()
-		v.fs.Args[i] = value
 	}
 }

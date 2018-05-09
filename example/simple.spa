@@ -1,1 +1,5 @@
-print(12 * 2)
+fun foo(a) {
+    print(a + 10)
+}
+
+foo(2)
