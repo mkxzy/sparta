@@ -15,7 +15,6 @@ type FunState struct {
 	Function  *SPAFunction             //函数定义
 	Args      []types.SPAValue         //实际传递参数
 	Locals    map[string]symbol.Symbol //局部变量
-	PrevState *FunState                //上个函数调用
 }
 
 func (fs *FunState) GetState() int {
