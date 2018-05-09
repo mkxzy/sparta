@@ -11,9 +11,9 @@ type SPAStmtInterpreter struct {
 }
 
 // 实现解释接口
-func(v *SPAStmtInterpreter) Interpret()  {
+func(v *SPAStmtInterpreter) Interpret(state *ProgramState)  {
 	inter := v.getRealStmtInterpreter()
-	inter.Interpret()
+	inter.Interpret(state)
 }
 
 func(v *SPAStmtInterpreter) getRealStmtInterpreter() SPAInterpreter {

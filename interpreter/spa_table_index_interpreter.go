@@ -10,11 +10,11 @@ type SPATableIndexInterpreter struct {
 	ast *parser.Table_indexContext
 }
 
-func(v *SPATableIndexInterpreter) Interpret()  {
+func(v *SPATableIndexInterpreter) Interpret(state *ProgramState)  {
 
 	//列表访问
 	testInter := &SPATestInterpreter{v.ast.GetChild(2).(*parser.TestContext)}
-	testInter.Interpret()
+	testInter.Interpret(state)
 	name := v.ast.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
 	value := state.Resolve(name).(*symbol.SPAVariable).Value
 	switch value.(type) {

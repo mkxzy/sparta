@@ -9,13 +9,13 @@ type SPAMapLiteralInterpreter struct {
 	ast *parser.Map_literalContext
 }
 
-func(v *SPAMapLiteralInterpreter) Interpret() {
+func(v *SPAMapLiteralInterpreter) Interpret(state *ProgramState) {
 	result := types.NewMap()
 	if v.ast.GetChildCount() == 3 {
 		entryListContex := v.ast.GetChild(1).(*parser.Entry_listContext)
 		for i := 0; i < entryListContex.GetChildCount(); i+=2 {
 			entryInter := &SPAEntryInterpreter{entryListContex.GetChild(i).(*parser.EntryContext)}
-			entryInter.Interpret()
+			entryInter.Interpret(state)
 			value := PopValue()
 			key := PopValue()
 			result.Put(key, value)

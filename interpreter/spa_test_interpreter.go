@@ -7,12 +7,10 @@ type SPATestInterpreter struct {
 }
 
 // 实现解释接口
-func(v *SPATestInterpreter) Interpret()  {
-
-	//v.EvalCompareExpr(ctx.GetChild(0).(*parser.Compare_exprContext))
+func(v *SPATestInterpreter) Interpret(state *ProgramState)  {
 
 	compareInter := &SPACompareExprInterpreter{
 		ast: v.ast.GetChild(0).(*parser.Compare_exprContext),
 	}
-	compareInter.Interpret()
+	compareInter.Interpret(state)
 }

@@ -8,6 +8,6 @@ type SPAContinueStmtInterpreter struct {
 }
 
 // 实现解释接口
-func(v *SPAContinueStmtInterpreter) Interpret()  {
+func(v *SPAContinueStmtInterpreter) Interpret(state *ProgramState)  {
 	v.ff.SetState(CONTINUE)
 }

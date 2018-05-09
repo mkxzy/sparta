@@ -11,14 +11,14 @@ type SPACompareExprInterpreter struct {
 }
 
 // 实现解释接口
-func(v *SPACompareExprInterpreter) Interpret()  {
+func(v *SPACompareExprInterpreter) Interpret(state *ProgramState)  {
 	//v.EvalArithExpr(v.ast.GetChild(0).(*parser.Arith_exprContext))
 	arithInter := &SPAArithExprInterpreter{v.ast.GetChild(0).(*parser.Arith_exprContext)}
-	arithInter.Interpret()
+	arithInter.Interpret(state)
 	if v.ast.GetChildCount() == 3 {
 		//v.EvalArithExpr(v.ast.GetChild(2).(*parser.Arith_exprContext))
 		arithInter := &SPAArithExprInterpreter{v.ast.GetChild(2).(*parser.Arith_exprContext)}
-		arithInter.Interpret()
+		arithInter.Interpret(state)
 		op := v.ast.GetChild(1).(*parser.Comp_opContext).GetChild(0).(antlr.TerminalNode).GetText()
 		switch op {
 		case "==":

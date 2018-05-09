@@ -9,12 +9,12 @@ type SPAArithExprInterpreter struct {
 	ast *parser.Arith_exprContext
 }
 
-func(v *SPAArithExprInterpreter) Interpret()  {
+func(v *SPAArithExprInterpreter) Interpret(state *ProgramState)  {
 	log.Debug("计算加减法")
 
 	//v.EvalTerm(ctx.GetChild(0).(*parser.TermContext))
 	termInter := &SPATermInterpreter{v.ast.GetChild(0).(*parser.TermContext)}
-	termInter.Interpret()
+	termInter.Interpret(state)
 	if v.ast.GetChildCount() > 1 {
 		var op = ""
 		for i := 1; i < v.ast.GetChildCount(); i++ {
@@ -22,7 +22,7 @@ func(v *SPAArithExprInterpreter) Interpret()  {
 				op = v.ast.GetChild(i).(*antlr.TerminalNodeImpl).GetText()
 			} else {
 				termInter := &SPATermInterpreter{v.ast.GetChild(i).(*parser.TermContext)}
-				termInter.Interpret()
+				termInter.Interpret(state)
 				//v.EvalTerm(v.ast.GetChild(i).(*parser.TermContext))
 				arithmetic(op)
 			}

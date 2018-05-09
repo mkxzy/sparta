@@ -27,9 +27,10 @@ func main() {
 	stream := antlr.NewCommonTokenStream(lexer, 0)
 	p := parser.NewSpartaParser(stream)
 	p.BuildParseTrees = true
-	ast := p.Program()                             // 生成解析树
-	inter := interpreter.NewDirectInterpreter(ast) // 创建解释器
-	inter.Interpret()
+	ast := p.Program()                             	// 生成解析树
+	state := interpreter.NewProgramState()			// 程序解释器状态数据结构
+	inter := interpreter.NewDirectInterpreter(ast) 	// 创建解释器
+	inter.Interpret(state)
 
 	//tree.Accept(inter) 	  // 解释执行
 	//listener := interpreter.NewInterpreter()

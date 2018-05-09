@@ -8,11 +8,11 @@ type SPABlockInterpreter struct {
 }
 
 // 实现解释接口
-func(v *SPABlockInterpreter) Interpret()  {
+func(v *SPABlockInterpreter) Interpret(state *ProgramState)  {
 	for i := 1; i < v.ast.GetChildCount()-1; i++ {
 		stmtContext := v.ast.GetChild(i).(*parser.StmtContext)
 		stmtInter := &SPAStmtInterpreter{stmtContext, v.ff}
-		stmtInter.Interpret()
+		stmtInter.Interpret(state)
 		//v.ExecStmt(stmtContext, v.ff)
 		// return，continue,break都要中断执行块
 		if v.ff.GetState() > NORMAL {

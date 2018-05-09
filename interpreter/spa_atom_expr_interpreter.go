@@ -12,7 +12,7 @@ type SPAAtomExprInterpreter struct {
 }
 
 // 实现解释接口
-func(v *SPAAtomExprInterpreter) Interpret()  {
+func(v *SPAAtomExprInterpreter) Interpret(state *ProgramState)  {
 	log.Debug("Visit Atom_Expr")
 
 	firstChild := v.ast.GetChild(0)
@@ -21,23 +21,23 @@ func(v *SPAAtomExprInterpreter) Interpret()  {
 		bracketInter := &SPABracketExprInterpreter{
 			ast:firstChild.(*parser.Bracket_exprContext),
 		}
-		bracketInter.Interpret()
+		bracketInter.Interpret(state)
 	case *parser.List_literalContext:
 		listInter := &SPAListLiteralInterpreter{ast: firstChild.(*parser.List_literalContext)}
-		listInter.Interpret()
+		listInter.Interpret(state)
 	case *parser.Map_literalContext:
 		mapInter := &SPAMapLiteralInterpreter{ast: firstChild.(*parser.Map_literalContext)}
-		mapInter.Interpret()
+		mapInter.Interpret(state)
 	case *parser.Funcall_exprContext:
 		funCallInter := &SPAFuncallExprInterpreter{
 			ast:firstChild.(*parser.Funcall_exprContext),
 		}
-		funCallInter.Interpret()
+		funCallInter.Interpret(state)
 	case *parser.Table_indexContext:
 		arrayIndexInter := &SPATableIndexInterpreter{
 			ast: firstChild.(*parser.Table_indexContext),
 		}
-		arrayIndexInter.Interpret()
+		arrayIndexInter.Interpret(state)
 	default:
 		terminalNode, ok := firstChild.(antlr.TerminalNode)
 		if !ok {

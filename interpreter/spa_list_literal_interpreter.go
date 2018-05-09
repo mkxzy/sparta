@@ -10,14 +10,14 @@ type SPAListLiteralInterpreter struct {
 }
 
 // 实现解释接口
-func(v *SPAListLiteralInterpreter) Interpret()  {
+func(v *SPAListLiteralInterpreter) Interpret(state *ProgramState)  {
 	if v.ast.GetChildCount() == 3 {
 		testListContext := v.ast.GetChild(1).(*parser.Test_listContext)
 		elements := (testListContext.GetChildCount() + 1) / 2
 		li := types.NewList(elements)
 		for i := 0; i < testListContext.GetChildCount(); i+=2 {
 			testInter := &SPATestInterpreter{ast: testListContext.GetChild(i).(*parser.TestContext)}
-			testInter.Interpret()
+			testInter.Interpret(state)
 			item := PopValue()
 			li.Append(item)
 		}

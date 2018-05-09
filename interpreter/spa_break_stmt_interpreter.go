@@ -8,6 +8,6 @@ type SPABreakStmtInterpreter struct {
 }
 
 // 实现解释接口
-func(v *SPABreakStmtInterpreter) Interpret()  {
+func(v *SPABreakStmtInterpreter) Interpret(state *ProgramState)  {
 	v.ff.SetState(BREAK)
 }

@@ -12,7 +12,7 @@ type SPAFundefStmtInterpreter struct {
 }
 
 // 实现解释接口
-func(v *SPAFundefStmtInterpreter) Interpret()  {
+func(v *SPAFundefStmtInterpreter) Interpret(state *ProgramState)  {
 	v.f = &function.SPAFunction{}
 	v.f.Name = v.ast.GetChild(1).GetChild(0).(*antlr.TerminalNodeImpl).GetText()
 	v.f.Body = v.ast.GetChild(2).(*parser.Fun_bodyContext)
@@ -26,7 +26,7 @@ func(v *SPAFundefStmtInterpreter) Interpret()  {
 		}
 	}
 	//保存函数调用链
-	v.f.FunList = state.funList
+	v.f.FunList = state.currentFunc
 	sym := function.NewFunVariable(*v.f)
 	state.Define(sym) 		//函数定义
 	log.Infof("函数定义: %v", state)

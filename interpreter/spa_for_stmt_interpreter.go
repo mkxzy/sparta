@@ -12,7 +12,7 @@ type SPAForStmtInterpreter struct {
 }
 
 // 实现解释接口
-func(v *SPAForStmtInterpreter) Interpret()  {
+func(v *SPAForStmtInterpreter) Interpret(state *ProgramState)  {
 	forState := &ForState{State:NORMAL}
 	forState.ItemName = v.ast.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
 	sym := symbol.NewVariable(forState.ItemName, types.Null())
@@ -21,10 +21,10 @@ func(v *SPAForStmtInterpreter) Interpret()  {
 	//v.EvalTest(ctx.GetChild(3).(*parser.TestContext))
 	//v.EvalTest(ctx.GetChild(5).(*parser.TestContext))
 	fromInter := &SPATestInterpreter{v.ast.GetChild(3).(*parser.TestContext)}
-	fromInter.Interpret()
+	fromInter.Interpret(state)
 
 	toInter := &SPATestInterpreter{v.ast.GetChild(5).(*parser.TestContext)}
-	toInter.Interpret()
+	toInter.Interpret(state)
 	toNumber, ok := PopValue().(types.SPAInteger)
 	if !ok {
 		panic("类型不正确")
@@ -44,7 +44,7 @@ func(v *SPAForStmtInterpreter) Interpret()  {
 			ast: v.ast.GetChild(6).(*parser.BlockContext),
 			ff: forState,
 		}
-		blockInter.Interpret()
+		blockInter.Interpret(state)
 		if forState.State == BREAK {
 			forState.SetState(NORMAL) //恢复状态
 		}

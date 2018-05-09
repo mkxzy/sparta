@@ -7,11 +7,11 @@ type SPAFuncallStmtInterpreter struct {
 }
 
 // 实现解释接口
-func(v *SPAFuncallStmtInterpreter) Interpret()  {
+func(v *SPAFuncallStmtInterpreter) Interpret(state *ProgramState)  {
 	//v.EvalFunCallExpr(ctx.GetChild(0).(*parser.Funcall_exprContext))
 	funCallExprInter := &SPAFuncallExprInterpreter{
 		ast: v.ast.GetChild(0).(*parser.Funcall_exprContext),
 	}
-	funCallExprInter.Interpret()
+	funCallExprInter.Interpret(state)
 	PopValue() //丢弃返回值
 }

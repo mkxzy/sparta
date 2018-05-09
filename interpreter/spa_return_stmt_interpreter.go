@@ -11,12 +11,12 @@ type SPAReturnStmtInterpreter struct {
 }
 
 // 实现解释接口
-func(v *SPAReturnStmtInterpreter) Interpret()  {
+func(v *SPAReturnStmtInterpreter) Interpret(state *ProgramState)  {
 	v.ff.SetState(RETURN)
 	if v.ast.GetChildCount() == 2 {
 		//计算返回值
 		testInter := &SPATestInterpreter{v.ast.GetChild(1).(*parser.TestContext)}
-		testInter.Interpret()
+		testInter.Interpret(state)
 	} else{
 		//如果return没有参数，那么插入一个空的返回值
 		PushValue(types.Null())
