@@ -2,11 +2,12 @@ package interpreter
 
 import (
 	"github.com/mkxzy/sparta/parser"
+	"github.com/mkxzy/sparta/function"
 )
 
 type SPAReturnStmtInterpreter struct {
 	ast *parser.Return_stmtContext
-	ff FlowState
+	//ff FlowState
 }
 
 // 实现解释接口
@@ -23,5 +24,5 @@ func(v *SPAReturnStmtInterpreter) Interpret(state *ProgramState)  {
 		//如果return没有参数，那么插入一个空的返回值
 		PushNullValue()
 	}
-	state.currentFunc.Return()
+	function.Return()
 }

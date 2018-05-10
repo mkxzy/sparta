@@ -1,9 +1,17 @@
 package function
 
+/**
+模拟函数返回指令
+ */
 type FunReturn struct {
 	error
 }
 
-func (this *FunReturn) Error() string {
-	return "函数返回"
+func (fr *FunReturn) Error() string {
+	return "return"
+}
+
+func Return()  {
+	err := &FunReturn{}
+	panic(err)
 }

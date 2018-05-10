@@ -49,8 +49,3 @@ func (fs *FunState) Resolve(name string) (s symbol.Symbol) {
 	return
 }
 // Scope接口实现 end
-
-func (fs *FunState) Return()  {
-	err := &FunReturn{}
-	panic(err)
-}

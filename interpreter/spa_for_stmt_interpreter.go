@@ -4,22 +4,18 @@ import (
 	"github.com/mkxzy/sparta/parser"
 	"github.com/mkxzy/sparta/symbol"
 	"github.com/mkxzy/sparta/types"
+	"github.com/mkxzy/sparta/loop"
 )
 
 type SPAForStmtInterpreter struct {
 	ast *parser.For_stmtContext
-	ff FlowState
 }
 
 // 实现解释接口
 func(v *SPAForStmtInterpreter) Interpret(state *ProgramState)  {
-	forState := &ForState{State:NORMAL}
-	forState.ItemName = v.ast.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
-	sym := symbol.NewVariable(forState.ItemName, types.Null())
-	state.Define(sym)
+	//forState := &ForState{State:NORMAL}
+	itemName := v.ast.GetToken(parser.SpartaLexerIDENTIFIER, 0).GetText()
 
-	//v.EvalTest(ctx.GetChild(3).(*parser.TestContext))
-	//v.EvalTest(ctx.GetChild(5).(*parser.TestContext))
 	fromInter := &SPATestInterpreter{v.ast.GetChild(3).(*parser.TestContext)}
 	fromInter.Interpret(state)
 
@@ -37,22 +33,41 @@ func(v *SPAForStmtInterpreter) Interpret(state *ProgramState)  {
 		panic("起始数字不能大于结束数字")
 	}
 
+	defer func() {
+		if err := recover(); err != nil {
+			switch err.(type) {
+			case *loop.ForBreak:
+				return
+			default:
+				panic(err)
+			}
+		}
+	}()
+
+	sym := symbol.NewVariable(itemName, types.Null())
+	state.Define(sym)
 	for i := fromNumber; i <= toNumber; i++ {
-		sym.Value = types.SPAInteger(i)
-		blockInter := &SPABlockInterpreter{
-			ast: v.ast.GetChild(6).(*parser.BlockContext),
-			ff: forState,
-		}
-		blockInter.Interpret(state)
-		if forState.State == BREAK {
-			forState.SetState(NORMAL) //恢复状态
-		}
-		if forState.State == CONTINUE {
-			forState.SetState(NORMAL) //恢复状态
-		}
-		//if forState.State == RETURN {
-		//	forState.SetState(NORMAL) //恢复状态
-		//	v.ff.SetState(RETURN) 	  //传递给调用者
-		//}
+		v.execLoopBody(sym, i, state)
 	}
+}
+
+func(v *SPAForStmtInterpreter) execLoopBody(sym *symbol.SPAVariable, i types.SPAInteger, state *ProgramState) {
+
+	defer func() {
+		if err := recover(); err != nil {
+			switch err.(type) {
+			case *loop.ForContinue:
+				return
+			default:
+				panic(err)
+			}
+		}
+	}()
+
+	sym.Value = i
+	blockInter := &SPABlockInterpreter {
+		ast: v.ast.GetChild(6).(*parser.BlockContext),
+		//ff: forState,
+	}
+	blockInter.Interpret(state)
 }
