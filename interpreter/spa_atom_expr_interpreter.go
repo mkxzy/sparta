@@ -5,6 +5,7 @@ import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/mkxzy/sparta/symbol"
 	"github.com/mkxzy/sparta/types"
+	"github.com/mkxzy/sparta/operation"
 )
 
 type SPAAtomExprInterpreter struct {
@@ -48,13 +49,13 @@ func(v *SPAAtomExprInterpreter) Interpret(state *ProgramState)  {
 			log.Notice(*state)
 			log.Notice(terminalNode.GetText())
 			value := state.Resolve(terminalNode.GetText()).(*symbol.SPAVariable).Value
-			PushValue(value)
+			operation.PushValue(value)
 		case parser.SpartaLexerNUMBER_LITERAL:
-			PushValue(types.NewNumber(terminalNode.GetText()))
+			operation.PushValue(types.NewNumber(terminalNode.GetText()))
 		case parser.SpartaLexerINTEGER_LITERAL:
-			PushValue(types.NewInteger(terminalNode.GetText()))
+			operation.PushValue(types.NewInteger(terminalNode.GetText()))
 		case parser.SpartaLexerSTRING:
-			PushValue(types.NewString(terminalNode.GetText()))
+			operation.PushValue(types.NewString(terminalNode.GetText()))
 		default:
 			panic("类型无效")
 		}

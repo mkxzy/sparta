@@ -7,6 +7,7 @@ import (
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/mkxzy/sparta/types"
 	"fmt"
+	"github.com/mkxzy/sparta/operation"
 )
 
 type SPAFuncallExprInterpreter struct {
@@ -58,7 +59,7 @@ func callReturn(savedState * function.FunState, state *ProgramState) {
 
 //函数没有返回值的情况处理
 func noReturn(savedState * function.FunState, state *ProgramState)  {
-	PushNullValue()					//没有返回值的情况下插入空值
+	operation.PushNullValue()					//没有返回值的情况下插入空值
 	state.LoadState(savedState)		//交还控制权给调用者
 }
 
@@ -99,7 +100,7 @@ func call(state *ProgramState) {
 		case "print":
 			var arg types.SPAValue
 			for i := fs.ArgCount; i > 0; i--{
-				arg = PopValue()
+				arg = operation.PopValue()
 			}
 			fmt.Println(arg)
 		}
@@ -108,7 +109,7 @@ func call(state *ProgramState) {
 		// 传递参数
 		fs.Args = make([]types.SPAValue, fs.ArgCount, fs.ArgCount)
 		for i := fs.ArgCount - 1; i >= 0; i-- {
-			value := PopValue()
+			value := operation.PopValue()
 			fs.Args[i] = value
 		}
 		for i := 0; i < len(fs.Function.Args); i++{

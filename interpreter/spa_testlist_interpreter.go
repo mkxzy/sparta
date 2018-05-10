@@ -3,6 +3,7 @@ package interpreter
 import (
 	"github.com/mkxzy/sparta/parser"
 	"github.com/mkxzy/sparta/types"
+	"github.com/mkxzy/sparta/operation"
 )
 
 type SPATestListInterpreter struct {
@@ -16,9 +17,9 @@ func (v *SPATestListInterpreter) Interpret(state *ProgramState) {
 		//v.EvalTest(ctx.GetChild(i).(*parser.TestContext))
 		testInter := &SPATestInterpreter{v.ast.GetChild(i).(*parser.TestContext)}
 		testInter.Interpret(state)
-		value := PopValue()
+		value := operation.PopValue()
 		list.Append(value)
 	}
-	PushValue(list)
+	operation.PushValue(list)
 	log.Info(list)
 }

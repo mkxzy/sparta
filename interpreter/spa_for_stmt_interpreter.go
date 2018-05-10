@@ -5,6 +5,7 @@ import (
 	"github.com/mkxzy/sparta/symbol"
 	"github.com/mkxzy/sparta/types"
 	"github.com/mkxzy/sparta/loop"
+	"github.com/mkxzy/sparta/operation"
 )
 
 type SPAForStmtInterpreter struct {
@@ -21,11 +22,11 @@ func(v *SPAForStmtInterpreter) Interpret(state *ProgramState)  {
 
 	toInter := &SPATestInterpreter{v.ast.GetChild(5).(*parser.TestContext)}
 	toInter.Interpret(state)
-	toNumber, ok := PopValue().(types.SPAInteger)
+	toNumber, ok := operation.PopValue().(types.SPAInteger)
 	if !ok {
 		panic("类型不正确")
 	}
-	fromNumber, ok := PopValue().(types.SPAInteger)
+	fromNumber, ok := operation.PopValue().(types.SPAInteger)
 	if !ok {
 		panic("类型不正确")
 	}

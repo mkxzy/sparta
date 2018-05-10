@@ -4,6 +4,7 @@ import (
 	"github.com/mkxzy/sparta/parser"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/mkxzy/sparta/types"
+	"github.com/mkxzy/sparta/operation"
 )
 
 type SPACompareExprInterpreter struct {
@@ -22,10 +23,10 @@ func(v *SPACompareExprInterpreter) Interpret(state *ProgramState)  {
 		op := v.ast.GetChild(1).(*parser.Comp_opContext).GetChild(0).(antlr.TerminalNode).GetText()
 		switch op {
 		case "==":
-			second := PopValue().(types.SPAInteger)
-			first := PopValue().(types.SPAInteger)
+			second := operation.PopValue().(types.SPAInteger)
+			first := operation.PopValue().(types.SPAInteger)
 			result := first == second
-			PushValue(types.SPABool(result))
+			operation.PushValue(types.SPABool(result))
 		default:
 			panic("不支持的操作")
 		}

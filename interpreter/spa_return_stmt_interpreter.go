@@ -3,6 +3,7 @@ package interpreter
 import (
 	"github.com/mkxzy/sparta/parser"
 	"github.com/mkxzy/sparta/function"
+	"github.com/mkxzy/sparta/operation"
 )
 
 type SPAReturnStmtInterpreter struct {
@@ -22,7 +23,7 @@ func(v *SPAReturnStmtInterpreter) Interpret(state *ProgramState)  {
 		testInter.Interpret(state)
 	} else{
 		//如果return没有参数，那么插入一个空的返回值
-		PushNullValue()
+		operation.PushNullValue()
 	}
 	function.Return()
 }

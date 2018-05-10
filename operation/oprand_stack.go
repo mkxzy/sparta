@@ -1,8 +1,8 @@
-package interpreter
+package operation
 
 import "github.com/mkxzy/sparta/types"
 
-const MaxOperandStack = 10
+const MaxOperandStack = 150
 
 var operands [MaxOperandStack]types.SPAValue
 var sp = -1
@@ -14,7 +14,7 @@ func PushValue(v types.SPAValue)  {
 	sp++
 	operands[sp] = v
 
-	log.Infof("操作数压栈： %v", operands)
+	//log.Infof("操作数压栈： %v", operands)
 }
 
 func PushNullValue()  {
@@ -27,7 +27,7 @@ func PopValue() types.SPAValue  {
 		operands[sp] = nil
 		sp--
 
-		log.Infof("操作数出栈： %v", operands)
+		//log.Infof("操作数出栈： %v", operands)
 		return v
 	}
 	panic("操作树栈为空")

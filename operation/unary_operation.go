@@ -1,11 +1,11 @@
-package interpreter
+package operation
 
 import "github.com/mkxzy/sparta/types"
 
 /**
 取负数
  */
-func minus(v types.SPAValue) (result types.SPAValue, ok bool) {
+func Minus(v types.SPAValue) (result types.SPAValue, ok bool) {
 	switch v.(type) {
 	case types.SPANumber:
 		real := v.(types.SPANumber)

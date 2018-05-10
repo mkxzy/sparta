@@ -4,6 +4,7 @@ import (
 	"github.com/mkxzy/sparta/parser"
 	"github.com/mkxzy/sparta/symbol"
 	"github.com/mkxzy/sparta/types"
+	"github.com/mkxzy/sparta/operation"
 )
 
 type SPATableIndexInterpreter struct {
@@ -19,12 +20,12 @@ func(v *SPATableIndexInterpreter) Interpret(state *ProgramState)  {
 	value := state.Resolve(name).(*symbol.SPAVariable).Value
 	switch value.(type) {
 	case *types.SPAList:
-		index := PopValue().(types.SPAInteger)
+		index := operation.PopValue().(types.SPAInteger)
 		array := value.(*types.SPAList)
-		PushValue(array.Get(index))
+		operation.PushValue(array.Get(index))
 	case *types.SPAMap:
-		key := PopValue()
+		key := operation.PopValue()
 		spaMap := value.(*types.SPAMap)
-		PushValue(spaMap.Get(key))
+		operation.PushValue(spaMap.Get(key))
 	}
 }

@@ -3,6 +3,7 @@ package interpreter
 import (
 	"github.com/mkxzy/sparta/parser"
 	"github.com/mkxzy/sparta/types"
+	"github.com/mkxzy/sparta/operation"
 )
 
 type SPAMapLiteralInterpreter struct {
@@ -16,10 +17,10 @@ func(v *SPAMapLiteralInterpreter) Interpret(state *ProgramState) {
 		for i := 0; i < entryListContex.GetChildCount(); i+=2 {
 			entryInter := &SPAEntryInterpreter{entryListContex.GetChild(i).(*parser.EntryContext)}
 			entryInter.Interpret(state)
-			value := PopValue()
-			key := PopValue()
+			value := operation.PopValue()
+			key := operation.PopValue()
 			result.Put(key, value)
 		}
 	}
-	PushValue(result)
+	operation.PushValue(result)
 }

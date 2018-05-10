@@ -1,6 +1,9 @@
 package interpreter
 
-import "github.com/mkxzy/sparta/parser"
+import (
+	"github.com/mkxzy/sparta/parser"
+	"github.com/mkxzy/sparta/operation"
+)
 
 type SPAIfStmtInterpreter struct {
 	ast *parser.If_stmtContext
@@ -11,7 +14,7 @@ type SPAIfStmtInterpreter struct {
 func(v *SPAIfStmtInterpreter) Interpret(state *ProgramState)  {
 	testInter := &SPATestInterpreter{v.ast.GetChild(1).(*parser.TestContext)}
 	testInter.Interpret(state)
-	testResult := PopValue()
+	testResult := operation.PopValue()
 	if testResult.IsTrue() {
 		blockInter := &SPABlockInterpreter{v.ast.GetChild(2).(*parser.BlockContext)}
 		blockInter.Interpret(state)
@@ -21,7 +24,7 @@ func(v *SPAIfStmtInterpreter) Interpret(state *ProgramState)  {
 	for pos + 4 < v.ast.GetChildCount() {
 		testInter := &SPATestInterpreter{v.ast.GetChild(1).(*parser.TestContext)}
 		testInter.Interpret(state)
-		testResult = PopValue()
+		testResult = operation.PopValue()
 		if testResult.IsTrue() {
 			blockInter := &SPABlockInterpreter{v.ast.GetChild(pos + 3).(*parser.BlockContext)}
 			blockInter.Interpret(state)

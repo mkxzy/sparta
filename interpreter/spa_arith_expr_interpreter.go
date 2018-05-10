@@ -3,6 +3,7 @@ package interpreter
 import (
 	"github.com/mkxzy/sparta/parser"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/mkxzy/sparta/operation"
 )
 
 type SPAArithExprInterpreter struct {
@@ -24,7 +25,7 @@ func(v *SPAArithExprInterpreter) Interpret(state *ProgramState)  {
 				termInter := &SPATermInterpreter{v.ast.GetChild(i).(*parser.TermContext)}
 				termInter.Interpret(state)
 				//v.EvalTerm(v.ast.GetChild(i).(*parser.TermContext))
-				arithmetic(op)
+				operation.Arithmetic(op)
 			}
 		}
 	}

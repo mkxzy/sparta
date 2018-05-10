@@ -4,6 +4,7 @@ import (
 	"github.com/mkxzy/sparta/parser"
 	"github.com/mkxzy/sparta/symbol"
 	"github.com/mkxzy/sparta/types"
+	"github.com/mkxzy/sparta/operation"
 )
 
 type SPAAssignStmtInterpreter struct {
@@ -23,7 +24,7 @@ func(v *SPAAssignStmtInterpreter) Interpret(state *ProgramState)  {
 	leftSideInter.Interpret(state)
 
 	if leftSideInter.varType == Scalar {
-		value := PopValue()
+		value := operation.PopValue()
 		sym := symbol.NewVariable(leftSideInter.varName, value)
 		state.Define(sym)
 	} else {
@@ -33,11 +34,11 @@ func(v *SPAAssignStmtInterpreter) Interpret(state *ProgramState)  {
 			panic("")
 		}
 		list := sym.(*symbol.SPAVariable).Value.(*types.SPAList)
-		index, ok := PopValue().(types.SPAInteger)
+		index, ok := operation.PopValue().(types.SPAInteger)
 		if !ok {
 			panic("index必须是整数")
 		}
-		v := PopValue()
+		v := operation.PopValue()
 		list.Set(index, v)
 	}
 }

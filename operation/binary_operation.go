@@ -1,4 +1,4 @@
-package interpreter
+package operation
 
 import (
 	"github.com/mkxzy/sparta/types"
@@ -21,7 +21,7 @@ func init()  {
 /**
 算数运算
  */
-func arithmetic(op string) {
+func Arithmetic(op string) {
 	second := PopValue()
 	first := PopValue()
 	operation := operations[op]

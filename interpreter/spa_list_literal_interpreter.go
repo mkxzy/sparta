@@ -3,6 +3,7 @@ package interpreter
 import (
 	"github.com/mkxzy/sparta/parser"
 	"github.com/mkxzy/sparta/types"
+	"github.com/mkxzy/sparta/operation"
 )
 
 type SPAListLiteralInterpreter struct {
@@ -18,11 +19,11 @@ func(v *SPAListLiteralInterpreter) Interpret(state *ProgramState)  {
 		for i := 0; i < testListContext.GetChildCount(); i+=2 {
 			testInter := &SPATestInterpreter{ast: testListContext.GetChild(i).(*parser.TestContext)}
 			testInter.Interpret(state)
-			item := PopValue()
+			item := operation.PopValue()
 			li.Append(item)
 		}
-		PushValue(li)
+		operation.PushValue(li)
 	}else{
-		PushValue(types.NewList(0))
+		operation.PushValue(types.NewList(0))
 	}
 }

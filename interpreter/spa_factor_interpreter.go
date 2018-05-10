@@ -1,6 +1,9 @@
 package interpreter
 
-import "github.com/mkxzy/sparta/parser"
+import (
+	"github.com/mkxzy/sparta/parser"
+	"github.com/mkxzy/sparta/operation"
+)
 
 type SPAFactorInterpreter struct {
 	ast *parser.FactorContext
@@ -18,8 +21,8 @@ func(v *SPAFactorInterpreter) Interpret(state *ProgramState)  {
 		atomInter.Interpret(state)
 		//v.EvalAtomExpr(ctx.GetChild(1).(*parser.Atom_exprContext))
 		//取反
-		first := PopValue()
-		result, _ := minus(first)
-		PushValue(result)
+		first := operation.PopValue()
+		result, _ := operation.Minus(first)
+		operation.PushValue(result)
 	}
 }

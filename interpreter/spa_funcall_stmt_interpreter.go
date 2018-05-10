@@ -1,6 +1,9 @@
 package interpreter
 
-import "github.com/mkxzy/sparta/parser"
+import (
+	"github.com/mkxzy/sparta/parser"
+	"github.com/mkxzy/sparta/operation"
+)
 
 type SPAFuncallStmtInterpreter struct {
 	ast parser.IFuncall_stmtContext
@@ -13,5 +16,5 @@ func(v *SPAFuncallStmtInterpreter) Interpret(state *ProgramState)  {
 		ast: v.ast.GetChild(0).(*parser.Funcall_exprContext),
 	}
 	funCallExprInter.Interpret(state)
-	PopValue() //丢弃返回值
+	operation.PopValue() //丢弃返回值
 }
