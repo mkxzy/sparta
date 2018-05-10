@@ -19,3 +19,7 @@ func(n SPAInteger) IsTrue() bool {
 func(n SPAInteger) String() string  {
 	return strconv.FormatInt(int64(n),10)
 }
+
+func(n SPAInteger) ToNumber() SPANumber  {
+	return SPANumber(n)
+}

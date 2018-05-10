@@ -29,3 +29,10 @@ func(s *spaNull) IsTrue() bool  {
 func(s *spaNull) String() string {
 	return "null"
 }
+
+func(s *spaNull) Equals(value SPAValue) bool {
+	if IsNull(value) {
+		return true
+	}
+	return false
+}

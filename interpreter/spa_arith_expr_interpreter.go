@@ -25,7 +25,7 @@ func(v *SPAArithExprInterpreter) Interpret(state *ProgramState)  {
 				termInter := &SPATermInterpreter{v.ast.GetChild(i).(*parser.TermContext)}
 				termInter.Interpret(state)
 				//v.EvalTerm(v.ast.GetChild(i).(*parser.TermContext))
-				operation.Arithmetic(op)
+				operation.Calculate(op)
 			}
 		}
 	}

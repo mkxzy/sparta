@@ -16,6 +16,14 @@ func NewBool(literal string) SPABool {
 	}
 }
 
+func True() SPABool {
+	return true
+}
+
+func False() SPABool {
+	return false
+}
+
 // 返回值对应的相反bool值
 func InvertBool(v SPAValue) SPABool {
 	return SPABool(!v.IsTrue())

@@ -3,7 +3,6 @@ package interpreter
 import (
 	"github.com/mkxzy/sparta/parser"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/mkxzy/sparta/types"
 	"github.com/mkxzy/sparta/operation"
 )
 
@@ -21,14 +20,15 @@ func(v *SPACompareExprInterpreter) Interpret(state *ProgramState)  {
 		arithInter := &SPAArithExprInterpreter{v.ast.GetChild(2).(*parser.Arith_exprContext)}
 		arithInter.Interpret(state)
 		op := v.ast.GetChild(1).(*parser.Comp_opContext).GetChild(0).(antlr.TerminalNode).GetText()
-		switch op {
-		case "==":
-			second := operation.PopValue().(types.SPAInteger)
-			first := operation.PopValue().(types.SPAInteger)
-			result := first == second
-			operation.PushValue(types.SPABool(result))
-		default:
-			panic("不支持的操作")
-		}
+		operation.Calculate(op)
+		//switch op {
+		//case "==":
+		//	second := operation.PopValue().(types.SPAInteger)
+		//	first := operation.PopValue().(types.SPAInteger)
+		//	result := first == second
+		//	operation.PushValue(types.SPABool(result))
+		//default:
+		//	panic("不支持的操作")
+		//}
 	}
 }

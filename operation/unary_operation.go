@@ -5,20 +5,15 @@ import "github.com/mkxzy/sparta/types"
 /**
 取负数
  */
-func Minus(v types.SPAValue) (result types.SPAValue, ok bool) {
+func Minus() {
+	v := PopValue()
 	switch v.(type) {
 	case types.SPANumber:
 		real := v.(types.SPANumber)
-		result = -real
-		ok = true
-		return
+		v = -real
 	case types.SPAInteger:
 		real := v.(types.SPAInteger)
-		result = -real
-		ok = true
-		return
+		v = -real
 	}
-	result = types.Null()
-	ok = false
-	return
+	PushValue(v)
 }

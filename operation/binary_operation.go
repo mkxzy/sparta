@@ -7,24 +7,25 @@ import (
 )
 
 //操作符和操作关联
-var operations = make(map[string]func(left, right types.SPAValue) (result types.SPAValue, ok bool))
+var binOperations = make(map[string]func(left, right types.SPAValue) (result types.SPAValue, ok bool))
 
 //初始化
 func init()  {
-	operations["+"] = add
-	operations["-"] = sub
-	operations["*"] = mul
-	operations["/"] = div
-	operations["%"] = mod
+	binOperations["+"] = add
+	binOperations["-"] = sub
+	binOperations["*"] = mul
+	binOperations["/"] = div
+	binOperations["%"] = mod
+	binOperations["=="] = equals
 }
 
 /**
 算数运算
  */
-func Arithmetic(op string) {
+func Calculate(op string){
 	second := PopValue()
 	first := PopValue()
-	operation := operations[op]
+	operation := binOperations[op]
 	if operation == nil{
 		panic("不支持的操作")
 	}
@@ -300,5 +301,34 @@ func mod(left, right types.SPAValue) (result types.SPAValue, ok bool)  {
 	}
 	result = types.Null()
 	ok = false
+	return
+}
+
+func equals(left, right types.SPAValue) (result types.SPAValue, ok bool) {
+	result = types.Null()
+	ok = false
+	switch left.(type) {
+	case types.SPABool:
+		realLeft := left.(types.SPABool)
+		switch right.(type) {
+		case types.SPABool:
+			realRight := right.(types.SPABool)
+			result = types.SPABool(realLeft == realRight)
+			ok = true
+		}
+	case types.SPAInteger:
+		realLeft := left.(types.SPAInteger)
+		switch right.(type) {
+		case types.SPAInteger:
+			realRight := right.(types.SPAInteger)
+			result = types.SPABool(realLeft == realRight)
+			ok = true
+		case types.SPANumber:
+			x := realLeft.ToNumber()
+			realRight := right.(types.SPANumber)
+			result = types.SPABool(x == realRight)
+			ok = true
+		}
+	}
 	return
 }

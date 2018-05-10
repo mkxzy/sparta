@@ -25,7 +25,7 @@ func(v *SPATermInterpreter) Interpret(state *ProgramState)  {
 				//v.EvalFactor(v.ast.GetChild(i).(*parser.FactorContext))
 				factorInter := &SPAFactorInterpreter{v.ast.GetChild(i).(*parser.FactorContext)}
 				factorInter.Interpret(state)
-				operation.Arithmetic(op)
+				operation.Calculate(op)
 			}
 		}
 	}
