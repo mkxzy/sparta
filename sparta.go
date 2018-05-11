@@ -6,9 +6,17 @@ import (
 	"github.com/mkxzy/sparta/parser"
 	"github.com/op/go-logging"
 	"os"
+	"flag"
+	"fmt"
 )
 
 //var log = logging.MustGetLogger("sparta")
+
+var (
+	ShowVersion bool
+	ShowHelp bool
+	Version = "0.6_pre"
+)
 
 func init() {
 	//var format = logging.MustStringFormatter(
@@ -18,10 +26,36 @@ func init() {
 	//formatter := logging.NewBackendFormatter(backend, format)
 	//logging.SetBackend(backend, formatter)
 	//backend1Leveled := logging.AddModuleLevel(backend)
-	logging.SetLevel(logging.DEBUG, "")
+	logging.SetLevel(logging.ERROR, "")
+	flag.BoolVar(&ShowVersion, "v", false, "show version and exit")
+	flag.BoolVar(&ShowHelp, "h", false, "this help")
+	//flag.Usage = usage
+}
+
+func usage() {
+	fmt.Fprintf(os.Stdout, `sparta %s
+Usage: 	sparta [-hv]
+		sparta [filename]
+
+Options:
+`, Version)
+	flag.PrintDefaults()
 }
 
 func main() {
+	flag.Parse()
+	if len(os.Args) == 1{
+		usage()
+		os.Exit(0)
+	}
+	if ShowHelp {
+		usage()
+		os.Exit(0)
+	}
+	if ShowVersion {
+		fmt.Println(Version)
+		os.Exit(0)
+	}
 	input, _ := antlr.NewFileStream(os.Args[1])
 	lexer := parser.NewSpartaLexer(input)
 	stream := antlr.NewCommonTokenStream(lexer, 0)

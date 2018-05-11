@@ -9,8 +9,8 @@ import (
 程序状态
  */
 type ProgramState struct {
-	globals     *symbol.MemorySpace //全局变量空间
-	currentFunc *function.FunState  //函数调用链
+	Globals     *symbol.MemorySpace //全局变量空间
+	CurrentFunc *function.FunState  //函数调用链
 }
 
 func NewProgramState() *ProgramState {
@@ -18,33 +18,34 @@ func NewProgramState() *ProgramState {
 	printFunc := function.NewInternalFunction("print", []string{"s"}) //print内置函数
 	globals.Define(function.NewFunVariable(printFunc))
 	state := &ProgramState{
-
-		globals:     globals,
-		currentFunc: nil,
+		Globals:     globals,
+		CurrentFunc: nil,
 	}
 	return state
 }
 
+//定义变量
 func (ps *ProgramState) Define(s symbol.Symbol)  {
-	if ps.currentFunc != nil {
-		ps.currentFunc.Define(s)
+	if ps.CurrentFunc != nil {
+		ps.CurrentFunc.Define(s)
 	}else{
-		ps.globals.Define(s)
+		ps.Globals.Define(s)
 	}
 }
 
+//解析变量
 func (ps *ProgramState) Resolve(name string) (s symbol.Symbol) {
-	s = ps.currentFunc.Resolve(name)
+	s = ps.CurrentFunc.Resolve(name)
 	if s == nil {
-		s = ps.globals.Resolve(name)
+		s = ps.Globals.Resolve(name)
 	}
 	return
 }
 
-func (ps *ProgramState) CurrentState() *function.FunState {
-	return ps.currentFunc
+func (ps *ProgramState) GetCurrent() *function.FunState {
+	return ps.CurrentFunc
 }
 
-func (ps *ProgramState) LoadState(fs *function.FunState) {
-	ps.currentFunc = fs
+func (ps *ProgramState) SetCurrent(fs *function.FunState) {
+	ps.CurrentFunc = fs
 }

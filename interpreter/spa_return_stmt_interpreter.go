@@ -13,8 +13,8 @@ type SPAReturnStmtInterpreter struct {
 
 // 实现解释接口
 func(v *SPAReturnStmtInterpreter) Interpret(state *ProgramState)  {
-	//v.ff.LoadState(RETURN)
-	if state.currentFunc == nil{
+	//v.ff.SetCurrent(RETURN)
+	if state.CurrentFunc == nil{
 		return
 	}
 	if v.ast.GetChildCount() == 2 {

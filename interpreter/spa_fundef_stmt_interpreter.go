@@ -25,7 +25,7 @@ func(v *SPAFundefStmtInterpreter) Interpret(state *ProgramState)  {
 		}
 	}
 	//保存函数调用链
-	f.FS = state.CurrentState()       //保存函数闭包空间
+	f.FS = state.GetCurrent()         //保存函数闭包空间
 	sym := function.NewFunVariable(f) //创建函数变量
 	state.Define(sym)                 //定义函数
 	log.Infof("函数定义: %v", state)

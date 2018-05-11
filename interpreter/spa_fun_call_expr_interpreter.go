@@ -36,8 +36,8 @@ func(v *SPAFuncallExprInterpreter) Interpret(state *ProgramState)  {
 	}
 	fs.Function = &f
 
-	savedState := state.CurrentState()
-	state.LoadState(fs)
+	savedState := state.GetCurrent()
+	state.SetCurrent(fs)
 
 	defer callReturn(savedState, state)
 
@@ -50,7 +50,7 @@ func callReturn(savedState * function.FunState, state *ProgramState) {
 	if err := recover(); err != nil{
 		switch err.(type) {
 		case *function.FunReturn:
-			state.LoadState(savedState)		//交还控制权给调用者
+			state.SetCurrent(savedState) //交还控制权给调用者
 		default:
 			panic(err)
 		}
@@ -59,8 +59,8 @@ func callReturn(savedState * function.FunState, state *ProgramState) {
 
 //函数没有返回值的情况处理
 func noReturn(savedState * function.FunState, state *ProgramState)  {
-	operation.PushNullValue()					//没有返回值的情况下插入空值
-	state.LoadState(savedState)		//交还控制权给调用者
+	operation.PushNullValue()    //没有返回值的情况下插入空值
+	state.SetCurrent(savedState) //交还控制权给调用者
 }
 
 // 获取函数名
@@ -93,7 +93,7 @@ func evalArgument(ctx *parser.ArgContext, state *ProgramState) {
 // 调用函数
 func call(state *ProgramState) {
 
-	fs := state.CurrentState()
+	fs := state.GetCurrent()
 	// 内置函数
 	if fs.Function.Internal {
 		switch fs.FunVar {
