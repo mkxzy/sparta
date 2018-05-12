@@ -43,6 +43,7 @@ stmt
     | for_stmt
     | break_stmt
     | continue_stmt
+    | import_stmt
     ;
 
 assign_stmt: left_side '=' test;
@@ -87,6 +88,8 @@ block: '{' stmt* '}';
 break_stmt: 'break';
 
 continue_stmt: 'continue';
+
+import_stmt: 'import' IDENTIFIER;
 
 test
     : compare_expr

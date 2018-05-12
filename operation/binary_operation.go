@@ -304,6 +304,9 @@ func mod(left, right types.SPAValue) (result types.SPAValue, ok bool)  {
 	return
 }
 
+/**
+比较相等
+ */
 func equals(left, right types.SPAValue) (result types.SPAValue, ok bool) {
 	result = types.Null()
 	ok = false

@@ -1,0 +1,3 @@
+import for_test
+
+foo(5)

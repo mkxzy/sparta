@@ -7,6 +7,7 @@ import (
 	"github.com/op/go-logging"
 	"github.com/mkxzy/sparta/parser"
 	"github.com/mkxzy/sparta/symbol"
+	"github.com/antlr/antlr4/runtime/Go/antlr"
 )
 
 var log = logging.MustGetLogger("SPAProgramInterpreter")
@@ -17,7 +18,13 @@ type SPAProgramInterpreter struct {
 	savedScope symbol.Scope
 }
 
-func NewDirectInterpreter(ast parser.IProgramContext) *SPAProgramInterpreter {
+func NewDirectInterpreterFromFile(filePath string) *SPAProgramInterpreter {
+	input, _ := antlr.NewFileStream(filePath)
+	lexer := parser.NewSpartaLexer(input)
+	stream := antlr.NewCommonTokenStream(lexer, 0)
+	p := parser.NewSpartaParser(stream)
+	p.BuildParseTrees = true
+	ast := p.Program()                             	// 生成解析树
 	return &SPAProgramInterpreter{
 		ast: ast,
 	}

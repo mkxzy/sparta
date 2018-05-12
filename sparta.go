@@ -1,13 +1,14 @@
 package main
 
 import (
-	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/mkxzy/sparta/interpreter"
-	"github.com/mkxzy/sparta/parser"
 	"github.com/op/go-logging"
 	"os"
 	"flag"
 	"fmt"
+	"path/filepath"
+	"github.com/mkxzy/sparta/symbol"
+	"github.com/mkxzy/sparta/types"
 )
 
 //var log = logging.MustGetLogger("sparta")
@@ -56,14 +57,16 @@ func main() {
 		fmt.Println(Version)
 		os.Exit(0)
 	}
-	input, _ := antlr.NewFileStream(os.Args[1])
-	lexer := parser.NewSpartaLexer(input)
-	stream := antlr.NewCommonTokenStream(lexer, 0)
-	p := parser.NewSpartaParser(stream)
-	p.BuildParseTrees = true
-	ast := p.Program()                             	// 生成解析树
-	state := interpreter.NewProgramState()			// 程序解释器状态数据结构
-	inter := interpreter.NewDirectInterpreter(ast) 	// 创建解释器
+
+	fileName, _ := filepath.Abs(os.Args[1])
+	fileDir := filepath.Dir(fileName)
+	//currentFile := filepath.Dir(fileName)
+	fmt.Println(fileName)
+	inter := interpreter.NewDirectInterpreterFromFile(fileName)	//创建解释器
+
+	state := interpreter.NewProgramState()						//程序解释器状态数据结构
+	state.Define(symbol.NewVariable("CURRENT_FILE", types.SPAString(fileName)))
+	state.Define(symbol.NewVariable("CURRENT_DIR", types.SPAString(fileDir)))
 	inter.Interpret(state)
 
 	//tree.Accept(inter) 	  // 解释执行

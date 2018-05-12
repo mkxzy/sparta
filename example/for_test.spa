@@ -6,5 +6,3 @@ fun foo(n){
         print(x)
     }
 }
-
-foo(5)
