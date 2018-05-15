@@ -17,6 +17,11 @@ func init()  {
 	binOperations["/"] = div
 	binOperations["%"] = mod
 	binOperations["=="] = equals
+	binOperations["!="] = notEquals
+	binOperations[">"] = greaterThen
+	binOperations["<"] = lessThen
+	binOperations[">="] = greaterOrEquals
+	binOperations["<="] = lessOrEquals
 }
 
 /**
@@ -332,6 +337,88 @@ func equals(left, right types.SPAValue) (result types.SPAValue, ok bool) {
 			result = types.SPABool(x == realRight)
 			ok = true
 		}
+	}
+	return
+}
+
+func notEquals(left, right types.SPAValue) (result types.SPAValue, ok bool) {
+	result, ok = equals(left, right)
+	if ok {
+		result = !result.(types.SPABool)
+	}
+	return
+}
+
+func greaterThen(left, right types.SPAValue) (result types.SPAValue, ok bool) {
+	result = types.Null()
+	ok = false
+	switch left.(type) {
+	case types.SPABool:
+		realLeft := left.(types.SPABool)
+		switch right.(type) {
+		case types.SPABool:
+			realRight := right.(types.SPABool)
+			result = types.SPABool(realLeft.ToInt() > realRight.ToInt())
+			ok = true
+		}
+	case types.SPAInteger:
+		realLeft := left.(types.SPAInteger)
+		switch right.(type) {
+		case types.SPAInteger:
+			realRight := right.(types.SPAInteger)
+			result = types.SPABool(realLeft > realRight)
+			ok = true
+		case types.SPANumber:
+			x := realLeft.ToNumber()
+			realRight := right.(types.SPANumber)
+			result = types.SPABool(x > realRight)
+			ok = true
+		}
+	}
+	return
+}
+
+func lessThen(left, right types.SPAValue) (result types.SPAValue, ok bool) {
+	result = types.Null()
+	ok = false
+	switch left.(type) {
+	case types.SPABool:
+		realLeft := left.(types.SPABool)
+		switch right.(type) {
+		case types.SPABool:
+			realRight := right.(types.SPABool)
+			result = types.SPABool(realLeft.ToInt() < realRight.ToInt())
+			ok = true
+		}
+	case types.SPAInteger:
+		realLeft := left.(types.SPAInteger)
+		switch right.(type) {
+		case types.SPAInteger:
+			realRight := right.(types.SPAInteger)
+			result = types.SPABool(realLeft < realRight)
+			ok = true
+		case types.SPANumber:
+			x := realLeft.ToNumber()
+			realRight := right.(types.SPANumber)
+			result = types.SPABool(x < realRight)
+			ok = true
+		}
+	}
+	return
+}
+
+func lessOrEquals(left, right types.SPAValue) (result types.SPAValue, ok bool)  {
+	result, ok = greaterThen(left, right)
+	if ok {
+		result = !result.(types.SPABool)
+	}
+	return
+}
+
+func greaterOrEquals(left, right types.SPAValue) (result types.SPAValue, ok bool)  {
+	result, ok = lessThen(left, right)
+	if ok {
+		result = !result.(types.SPABool)
 	}
 	return
 }
