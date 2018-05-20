@@ -14,8 +14,8 @@
 .glide/
 .idea
 bin
-vendor
-!vendor/vendor.json
+# vendor
+# !vendor/vendor.json
 output
 parser/*.dot
 test
