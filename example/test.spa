@@ -1,7 +1,2 @@
-a = 1
-
-fun foo(){
-    a = 2
-}
-
-print(a)
+print(1 && 2)
+print(0 || 2)

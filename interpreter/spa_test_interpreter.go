@@ -9,8 +9,13 @@ type SPATestInterpreter struct {
 // 实现解释接口
 func(v *SPATestInterpreter) Interpret(state *ProgramState)  {
 
-	compareInter := &SPACompareExprInterpreter{
-		ast: v.ast.GetChild(0).(*parser.Compare_exprContext),
+	//compareInter := &SPACompareExprInterpreter{
+	//	ast: v.ast.GetChild(0).(*parser.Compare_exprContext),
+	//}
+	//compareInter.Interpret(state)
+
+	orInter := &SPAOrTestInterpreter{
+		ast: v.ast.GetChild(0).(*parser.Or_testContext),
 	}
-	compareInter.Interpret(state)
+	orInter.Interpret(state)
 }

@@ -91,16 +91,14 @@ continue_stmt: 'continue';
 
 import_stmt: 'import' IDENTIFIER;
 
-test
-    : compare_expr
-    ;
+test: or_test;
 
-//or_test: and_test ('or' and_test)*;
-//
-//and_test: not_test ('and' not_test)*;
-//
-//not_test: 'not' not_test | compare_expr;
-//
+or_test: and_test ('||' and_test)*;
+
+and_test: not_test ('&&' not_test)*;
+
+not_test: '!' not_test | compare_expr;
+
 compare_expr: arith_expr (comp_op arith_expr)?;
 
 comp_op

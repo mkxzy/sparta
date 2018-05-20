@@ -33,6 +33,10 @@ func(s SPABool) IsTrue() bool  {
 	return bool(s)
 }
 
+func(s SPABool) IsFalse() bool {
+	return !s.IsTrue()
+}
+
 func(spaBool SPABool) ToInt() SPAInteger {
 	if spaBool == true{
 		return SPAInteger(1)
