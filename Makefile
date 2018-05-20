@@ -9,7 +9,7 @@
 outdir=bin
 name=sparta
 
-build: sync
+build: 
 	go build -o $(outdir)/$(name)
 
 sync:
