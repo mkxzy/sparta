@@ -56,6 +56,10 @@ func(v *SPAAtomExprInterpreter) Interpret(state *ProgramState)  {
 			operation.PushValue(types.NewInteger(terminalNode.GetText()))
 		case parser.SpartaLexerSTRING:
 			operation.PushValue(types.NewString(terminalNode.GetText()))
+		case parser.SpartaLexerBOOL:
+			operation.PushValue(types.NewBool(terminalNode.GetText()))
+		case parser.SpartaLexerNULL:
+			operation.PushNullValue()
 		default:
 			panic("类型无效")
 		}

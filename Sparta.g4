@@ -141,6 +141,8 @@ atom_expr
     | INTEGER_LITERAL               //整数字面量
     | NUMBER_LITERAL                //浮点数字面量
     | STRING                        //字符串字面量
+    | BOOL                          //bool字面量
+    | NULL                          //null字面量
     ;
 
 bracket_expr: '(' test ')';
@@ -161,6 +163,10 @@ test_list: test (',' test)*;
 STRING
     : '"' StringCharacter* '"'
     ;
+
+BOOL: 'true'| 'false';
+
+NULL: 'null';
 
 INTEGER_LITERAL: DecimalIntegerLiteral;
 
