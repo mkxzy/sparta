@@ -16,7 +16,7 @@ import (
 var (
 	ShowVersion bool
 	ShowHelp bool
-	Version = "0.6_pre"
+	Version = "v0.6"
 )
 
 func init() {
@@ -54,7 +54,7 @@ func main() {
 		os.Exit(0)
 	}
 	if ShowVersion {
-		fmt.Println(Version)
+		fmt.Printf("Sparta %s", Version)
 		os.Exit(0)
 	}
 
