@@ -4,13 +4,17 @@
 # 2018-4-8
 # #####################
 
-.PHONY: clean sync gen
+.PHONY: clean sync
 
 outdir=bin
 name=sparta
+suffix=.exe
 
-build: 
+linux: 
 	go build -o $(outdir)/$(name)
+    
+windows: 
+	go build -o $(outdir)/$(name)$(suffix)
 
 sync:
 	govendor sync

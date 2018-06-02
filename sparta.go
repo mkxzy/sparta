@@ -11,8 +11,6 @@ import (
 	"github.com/mkxzy/sparta/types"
 )
 
-//var log = logging.MustGetLogger("sparta")
-
 var (
 	ShowVersion bool
 	ShowHelp bool
@@ -68,9 +66,4 @@ func main() {
 	state.Define(symbol.NewVariable("CURRENT_FILE", types.SPAString(fileName)))
 	state.Define(symbol.NewVariable("CURRENT_DIR", types.SPAString(fileDir)))
 	inter.Interpret(state)
-
-	//tree.Accept(inter) 	  // 解释执行
-	//listener := interpreter.NewInterpreter()
-	//antlr.ParseTreeWalkerDefault.Walk(listener, tree)
-	//fmt.Println(tree)
 }
