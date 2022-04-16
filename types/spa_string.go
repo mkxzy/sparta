@@ -4,11 +4,11 @@ import "fmt"
 
 /**
 字符串类型
- */
+*/
 type SPAString string
 
-func(s SPAString) String() string {
-	return fmt.Sprintf("%q", string(s))
+func (s SPAString) String() string {
+	return fmt.Sprintf("%s", string(s))
 }
 
 func NewString(literal string) SPAString {
@@ -18,15 +18,15 @@ func NewString(literal string) SPAString {
 
 /**
 转义字符串（状态机）
- */
+*/
 func escapeString(text string) string {
-	var result = make([]rune, 0 , len(text))
+	var result = make([]rune, 0, len(text))
 	escaped := false //是否处于转义状态
 	for _, c := range text {
 		if escaped {
 			result = append(result, escapeMapping(c))
 			escaped = false //关闭转义状态
-		}else{
+		} else {
 			switch c {
 			case '"':
 				continue
@@ -43,7 +43,7 @@ func escapeString(text string) string {
 
 /**
 转义字符映射
- */
+*/
 func escapeMapping(c rune) rune {
 	switch c {
 	case '"', '\\':
@@ -59,6 +59,6 @@ func escapeMapping(c rune) rune {
 	}
 }
 
-func(s SPAString) IsTrue() bool  {
+func (s SPAString) IsTrue() bool {
 	return len(s) > 0
 }
