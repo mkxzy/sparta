@@ -2,21 +2,23 @@
 A new language for everybody
 为所有人开发的全新语言
 
+# 安装Go开发环境
+
+教程略
+
 # 签出源代码
 ```
-git clone https://github.com/mkxzy/sparta.git $GOPATH/src/github.com/mkxzy/sparta
+git clone https://github.com/mkxzy/sparta.git
 ```
 
 # 构建
-项目采用govendor管理依赖，所以要先安装govendor
 
-``` 安装govendor
-go get -u github.com/kardianos/govendor
+``` 构建
+cd sparta
+go build
 ```
 
-<font color=#ffff00 size=3>Warning： 需要把 $GOPATH/bin/ 加到 PATH 中。</font>
-
-## 编译代码：
+# 运行示例代码
 ```
-make
+sparta.exe .\example\helloworld.spa
 ```
